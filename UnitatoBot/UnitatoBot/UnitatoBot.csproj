@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="CommandContext.cs" />
     <Compile Include="CommandManager.cs" />
+    <Compile Include="Configuration.cs" />
     <Compile Include="DiscordConnector.cs" />
     <Compile Include="ExecutionResult.cs" />
     <Compile Include="Executors\DiceExecutor.cs" />
@@ -85,6 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Compile Include="Configuration.Crypto.cs" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

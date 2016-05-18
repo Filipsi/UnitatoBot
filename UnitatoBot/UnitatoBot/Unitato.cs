@@ -12,9 +12,7 @@ namespace UnitatoBot {
     public class Unitato {
 
         static void Main(string[] args) {
-            Tuple<string, string> credentials = LoadCredentials();
-            DiscordConnector DiscordConnection = new DiscordConnector(credentials.Item1, credentials.Item2, 176752623406284800);
-
+            DiscordConnector DiscordConnection = new DiscordConnector(Configuration.GetEntry("Email"), Configuration.GetEntry("Password"), ulong.Parse(Configuration.GetEntry("ChannelUUID")));
             DiscordConnection.CommandManager.RegisterCommand("unitato", new InfoExecutor());
             DiscordConnection.CommandManager.RegisterCommand("roll",    new DiceExecutor())
                                                   .WithAlias("dice");
@@ -25,14 +23,6 @@ namespace UnitatoBot {
 
             DiscordConnection.Begin();
             Console.ReadKey();
-        }
-
-        private static Tuple<string, string> LoadCredentials() {
-            IniFile iniStorage = new IniFile("credentials.ini");
-            return new Tuple<string, string>(
-                iniStorage.ReadString("Credentials", "username"),
-                iniStorage.ReadString("Credentials", "password")
-            );
         }
 
     }
