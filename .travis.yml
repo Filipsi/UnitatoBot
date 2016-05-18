@@ -1,8 +1,5 @@
 language: csharp
 solution: UnitatoBot/UnitatoBot.sln
-branches:
-  only:
-    - master
 deploy:
   provider: releases
   api_key: ${GUTHUB_OAUTH_KEY}
