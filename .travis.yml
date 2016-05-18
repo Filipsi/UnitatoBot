@@ -1,8 +1,11 @@
 language: csharp
 solution: UnitatoBot/UnitatoBot.sln
+branches:
+  only:
+    - master
 deploy:
   provider: releases
-  api_key: "fcecb46af1b811b5c944a7a7e059c04927f6c83c"
+  api_key: ${GUTHUB_OAUTH_KEY}
   file: UnitatoBot\bin\Debug"
   skip_cleanup: true
   on:
