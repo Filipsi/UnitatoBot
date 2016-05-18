@@ -1,26 +1,4 @@
-c:\users\filipsi\documents\visual studio 2013\Projects\UnitatoBot\UnitatoBot\bin\Debug\UnitatoBot.exe.config
-c:\users\filipsi\documents\visual studio 2013\Projects\UnitatoBot\UnitatoBot\bin\Debug\UnitatoBot.exe
-c:\users\filipsi\documents\visual studio 2013\Projects\UnitatoBot\UnitatoBot\bin\Debug\UnitatoBot.pdb
-c:\users\filipsi\documents\visual studio 2013\Projects\UnitatoBot\UnitatoBot\bin\Debug\Discord.Net.dll
-c:\users\filipsi\documents\visual studio 2013\Projects\UnitatoBot\UnitatoBot\bin\Debug\Newtonsoft.Json.dll
-c:\users\filipsi\documents\visual studio 2013\Projects\UnitatoBot\UnitatoBot\bin\Debug\Nito.AsyncEx.Concurrent.dll
-c:\users\filipsi\documents\visual studio 2013\Projects\UnitatoBot\UnitatoBot\bin\Debug\Nito.AsyncEx.dll
-c:\users\filipsi\documents\visual studio 2013\Projects\UnitatoBot\UnitatoBot\bin\Debug\Nito.AsyncEx.Enlightenment.dll
-c:\users\filipsi\documents\visual studio 2013\Projects\UnitatoBot\UnitatoBot\bin\Debug\RestSharp.dll
-c:\users\filipsi\documents\visual studio 2013\Projects\UnitatoBot\UnitatoBot\bin\Debug\WebSocket4Net.dll
-c:\users\filipsi\documents\visual studio 2013\Projects\UnitatoBot\UnitatoBot\bin\Debug\Newtonsoft.Json.xml
-c:\users\filipsi\documents\visual studio 2013\Projects\UnitatoBot\UnitatoBot\bin\Debug\Nito.AsyncEx.xml
-c:\users\filipsi\documents\visual studio 2013\Projects\UnitatoBot\UnitatoBot\bin\Debug\Nito.AsyncEx.Concurrent.xml
-c:\users\filipsi\documents\visual studio 2013\Projects\UnitatoBot\UnitatoBot\bin\Debug\Nito.AsyncEx.Enlightenment.xml
-c:\users\filipsi\documents\visual studio 2013\Projects\UnitatoBot\UnitatoBot\bin\Debug\RestSharp.xml
-c:\users\filipsi\documents\visual studio 2013\Projects\UnitatoBot\UnitatoBot\obj\Debug\UnitatoBot.csprojResolveAssemblyReference.cache
-c:\users\filipsi\documents\visual studio 2013\Projects\UnitatoBot\UnitatoBot\obj\Debug\UnitatoBot.exe
-c:\users\filipsi\documents\visual studio 2013\Projects\UnitatoBot\UnitatoBot\obj\Debug\UnitatoBot.pdb
-c:\users\filipsi\documents\visual studio 2013\Projects\UnitatoBot\UnitatoBot\bin\Debug\Ini.Net.dll
-C:\Users\Filipsi\documents\visual studio 2013\Projects\UnitatoBot\UnitatoBot\bin\Debug\VerbalExpressions.dll
 F:\Git\UnitatoBot\UnitatoBot\UnitatoBot\bin\Debug\UnitatoBot.exe.config
-F:\Git\UnitatoBot\UnitatoBot\UnitatoBot\obj\Debug\UnitatoBot.exe
-F:\Git\UnitatoBot\UnitatoBot\UnitatoBot\obj\Debug\UnitatoBot.pdb
 F:\Git\UnitatoBot\UnitatoBot\UnitatoBot\bin\Debug\UnitatoBot.exe
 F:\Git\UnitatoBot\UnitatoBot\UnitatoBot\bin\Debug\UnitatoBot.pdb
 F:\Git\UnitatoBot\UnitatoBot\UnitatoBot\bin\Debug\Discord.Net.dll
@@ -38,3 +16,5 @@ F:\Git\UnitatoBot\UnitatoBot\UnitatoBot\bin\Debug\Nito.AsyncEx.Concurrent.xml
 F:\Git\UnitatoBot\UnitatoBot\UnitatoBot\bin\Debug\Nito.AsyncEx.Enlightenment.xml
 F:\Git\UnitatoBot\UnitatoBot\UnitatoBot\bin\Debug\RestSharp.xml
 F:\Git\UnitatoBot\UnitatoBot\UnitatoBot\obj\Debug\UnitatoBot.csprojResolveAssemblyReference.cache
+F:\Git\UnitatoBot\UnitatoBot\UnitatoBot\obj\Debug\UnitatoBot.exe
+F:\Git\UnitatoBot\UnitatoBot\UnitatoBot\obj\Debug\UnitatoBot.pdb
