@@ -68,25 +68,25 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandContext.cs" />
-    <Compile Include="CommandManager.cs" />
-    <Compile Include="Configuration.cs" />
-    <Compile Include="DiscordConnector.cs" />
-    <Compile Include="ExecutionResult.cs" />
-    <Compile Include="Executors\DiceExecutor.cs" />
-    <Compile Include="Executors\FaggotPointsExecutor.cs" />
-    <Compile Include="Executors\HelpExecutor.cs" />
-    <Compile Include="Executors\InfoExecutor.cs" />
-    <Compile Include="Executors\PraiseTheDanExecutor.cs" />
+    <Compile Include="Command\CommandContext.cs" />
+    <Compile Include="Command\CommandManager.cs" />
+    <Compile Include="Configuration\Config.cs" />
+    <Compile Include="Connector\Connectors\DiscordConnector.cs" />
+    <Compile Include="Execution\ExecutionResult.cs" />
+    <Compile Include="Execution\Executors\DiceExecutor.cs" />
+    <Compile Include="Execution\Executors\FaggotPointsExecutor.cs" />
+    <Compile Include="Execution\Executors\HelpExecutor.cs" />
+    <Compile Include="Execution\Executors\InfoExecutor.cs" />
+    <Compile Include="Execution\Executors\PraiseTheDanExecutor.cs" />
     <Compile Include="Expressions.cs" />
-    <Compile Include="IConnector.cs" />
-    <Compile Include="IExecutionHandler.cs" />
+    <Compile Include="Connector\IConnector.cs" />
+    <Compile Include="Execution\IExecutionHandler.cs" />
     <Compile Include="Unitato.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <Compile Include="Configuration.Crypto.cs" />
+    <Compile Include="Configuration\Config.Crypto.cs" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

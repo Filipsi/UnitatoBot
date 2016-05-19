@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnitatoBot.Command;
 
-namespace UnitatoBot {
+namespace UnitatoBot.Execution {
 
     internal interface IExecutionHandler {
 
@@ -12,7 +13,7 @@ namespace UnitatoBot {
 
         string GetDescription();
 
-        ExecutionResult CanExecute(CommandManager manager, CommandContext context);
+        ExecutionResult CanExecute(CommandContext context);
 
         ExecutionResult Execute(CommandManager manager, CommandContext context);
 

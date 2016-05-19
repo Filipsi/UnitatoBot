@@ -7,9 +7,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnitatoBot {
+namespace UnitatoBot.Configuration {
 
-    public static partial class Configuration {
+    public static partial class Config {
 
         public static partial class Crypto {
 

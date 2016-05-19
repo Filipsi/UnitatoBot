@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnitatoBot.Connector;
+using UnitatoBot.Execution;
 
-namespace UnitatoBot {
+namespace UnitatoBot.Command {
 
     internal class CommandManager {
 
@@ -68,7 +70,7 @@ namespace UnitatoBot {
             if(!isInitialized || !CommandExecutionMapping.ContainsKey(context.Command)) return;
 
             IExecutionHandler executor = CommandExecutionMapping[context.Command];
-            ExecutionResult canExecute = executor.CanExecute(this, context);
+            ExecutionResult canExecute = executor.CanExecute(context);
 
             if(canExecute == ExecutionResult.Success) {
                 ExecutionResult executionRes = executor.Execute(this, context);

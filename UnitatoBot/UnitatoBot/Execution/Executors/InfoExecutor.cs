@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnitatoBot.Command;
 
-namespace UnitatoBot.Executors {
+namespace UnitatoBot.Execution.Executors {
 
     internal class InfoExecutor : IExecutionHandler {
 
@@ -20,7 +21,7 @@ namespace UnitatoBot.Executors {
             return "Unitato will greet you and introduce itself.";
         }
 
-        public ExecutionResult CanExecute(CommandManager manager, CommandContext context) {
+        public ExecutionResult CanExecute(CommandContext context) {
             return ExecutionResult.Success;
         }
 

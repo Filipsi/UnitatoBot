@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnitatoBot.Command;
 
-namespace UnitatoBot.Executors {
+namespace UnitatoBot.Execution.Executors {
 
     internal class FaggotStatsExecutor : IExecutionHandler {
 
@@ -20,10 +21,10 @@ namespace UnitatoBot.Executors {
         }
 
         public string GetDescription() {
-            return "Use with name as argument to mark someone as a Faggot and add one faggot point. Use wihout an argument to see statistics of all faggots. Use with argument 'stats' and name of the user to see statistics of that faggot.";
+            return "Use with name as argument to mark someone as a Faggot and add one faggot point. Use wihout an argument to see statistics of all faggots. Use with argument 'stats' and name of the user as a second argument to see statistics of that faggot.";
         }
 
-        public ExecutionResult CanExecute(CommandManager manager, CommandContext context) {
+        public ExecutionResult CanExecute(CommandContext context) {
             if(!context.HasArguments) return ExecutionResult.Success;
             if(context.Args[0].Equals("stats") && context.Args.Length == 2) return ExecutionResult.Success;
             if(context.Args.Length == 1) return ExecutionResult.Success;

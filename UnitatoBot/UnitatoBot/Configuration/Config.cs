@@ -7,19 +7,18 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnitatoBot {
+namespace UnitatoBot.Configuration {
 
-    public static partial class Configuration {
+    public static partial class Config {
 
         public enum ConfigSection {
             DiscordCredentials
-            
         }
 
         private static Dictionary<string, string> ConfigurationMapping;
         private static IniFile ConfigFile;
 
-        static Configuration() {
+        static Config() {
             ConfigFile = new IniFile("config.ini");
             ConfigurationMapping = new Dictionary<string, string>();
 

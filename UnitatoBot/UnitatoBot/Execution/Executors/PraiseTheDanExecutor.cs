@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnitatoBot.Command;
 
-namespace UnitatoBot.Executors {
+namespace UnitatoBot.Execution.Executors {
 
     internal class PraiseTheDanExecutor : IExecutionHandler {
 
@@ -20,7 +21,7 @@ namespace UnitatoBot.Executors {
             return "Will praise the DaN!";
         }
 
-        public ExecutionResult CanExecute(CommandManager manager, CommandContext context) {
+        public ExecutionResult CanExecute(CommandContext context) {
             return ExecutionResult.Success;
         }
 

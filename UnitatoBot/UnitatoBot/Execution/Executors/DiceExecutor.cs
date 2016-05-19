@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnitatoBot.Command;
 
-namespace UnitatoBot.Executors {
+namespace UnitatoBot.Execution.Executors {
 
     internal class DiceExecutor : IExecutionHandler {
 
@@ -17,10 +18,10 @@ namespace UnitatoBot.Executors {
         }
 
         public string GetDescription() {
-            return "d[number of sides] ;Rolls a n sided dice.";
+            return "d[number of sides] Rolls a n sided dice.";
         }
 
-        public ExecutionResult CanExecute(CommandManager manager, CommandContext context) {
+        public ExecutionResult CanExecute(CommandContext context) {
             return context.HasArguments && context.Args[0].ElementAt(0) == 'd' ? ExecutionResult.Success : ExecutionResult.Denied;
         }
 

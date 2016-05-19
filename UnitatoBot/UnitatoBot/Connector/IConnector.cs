@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnitatoBot {
+namespace UnitatoBot.Connector {
 
     internal interface IConnector {
 
