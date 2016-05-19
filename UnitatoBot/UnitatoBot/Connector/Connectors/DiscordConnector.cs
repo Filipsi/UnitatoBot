@@ -53,8 +53,7 @@ namespace UnitatoBot.Connector.Connectors {
 
         private void InitEventhandlers() {
             Client.MessageReceived += (sender, args) => {
-                Console.WriteLine("Msg {0} from {1} at {2}", args.Message.Text, args.User, args.Channel.Name);
-                if(args.Channel.Equals(this.Channel)) OnMessageReceived(this, args);
+                if(args.Channel.Id.Equals(this.Channel.Id) && !args.User.Id.Equals(Client.CurrentUser.Id)) OnMessageReceived(this, args);
             };
         }
 
