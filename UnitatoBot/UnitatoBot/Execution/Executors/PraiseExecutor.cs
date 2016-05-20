@@ -34,7 +34,7 @@ namespace UnitatoBot.Execution.Executors {
                 .With("（〜^∇^)〜")
                 .Space()
                 .Bold()
-                .With("Praise the {0}!", context.HasArguments ? context.Args[0] : GenerateDan())
+                    .With("Praise the {0}!", context.HasArguments ? context.Args[0] : GenerateDan())
                 .Bold()
                 .Space()
                 .With("ヽ(´▽｀)ノ")

@@ -32,7 +32,7 @@ namespace UnitatoBot.Command {
             // Check if message is valid command or emoji
             bool isCommand = Expressions.CommandParser.Test(e.Message.Text);
 
-            Console.WriteLine("Received {0} from {1}, IsCommand: {1}", e.Message.Text, e.User, isCommand);
+            Console.WriteLine("Received {0} from {1}, IsCommand: {2}", e.Message.Text, e.User, isCommand);
 
             // Escape further processing if message is not command or emoji
             if(!isCommand) return;

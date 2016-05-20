@@ -31,7 +31,7 @@ namespace UnitatoBot.Execution.Executors {
 
             builder.MultilineBlock();
             foreach(var entry in manager) {
-                builder.With(string.Format("{0}: {1}", entry.Key, entry.Value.GetDescription()))
+                builder.With("{0}: {1}", entry.Key, entry.Value.GetDescription())
                        .NewLine()
                        .NewLine();
             }
