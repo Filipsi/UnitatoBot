@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using UnitatoBot.Command;
+using UnitatoBot.Utilities.Http;
 
 namespace UnitatoBot.Execution.Executors {
 
@@ -15,7 +16,7 @@ namespace UnitatoBot.Execution.Executors {
         // IExecutionHandler
 
         public void Initialize() {
-            
+            //NO-OP
         }
 
         public string GetDescription() {
@@ -23,52 +24,67 @@ namespace UnitatoBot.Execution.Executors {
         }
 
         public ExecutionResult CanExecute(CommandContext context) {
-            return context.HasArguments && context.Args.Length == 1 ? ExecutionResult.Success : ExecutionResult.Denied;
+            return context.HasArguments ? ExecutionResult.Success : ExecutionResult.Denied;
         }
 
         public ExecutionResult Execute(CommandManager manager, CommandContext context) {
             if(context.Args[0] == "list") {
-                Utilities.HttpRequest.QueryRequest(
-                    Utilities.HttpRequest.HttpMethod.GET,
-                    "http://lexicon.filipsi.net/php/menu/processor.php",
-                    "",
-                    "")
-                .OnReqestComplete += (sender, args) => {
+                // Make an request, there are no arguments required for this one, but QueryRequest requires at last pair
+                Request request = Http.QueryRequest(HttpMethod.GET, "http://lexicon.filipsi.net/php/menu/processor.php", "", "");
+
+                // Bind ReqestComplete event
+                request.OnReqestComplete += (sender, args) => {
+                    // Parse data from server into list of ArticleEntries
                     List<MenuEntry> menuEntries = JsonConvert.DeserializeObject<List<MenuEntry>>(args.Responce);
+
+                    // Print out list of articles separated by commas
                     manager.ServiceConnector.Send(String.Join(", ", menuEntries.Select(x => x.title)));
                 };
+
                 return ExecutionResult.Success;
             } else {
-                Utilities.HttpRequest.QueryRequest(
-                    Utilities.HttpRequest.HttpMethod.GET,
-                    "http://lexicon.filipsi.net/php/articles/processor.php",
-                    "title",
-                    context.RawCommand.Substring(1 + context.Command.Length + 1))
-                .OnReqestComplete += (sender, args) => {
+                // Strips the /command from the arguments, this is here in order to enable reqests for articles with spaces in title
+                string strippedArgument = context.RawCommand.Substring(1 + context.Command.Length + 1);
+
+                // Make an reqest
+                Request request = Http.QueryRequest(HttpMethod.GET, "http://lexicon.filipsi.net/php/articles/processor.php", "title", strippedArgument);
+
+                // Bind ReqestComplete event
+                request.OnReqestComplete += (sender, args) => {
+                    // Check if there are data in the responce (should work, mostly ¯\_(ツ)_/¯)
                     if(args.Responce.Equals(string.Empty) || args.Responce.Equals("") || args.Responce.Equals("[]")) return;
+
+                    // Parse data from server into list of ArticleEntries, it has to be list even when
+                    // responce contains only one element becouse server is allways returning it as an array
                     List<ArticleEntry> articleEntry = JsonConvert.DeserializeObject<List<ArticleEntry>>(args.Responce);
-                    manager.ServiceConnector.Send(Regex.Replace(articleEntry.First().text, "<.*?>", String.Empty));
+
+                    // Get the one and only article entry
+                    string article = articleEntry.First().text;
+                    // Remove HTML tags
+                    article = Regex.Replace(article, "<.*?>", String.Empty);
+                    // Remove Empty lines
+                    article = Regex.Replace(article, @"^\s+$[\r\n]*", "", RegexOptions.Multiline);
+
+                    manager.ServiceConnector.Send(article);
                 };
+
                 return ExecutionResult.Success;
             }
         }
 
         // JsonObjects
+        // Used to parse data from server using JsonConvert
 
         private class MenuEntry {
-
             public int id;
             public string title;
-
         }
 
         private class ArticleEntry {
-
             public int id;
             public string title;
             public string created;
             public string text;
-
         }
 
     }
