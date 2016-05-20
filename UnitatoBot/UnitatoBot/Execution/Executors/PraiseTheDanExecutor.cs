@@ -26,7 +26,19 @@ namespace UnitatoBot.Execution.Executors {
         }
 
         public ExecutionResult Execute(CommandManager manager, CommandContext context) {
-            manager.ServiceConnector.Send("**Praise the " + GenerateDan() + "**");
+            context.ResponseBuilder
+                .Block()
+                    .Username()
+                .Block()
+                .Space()
+                .With("（〜^∇^)〜")
+                .Space()
+                .Bold()
+                    .With("Praise the {0}!", GenerateDan())
+                .Bold()
+                .Space()
+                .With("ヽ(´▽｀)ノ")
+                .Build();
             return ExecutionResult.Success;
         }
 

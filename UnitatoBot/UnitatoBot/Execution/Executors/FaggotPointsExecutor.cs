@@ -33,34 +33,76 @@ namespace UnitatoBot.Execution.Executors {
 
         public ExecutionResult Execute(CommandManager manager, CommandContext context) {
             // Print out whole statistics
+            // /faggot
             if(!context.HasArguments) {
+                // Build common part of response
+                ResponseBuilder builder = context.ResponseBuilder
+                    .Block()
+                        .Username()
+                        .With("requested list of faggots")
+                    .Block()
+                    .Space();
+
+                // If there are no entries in stats, builds response
                 if(FaggotStats.Count == 0) {
-                    manager.ServiceConnector.Send("There are no faggots!");
+                    builder.With("(⊙.☉)7 There are no faggots.").Build();
                     return ExecutionResult.Success;
                 }
 
-                manager.ServiceConnector.Send("Faggot points statistics:");
+                // Add each entry in stats to the response
+                builder.MultilineBlock();
                 foreach(KeyValuePair<string, int> entry in FaggotStats) {
-                    manager.ServiceConnector.Send(string.Format("{0}: {1}", entry.Key, entry.Value));
+                    builder.With("{0} has {1} point{2}", entry.Key, entry.Value, entry.Value > 1 ? "s" : string.Empty)
+                           .NewLine();
                 }
+                builder.MultilineBlock();
 
+                // Build response
+                builder.Build();
                 return ExecutionResult.Success;
             }
             // Print out single statistic
+            // /faggot stats [name]
             else if(context.Args[0].Equals("stats") && context.Args.Length == 2) {
-                if(!FaggotStats.ContainsKey(context.Args[1]))
-                    return ExecutionResult.Fail;
+                // Check if there is faggot in stats with name specified by command's second argument
+                if(!FaggotStats.ContainsKey(context.Args[1])) return ExecutionResult.Fail;
 
-                manager.ServiceConnector.Send(string.Format("{0} has {1} faggotpoints.", context.Args[1], FaggotStats[context.Args[1]]));
+                // Retrives stats
+                int stats = FaggotStats[context.Args[1]];
+
+                // Build response
+                context.ResponseBuilder
+                    .Block()
+                        .Username()
+                        .With("requested faggot statistics,")
+                        .With("{0} has {1} point{2}", context.Args[1], stats, stats > 1 ? "s" : string.Empty)
+                    .Block()
+                    .Build();
                 return ExecutionResult.Success;
             } 
-            // Add Faggotpoint to user
+            // Add faggotpoint to user
+            // /faggot [name]
             else {
+                // If user is not in the stats, creates new entry
                 if(!FaggotStats.ContainsKey(context.Args[0])) FaggotStats.Add(context.Args[0], 0);
 
+                // Add one faggotpoint
                 FaggotStats[context.Args[0]]++;
-                SaveStat(context.Args[0], FaggotStats[context.Args[0]]);
-                manager.ServiceConnector.Send(string.Format("{0} is faggot!", context.Args[0]));
+
+                // Retrives stats
+                int stats = FaggotStats[context.Args[0]];
+
+                // Save stat to ini file
+                SaveStat(context.Args[0], stats);
+
+                // Build response
+                context.ResponseBuilder
+                    .Block()
+                        .Username()
+                        .With("marked {0} as faggot", context.Args[0])
+                    .Block()
+                    .Build();
+
                 return ExecutionResult.Success;
             }
         }

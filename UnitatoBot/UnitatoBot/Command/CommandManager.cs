@@ -29,11 +29,13 @@ namespace UnitatoBot.Command {
         private void OnMessageReceived(object sender, Discord.MessageEventArgs e) {
             if(!isInitialized) return;
 
-            Console.WriteLine("Received {0} from {1}", e.Message.Text, e.User);
-            Console.WriteLine(Expressions.CommandParser.Test(e.Message.Text));
-
             // Check if message is valid command or emoji
-            if(!Expressions.CommandParser.Test(e.Message.Text)) return;
+            bool isCommand = Expressions.CommandParser.Test(e.Message.Text);
+
+            Console.WriteLine("Received {0} from {1}, IsCommand: {1}", e.Message.Text, e.User, isCommand);
+
+            // Escape further processing if message is not command or emoji
+            if(!isCommand) return;
 
             // Execute
             ExecuteCommand(new CommandContext(e.Message));
@@ -42,11 +44,13 @@ namespace UnitatoBot.Command {
         public void Initialize() {
             if(isInitialized) return;
 
-            foreach(IExecutionHandler handler in CommandExecutionMapping.Values) {
-                handler.Initialize();
+            // TODO: Executors with aliases are inicialized multiple times, this shouldn't happen
+            foreach(IExecutionHandler executor in CommandExecutionMapping.Values) {
+                Console.WriteLine("Initializing executor: {0}", executor.GetType().Name);
+                executor.Initialize();
             }
 
-            Console.WriteLine("Commands inicilized.");
+            Console.WriteLine("Commands initialized.");
             this.isInitialized = true;
         }
 

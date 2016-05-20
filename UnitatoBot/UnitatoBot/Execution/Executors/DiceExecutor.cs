@@ -31,8 +31,15 @@ namespace UnitatoBot.Execution.Executors {
             if(!int.TryParse(context.Args[0].Remove(0, 1), out dice)) return ExecutionResult.Fail;
             if(dice < 2) return ExecutionResult.Fail;
 
-            manager.ServiceConnector.Send("*throws a " + dice + "-sided dice*");
-            manager.ServiceConnector.Send(Rng.Next(1, dice).ToString());
+            context.ResponseBuilder
+                .Block()
+                    .Username()
+                    .With("throws {0}-sided dice", dice)
+                .Block()
+                .Space()
+                .With(Rng.Next(1, dice))
+                .Build();
+
             return ExecutionResult.Success;
         }
 

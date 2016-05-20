@@ -24,11 +24,20 @@ namespace UnitatoBot.Execution.Executors {
         }
 
         public ExecutionResult Execute(CommandManager manager, CommandContext context) {
-            manager.ServiceConnector.Send("Sure, here is a list of stuff I can do:");
-            foreach(var entry in manager) {
-                manager.ServiceConnector.Send(string.Format("{0}: {1}", entry.Key, entry.Value.GetDescription()));
-            }
+            ResponseBuilder builder = context.ResponseBuilder
+                .With("Sure,")
+                .Username()
+                .With("here is a list of stuff I can do: (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧");
 
+            builder.MultilineBlock();
+            foreach(var entry in manager) {
+                builder.With(string.Format("{0}: {1}", entry.Key, entry.Value.GetDescription()))
+                       .NewLine()
+                       .NewLine();
+            }
+            builder.MultilineBlock();
+
+            builder.Build();
             return ExecutionResult.Success;
         }
     }

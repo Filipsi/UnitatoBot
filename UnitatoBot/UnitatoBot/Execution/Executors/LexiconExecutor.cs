@@ -38,7 +38,11 @@ namespace UnitatoBot.Execution.Executors {
                     List<MenuEntry> menuEntries = JsonConvert.DeserializeObject<List<MenuEntry>>(args.Responce);
 
                     // Print out list of articles separated by commas
-                    manager.ServiceConnector.Send(String.Join(", ", menuEntries.Select(x => x.title)));
+                    context.ResponseBuilder
+                        .Username()
+                        .With("here is list of articles available at Lexicon at the moment:")
+                        .With(String.Join(", ", menuEntries.Select(x => x.title)))
+                        .Build();
                 };
 
                 return ExecutionResult.Success;
@@ -59,13 +63,24 @@ namespace UnitatoBot.Execution.Executors {
                     List<ArticleEntry> articleEntry = JsonConvert.DeserializeObject<List<ArticleEntry>>(args.Responce);
 
                     // Get the one and only article entry
-                    string article = articleEntry.First().text;
+                    string articleText = articleEntry.First().text;
                     // Remove HTML tags
-                    article = Regex.Replace(article, "<.*?>", String.Empty);
+                    articleText = Regex.Replace(articleText, "<.*?>", String.Empty);
                     // Remove Empty lines
-                    article = Regex.Replace(article, @"^\s+$[\r\n]*", "", RegexOptions.Multiline);
+                    articleText = Regex.Replace(articleText, @"^\s+$[\r\n]*", "", RegexOptions.Multiline);
 
-                    manager.ServiceConnector.Send(article);
+                    context.ResponseBuilder
+                        .Block()
+                            .Username()
+                            .With("requested article from Lexicon")
+                        .Block()
+                        .Space()
+                        .With("http://lexicon.filipsi.net/#article/{0}", articleEntry.First().id)
+                        .Space()
+                        .MultilineBlock()
+                            .With(articleText)
+                        .MultilineBlock()
+                        .Build();
                 };
 
                 return ExecutionResult.Success;
