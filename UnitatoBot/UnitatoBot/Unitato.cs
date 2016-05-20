@@ -27,7 +27,7 @@ namespace UnitatoBot {
             cmdManager.RegisterCommand("unitato", new InfoExecutor());
             cmdManager.RegisterCommand("help", new HelpExecutor());
             cmdManager.RegisterCommand("roll", new DiceExecutor()).WithAlias("dice");
-            cmdManager.RegisterCommand("praise", new PraiseTheDanExecutor()).WithAlias("dan");
+            cmdManager.RegisterCommand("praise", new PraiseExecutor()).WithAlias("dan");
             cmdManager.RegisterCommand("faggot", new FaggotStatsExecutor());
             cmdManager.RegisterCommand("lexicon", new LexiconExecutor());
 

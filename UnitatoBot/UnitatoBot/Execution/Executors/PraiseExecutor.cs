@@ -7,7 +7,7 @@ using UnitatoBot.Command;
 
 namespace UnitatoBot.Execution.Executors {
 
-    internal class PraiseTheDanExecutor : IExecutionHandler {
+    internal class PraiseExecutor : IExecutionHandler {
 
         private Random Rng;
 
@@ -18,23 +18,23 @@ namespace UnitatoBot.Execution.Executors {
         }
 
         public string GetDescription() {
-            return "Will praise the DaN!";
+            return "Will praise the DaN! Or anyone specified as a argument, but you know that it will not be as good as praising the dAn.";
         }
 
         public ExecutionResult CanExecute(CommandContext context) {
-            return ExecutionResult.Success;
+            return !context.HasArguments || (context.HasArguments && context.Args.Length == 1) ? ExecutionResult.Success : ExecutionResult.Denied;
         }
 
         public ExecutionResult Execute(CommandManager manager, CommandContext context) {
             context.ResponseBuilder
                 .Block()
                     .Username()
+                    .With("is praising")
                 .Block()
-                .Space()
                 .With("（〜^∇^)〜")
                 .Space()
                 .Bold()
-                    .With("Praise the {0}!", GenerateDan())
+                .With("Praise the {0}!", context.HasArguments ? context.Args[0] : GenerateDan())
                 .Bold()
                 .Space()
                 .With("ヽ(´▽｀)ノ")

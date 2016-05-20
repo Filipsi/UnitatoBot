@@ -79,7 +79,7 @@
     <Compile Include="Execution\Executors\HelpExecutor.cs" />
     <Compile Include="Execution\Executors\InfoExecutor.cs" />
     <Compile Include="Execution\Executors\LexiconExecutor.cs" />
-    <Compile Include="Execution\Executors\PraiseTheDanExecutor.cs" />
+    <Compile Include="Execution\Executors\PraiseExecutor.cs" />
     <Compile Include="Expressions.cs" />
     <Compile Include="Connector\IConnector.cs" />
     <Compile Include="Execution\IExecutionHandler.cs" />
