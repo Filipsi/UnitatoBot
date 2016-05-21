@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnitatoBot.Command;
 
-namespace UnitatoBot.Execution.Executors {
+namespace UnitatoBot.Command.Execution.Executors {
 
     internal class InfoExecutor : IExecutionHandler {
 
@@ -25,9 +25,9 @@ namespace UnitatoBot.Execution.Executors {
             return ExecutionResult.Success;
         }
 
-        public ExecutionResult Execute(CommandManager manager, CommandContext context) {
+        public ExecutionResult Execute(CommandContext context) {
             context.ResponseBuilder
-                .With("Howdy {0}! (•̀ᴗ•́)و", context.Message.User.Name)
+                .With("Howdy {0}! (•̀ᴗ•́)و", context.Sender)
                 .Space()
                 .With("My name is UnitatoBot and I am cross between a Unicorn and a Potato. The most fabulous creature you could ever imagine. I am smart potato that knows how to count up to 2147483647, impressive right! I also know some dank memes and can throw a dice if you want. Did you praised the DaN yet? Oh, oh! And I was also recentry tought how to do fancy formating, thanks dev (　＾∇＾), you are da best! And I am here for {0} minutes. Use /help for more.", GetUptime())
                 .Build();

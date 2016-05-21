@@ -61,8 +61,14 @@ namespace UnitatoBot.Connector.Connectors {
 
         public event EventHandler<MessageEventArgs> OnMessageReceived;
 
-        public void Send(string message) {
-            this.Channel.SendMessage(message);
+        public void SendMessage(string text) {
+            this.Channel.SendMessage(text);
+        }
+
+        public void DeleteMessage(string id) {
+            ulong uid; if(!ulong.TryParse(id, out uid)) return;
+            Message msg = this.Channel.Messages.First(x => x.Id == uid);
+            if(msg != null) msg.Delete();
         }
 
     }

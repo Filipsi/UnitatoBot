@@ -20,8 +20,8 @@ namespace UnitatoBot.Command {
 
         public string Build() {
             string response = Builder.ToString();
-            if(RemoveOriginalMessage) Context.Message.Delete();
-            Context.Message.Channel.SendMessage(response);
+            if(RemoveOriginalMessage) Context.CommandManager.ServiceConnector.DeleteMessage(Context.MessageId);
+            Context.CommandManager.ServiceConnector.SendMessage(response);
             return response;
         }
 
@@ -54,7 +54,7 @@ namespace UnitatoBot.Command {
         // Utils
 
         public ResponseBuilder Username() {
-            With(Context.Message.User.Name);
+            With(Context.Sender);
             return this;
         }
 

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using UnitatoBot.Command;
 using UnitatoBot.Utilities.Http;
 
-namespace UnitatoBot.Execution.Executors {
+namespace UnitatoBot.Command.Execution.Executors {
 
     class LexiconExecutor : IExecutionHandler {
 
@@ -27,7 +27,7 @@ namespace UnitatoBot.Execution.Executors {
             return context.HasArguments ? ExecutionResult.Success : ExecutionResult.Denied;
         }
 
-        public ExecutionResult Execute(CommandManager manager, CommandContext context) {
+        public ExecutionResult Execute(CommandContext context) {
             if(context.Args[0] == "list") {
                 // Make an request, there are no arguments required for this one, but QueryRequest requires at last pair
                 Request request = Http.QueryRequest(HttpMethod.GET, "http://lexicon.filipsi.net/php/menu/processor.php", "", "");
@@ -40,7 +40,7 @@ namespace UnitatoBot.Execution.Executors {
                     // Print out list of articles separated by commas
                     context.ResponseBuilder
                         .Username()
-                        .With("here is list of articles available at Lexicon at the moment:")
+                        .With("here is list of articles available in Lexicon at the moment:")
                         .With(String.Join(", ", menuEntries.Select(x => x.title)))
                         .Build();
                 };
@@ -63,7 +63,10 @@ namespace UnitatoBot.Execution.Executors {
                     List<ArticleEntry> articleEntry = JsonConvert.DeserializeObject<List<ArticleEntry>>(args.Responce);
 
                     // Get the one and only article entry
-                    string articleText = articleEntry.First().text;
+                    ArticleEntry article = articleEntry.First();
+
+                    // Obtain text of the article
+                    string articleText = article.text;
                     // Remove HTML tags
                     articleText = Regex.Replace(articleText, "<.*?>", String.Empty);
                     // Remove Empty lines
@@ -72,10 +75,10 @@ namespace UnitatoBot.Execution.Executors {
                     context.ResponseBuilder
                         .Block()
                             .Username()
-                            .With("requested article from Lexicon")
+                            .With("requested article {0} from Lexicon", article.title)
                         .Block()
                         .Space()
-                        .With("http://lexicon.filipsi.net/#article/{0}", articleEntry.First().id)
+                        .With("http://lexicon.filipsi.net/#article/{0}", article.id)
                         .Space()
                         .MultilineBlock()
                             .With(articleText)

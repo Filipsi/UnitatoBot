@@ -9,18 +9,24 @@ namespace UnitatoBot.Command {
 
     internal class CommandContext {
 
-        public Message Message { private set; get; }
-        public string RawCommand { private set; get; }
-        public string Command { private set; get; }
-        public bool HasArguments { private set; get; }
-        public string[] Args { private set; get; }
+        public CommandManager CommandManager { private set; get; }
 
         public ResponseBuilder ResponseBuilder {
             get { return new ResponseBuilder(this); }
         }
-        
-        public CommandContext(Message msg) {
-            this.Message = msg;
+
+        public string   Sender       { private set; get; }
+        public string   MessageId    { private set; get; }
+
+        public string   RawCommand   { private set; get; }
+        public string   Command      { private set; get; }
+        public bool     HasArguments { private set; get; }
+        public string[] Args         { private set; get; }
+
+        public CommandContext(CommandManager manager, Message msg) {
+            this.CommandManager = manager;
+            this.Sender = msg.User.Name;
+            this.MessageId = msg.Id.ToString();
             this.RawCommand = msg.Text;
             this.Command = Expressions.CommandParser.Capture(msg.Text, "command");
             this.HasArguments = Expressions.CommandArgsParser.Test(msg.Text);

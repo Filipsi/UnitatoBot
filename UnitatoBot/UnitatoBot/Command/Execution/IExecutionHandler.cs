@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnitatoBot.Command;
 
-namespace UnitatoBot.Execution {
+namespace UnitatoBot.Command.Execution {
 
     internal interface IExecutionHandler {
 
@@ -15,7 +15,7 @@ namespace UnitatoBot.Execution {
 
         ExecutionResult CanExecute(CommandContext context);
 
-        ExecutionResult Execute(CommandManager manager, CommandContext context);
+        ExecutionResult Execute(CommandContext context);
 
     }
 

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnitatoBot.Command;
 
-namespace UnitatoBot.Execution.Executors {
+namespace UnitatoBot.Command.Execution.Executors {
 
     internal class FaggotStatsExecutor : IExecutionHandler {
 
@@ -31,7 +31,7 @@ namespace UnitatoBot.Execution.Executors {
             return ExecutionResult.Denied;
         }
 
-        public ExecutionResult Execute(CommandManager manager, CommandContext context) {
+        public ExecutionResult Execute(CommandContext context) {
             // Print out whole statistics
             // /faggot
             if(!context.HasArguments) {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnitatoBot.Command;
 
-namespace UnitatoBot.Execution.Executors {
+namespace UnitatoBot.Command.Execution.Executors {
 
     internal class PraiseExecutor : IExecutionHandler {
 
@@ -25,7 +25,7 @@ namespace UnitatoBot.Execution.Executors {
             return !context.HasArguments || (context.HasArguments && context.Args.Length == 1) ? ExecutionResult.Success : ExecutionResult.Denied;
         }
 
-        public ExecutionResult Execute(CommandManager manager, CommandContext context) {
+        public ExecutionResult Execute(CommandContext context) {
             context.ResponseBuilder
                 .Block()
                     .Username()

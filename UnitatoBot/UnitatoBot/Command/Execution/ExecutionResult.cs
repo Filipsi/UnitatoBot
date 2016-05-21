@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnitatoBot.Execution {
+namespace UnitatoBot.Command.Execution {
 
     public enum ExecutionResult {
         Success,

@@ -6,10 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnitatoBot.Connector.Connectors;
-using UnitatoBot.Execution;
-using UnitatoBot.Execution.Executors;
 using UnitatoBot.Configuration;
 using UnitatoBot.Command;
+using UnitatoBot.Command.Execution.Executors;
 
 namespace UnitatoBot {
 
@@ -23,15 +22,17 @@ namespace UnitatoBot {
                 ulong.Parse(Config.GetEntry("ChannelUUID"))
             );
 
-            CommandManager cmdManager = discordConnection.CommandManager;
-            cmdManager.RegisterCommand("unitato", new InfoExecutor());
-            cmdManager.RegisterCommand("help", new HelpExecutor());
-            cmdManager.RegisterCommand("roll", new DiceExecutor()).WithAlias("dice");
-            cmdManager.RegisterCommand("praise", new PraiseExecutor()).WithAlias("dan");
-            cmdManager.RegisterCommand("faggot", new FaggotStatsExecutor());
-            cmdManager.RegisterCommand("lexicon", new LexiconExecutor());
-
+            discordConnection.CommandManager
+                .RegisterCommand("unitato", new InfoExecutor())
+                .RegisterCommand("help", new HelpExecutor())
+                .RegisterCommand("roll", new DiceExecutor())
+                    .WithAlias("dice")
+                .RegisterCommand("praise", new PraiseExecutor())
+                    .WithAlias("dan")
+                .RegisterCommand("faggot", new FaggotStatsExecutor())
+                .RegisterCommand("lexicon", new LexiconExecutor());
             discordConnection.Begin();
+
             Console.ReadKey();
         }
 

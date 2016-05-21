@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnitatoBot.Command;
 
-namespace UnitatoBot.Execution.Executors {
+namespace UnitatoBot.Command.Execution.Executors {
 
     internal class DiceExecutor : IExecutionHandler {
 
@@ -25,19 +25,18 @@ namespace UnitatoBot.Execution.Executors {
             return context.HasArguments && context.Args[0].ElementAt(0) == 'd' ? ExecutionResult.Success : ExecutionResult.Denied;
         }
 
-        public ExecutionResult Execute(CommandManager manager, CommandContext context) {
-            int dice;
-
-            if(!int.TryParse(context.Args[0].Remove(0, 1), out dice)) return ExecutionResult.Fail;
-            if(dice < 2) return ExecutionResult.Fail;
+        public ExecutionResult Execute(CommandContext context) {
+            int sides;
+            if(!int.TryParse(context.Args[0].Remove(0, 1), out sides)) return ExecutionResult.Fail;
+            if(sides < 2) return ExecutionResult.Fail;
 
             context.ResponseBuilder
                 .Block()
                     .Username()
-                    .With("throws {0}-sided dice", dice)
+                    .With("throws {0}-sided dice", sides)
                 .Block()
                 .Space()
-                .With(Rng.Next(1, dice))
+                .With(Rng.Next(1, sides))
                 .Build();
 
             return ExecutionResult.Success;
