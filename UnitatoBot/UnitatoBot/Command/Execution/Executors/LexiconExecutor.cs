@@ -42,13 +42,13 @@ namespace UnitatoBot.Command.Execution.Executors {
                         .Username()
                         .With("here is list of articles available in Lexicon at the moment:")
                         .With(String.Join(", ", menuEntries.Select(x => x.title)))
-                        .Build();
+                        .BuildAndSend();
                 };
 
                 return ExecutionResult.Success;
             } else {
                 // Strips the /command from the arguments, this is here in order to enable reqests for articles with spaces in title
-                string strippedArgument = context.RawCommand.Substring(1 + context.Command.Length + 1);
+                string strippedArgument = context.Message.Text.Substring(1 + context.Command.Length + 1);
 
                 // Make an reqest
                 Request request = Http.QueryRequest(HttpMethod.GET, "http://lexicon.filipsi.net/php/articles/processor.php", "title", strippedArgument);
@@ -83,7 +83,7 @@ namespace UnitatoBot.Command.Execution.Executors {
                         .MultilineBlock()
                             .With(articleText)
                         .MultilineBlock()
-                        .Build();
+                        .BuildAndSend();
                 };
 
                 return ExecutionResult.Success;

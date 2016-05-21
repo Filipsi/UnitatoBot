@@ -45,7 +45,7 @@ namespace UnitatoBot.Command.Execution.Executors {
 
                 // If there are no entries in stats, builds response
                 if(FaggotStats.Count == 0) {
-                    builder.With("(⊙.☉)7 There are no faggots.").Build();
+                    builder.With("(⊙.☉)7 There are no faggots.").BuildAndSend();
                     return ExecutionResult.Success;
                 }
 
@@ -58,7 +58,7 @@ namespace UnitatoBot.Command.Execution.Executors {
                 builder.MultilineBlock();
 
                 // Build response
-                builder.Build();
+                builder.BuildAndSend();
                 return ExecutionResult.Success;
             }
             // Print out single statistic
@@ -77,7 +77,7 @@ namespace UnitatoBot.Command.Execution.Executors {
                         .With("requested faggot statistics,")
                         .With("{0} has {1} point{2}", context.Args[1], stats, stats > 1 ? "s" : string.Empty)
                     .Block()
-                    .Build();
+                    .BuildAndSend();
                 return ExecutionResult.Success;
             } 
             // Add faggotpoint to user
@@ -101,7 +101,7 @@ namespace UnitatoBot.Command.Execution.Executors {
                         .Username()
                         .With("marked {0} as faggot", context.Args[0])
                     .Block()
-                    .Build();
+                    .BuildAndSend();
 
                 return ExecutionResult.Success;
             }

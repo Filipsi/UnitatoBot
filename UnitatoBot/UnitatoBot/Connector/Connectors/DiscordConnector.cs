@@ -53,21 +53,22 @@ namespace UnitatoBot.Connector.Connectors {
 
         private void InitEventhandlers() {
             Client.MessageReceived += (sender, args) => {
-                if(args.Channel.Id.Equals(this.Channel.Id) && !args.User.Id.Equals(Client.CurrentUser.Id)) OnMessageReceived(this, args);
+                if(args.Channel.Id.Equals(this.Channel.Id) && !args.User.Id.Equals(Client.CurrentUser.Id)) {
+                    OnMessageReceived(this, new ConnectionMessageEventArgs(new ConnectionMessage(this, args.Message)));
+                }
             };
         }
 
         // IConnector
 
-        public event EventHandler<MessageEventArgs> OnMessageReceived;
+        public event EventHandler<ConnectionMessageEventArgs> OnMessageReceived;
 
         public void SendMessage(string text) {
             this.Channel.SendMessage(text);
         }
 
-        public void DeleteMessage(string id) {
-            ulong uid; if(!ulong.TryParse(id, out uid)) return;
-            Message msg = this.Channel.Messages.First(x => x.Id == uid);
+        public void DeleteMessage(ConnectionMessage message) {
+            Message msg = this.Channel.Messages.First(x => x.Id == ulong.Parse(message.Id));
             if(msg != null) msg.Delete();
         }
 

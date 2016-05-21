@@ -18,7 +18,7 @@ namespace UnitatoBot.Command.Execution.Executors {
         }
 
         public string GetDescription() {
-            return "Will praise the DaN! Or anyone specified as a argument, but you know that it will not be as good as praising the dAn.";
+            return "Will praise the DaN! Or anything specified as an argument, but you know that it will not be as good as praising the dAn.";
         }
 
         public ExecutionResult CanExecute(CommandContext context) {
@@ -34,11 +34,11 @@ namespace UnitatoBot.Command.Execution.Executors {
                 .With("（〜^∇^)〜")
                 .Space()
                 .Bold()
-                    .With("Praise the {0}!", context.HasArguments ? context.Args[0] : GenerateDan())
+                    .With("Praise the {0}", context.HasArguments ? context.Args[0] : GenerateDan())
                 .Bold()
                 .Space()
                 .With("ヽ(´▽｀)ノ")
-                .Build();
+                .BuildAndSend();
             return ExecutionResult.Success;
         }
 

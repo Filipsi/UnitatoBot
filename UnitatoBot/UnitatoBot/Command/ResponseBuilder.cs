@@ -8,25 +8,27 @@ namespace UnitatoBot.Command {
 
     internal class ResponseBuilder {
 
-        private bool RemoveOriginalMessage;
         private CommandContext Context;
         private StringBuilder Builder;
 
+        public bool DeleteMessage { private set; get; }
+
         public ResponseBuilder (CommandContext context, bool removeOriginalMessage = true) {
             this.Builder = new StringBuilder();
-            this.RemoveOriginalMessage = removeOriginalMessage;
+            this.DeleteMessage = removeOriginalMessage;
             this.Context = context;
 	    }
 
-        public string Build() {
-            string response = Builder.ToString();
-            if(RemoveOriginalMessage) Context.CommandManager.ServiceConnector.DeleteMessage(Context.MessageId);
-            Context.CommandManager.ServiceConnector.SendMessage(response);
-            return response;
+        public void BuildAndSend() {
+            Context.SendResponce(this);
         }
 
-        public ResponseBuilder KeepOriginalMessage() {
-            RemoveOriginalMessage = false;
+        public string Build() {
+            return Builder.ToString();
+        }
+
+        public ResponseBuilder KeepCommandMessage() {
+            DeleteMessage = false;
             return this;
         }
 
@@ -54,7 +56,7 @@ namespace UnitatoBot.Command {
         // Utils
 
         public ResponseBuilder Username() {
-            With(Context.Sender);
+            With(Context.Message.Sender);
             return this;
         }
 

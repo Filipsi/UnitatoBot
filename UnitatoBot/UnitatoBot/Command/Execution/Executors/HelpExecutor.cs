@@ -32,12 +32,11 @@ namespace UnitatoBot.Command.Execution.Executors {
             builder.MultilineBlock();
             foreach(var entry in context.CommandManager) {
                 builder.With("{0}: {1}", entry.Key, entry.Value.GetDescription())
-                       .NewLine()
                        .NewLine();
             }
             builder.MultilineBlock();
 
-            builder.Build();
+            builder.BuildAndSend();
             return ExecutionResult.Success;
         }
     }

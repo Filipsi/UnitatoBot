@@ -9,12 +9,11 @@ namespace UnitatoBot.Connector {
 
     internal interface IConnector {
 
-        //TODO: Move this from Discord event to my event
-        event EventHandler<MessageEventArgs> OnMessageReceived;
+        event EventHandler<ConnectionMessageEventArgs> OnMessageReceived;
 
         void SendMessage(string message);
 
-        void DeleteMessage(string id);
+        void DeleteMessage(ConnectionMessage message);
 
     }
 

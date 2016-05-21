@@ -72,6 +72,8 @@
     <Compile Include="Command\CommandManager.cs" />
     <Compile Include="Command\ResponseBuilder.cs" />
     <Compile Include="Configuration\Config.cs" />
+    <Compile Include="Connector\ConnectionMessage.cs" />
+    <Compile Include="Connector\ConnectionMessageEventArgs.cs" />
     <Compile Include="Connector\Connectors\DiscordConnector.cs" />
     <Compile Include="Command\Execution\ExecutionResult.cs" />
     <Compile Include="Command\Execution\Executors\DiceExecutor.cs" />

@@ -37,7 +37,7 @@ namespace UnitatoBot.Command.Execution.Executors {
                 .Block()
                 .Space()
                 .With(Rng.Next(1, sides))
-                .Build();
+                .BuildAndSend();
 
             return ExecutionResult.Success;
         }

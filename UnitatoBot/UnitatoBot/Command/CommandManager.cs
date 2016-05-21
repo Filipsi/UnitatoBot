@@ -26,13 +26,13 @@ namespace UnitatoBot.Command {
             ServiceConnector.OnMessageReceived += OnMessageReceived;
         }
 
-        private void OnMessageReceived(object sender, Discord.MessageEventArgs e) {
+        private void OnMessageReceived(object sender, ConnectionMessageEventArgs e) {
             if(!IsInitialized) return;
 
             // Check if message is valid command or emoji
             bool isCommand = Expressions.CommandParser.Test(e.Message.Text);
 
-            Console.WriteLine("Received {0} from {1}, IsCommand: {2}", e.Message.Text, e.User, isCommand);
+            Console.WriteLine("Received {0} from {1}, IsCommand: {2}", e.Message.Text, e.Message.Sender, isCommand);
 
             // Escape further processing if message is not command or emoji
             if(!isCommand) return;
