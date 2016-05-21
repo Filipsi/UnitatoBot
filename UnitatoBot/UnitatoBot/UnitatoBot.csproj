@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="Command\CommandContext.cs" />
     <Compile Include="Command\CommandManager.cs" />
+    <Compile Include="Command\Execution\Executors\UptimeExecutor.cs" />
     <Compile Include="Command\ResponseBuilder.cs" />
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Connector\ConnectionMessage.cs" />

@@ -11,11 +11,11 @@ namespace UnitatoBot.Command {
         private CommandContext Context;
         private StringBuilder Builder;
 
-        public bool DeleteMessage { private set; get; }
+        public bool ShouldDeleteMessage { private set; get; }
 
         public ResponseBuilder (CommandContext context, bool removeOriginalMessage = true) {
             this.Builder = new StringBuilder();
-            this.DeleteMessage = removeOriginalMessage;
+            this.ShouldDeleteMessage = removeOriginalMessage;
             this.Context = context;
 	    }
 
@@ -28,7 +28,7 @@ namespace UnitatoBot.Command {
         }
 
         public ResponseBuilder KeepCommandMessage() {
-            DeleteMessage = false;
+            ShouldDeleteMessage = false;
             return this;
         }
 

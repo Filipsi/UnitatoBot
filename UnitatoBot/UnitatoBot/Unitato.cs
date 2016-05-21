@@ -25,6 +25,7 @@ namespace UnitatoBot {
             discordConnection.CommandManager
                 .RegisterCommand("unitato", new InfoExecutor())
                 .RegisterCommand("help", new HelpExecutor())
+                .RegisterCommand("uptime", new UptimeExecutor())
                 .RegisterCommand("roll", new DiceExecutor())
                     .WithAlias("dice")
                 .RegisterCommand("praise", new PraiseExecutor())

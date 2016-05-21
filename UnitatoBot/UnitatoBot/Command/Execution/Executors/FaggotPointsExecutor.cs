@@ -10,7 +10,7 @@ namespace UnitatoBot.Command.Execution.Executors {
 
     internal class FaggotStatsExecutor : IExecutionHandler {
 
-        private static Dictionary<string, int> FaggotStats = new Dictionary<string, int>();
+        private Dictionary<string, int> FaggotStats = new Dictionary<string, int>();
         private IniFile IniStorage;
 
         // IExecutionHandler
