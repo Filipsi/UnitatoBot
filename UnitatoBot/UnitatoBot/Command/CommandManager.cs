@@ -76,7 +76,12 @@ namespace UnitatoBot.Command {
         }
 
         public void ExecuteCommand(CommandContext context) {
-            if(!IsInitialized || !CommandExecutionMapping.ContainsKey(context.Command)) return;
+            if(!IsInitialized) return;
+
+            if(!CommandExecutionMapping.ContainsKey(context.Command)) {
+                Console.WriteLine("Executor for {0} was not found", context.Command);
+                return;
+            }
 
             IExecutionHandler executor = CommandExecutionMapping[context.Command];
             ExecutionResult canExecute = executor.CanExecute(context);

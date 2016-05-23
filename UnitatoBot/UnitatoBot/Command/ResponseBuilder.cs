@@ -19,8 +19,9 @@ namespace UnitatoBot.Command {
             this.Context = context;
 	    }
 
-        public void BuildAndSend() {
+        public string BuildAndSend() {
             Context.SendResponce(this);
+            return Build();
         }
 
         public string Build() {

@@ -69,6 +69,7 @@ namespace UnitatoBot.Connector.Connectors {
 
         public void DeleteMessage(ConnectionMessage message) {
             // TODO: This allredy failed once, figure out if it can be replicated, maybe do a mapping to be safe?
+            // Yea, deffinitly do the mapping thing, you will need it in order to do edits and stuff
             Message msg = this.Channel.Messages.Single(x => x.Id == ulong.Parse(message.Id));
             if(msg != null) msg.Delete();
         }

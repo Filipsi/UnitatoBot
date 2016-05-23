@@ -30,6 +30,7 @@ namespace UnitatoBot {
                     .WithAlias("dice")
                 .RegisterCommand("praise", new PraiseExecutor())
                     .WithAlias("dan")
+                .RegisterCommand("blame", new BlameExecutor())
                 .RegisterCommand("faggot", new FaggotStatsExecutor())
                 .RegisterCommand("lexicon", new LexiconExecutor());
             discordConnection.Begin();

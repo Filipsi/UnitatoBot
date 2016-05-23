@@ -65,10 +65,10 @@ namespace UnitatoBot.Command.Execution.Executors {
             // /faggot stats [name]
             else if(context.Args[0].Equals("stats") && context.Args.Length == 2) {
                 // Check if there is faggot in stats with name specified by command's second argument
-                if(!FaggotStats.ContainsKey(context.Args[1])) return ExecutionResult.Fail;
+                if(!FaggotStats.ContainsKey(context.Args[1].ToLower())) return ExecutionResult.Fail;
 
                 // Retrives stats
-                int stats = FaggotStats[context.Args[1]];
+                int stats = FaggotStats[context.Args[1].ToLower()];
 
                 // Build response
                 context.ResponseBuilder
@@ -120,6 +120,7 @@ namespace UnitatoBot.Command.Execution.Executors {
             }
         }
 
+        // This is not acctualy used
         public void SaveData() {
             IniStorage.DeleteKey("FaggotPoints", "users");
             IniStorage.WriteString("FaggotPoints", "users", string.Join(",", FaggotStats.Keys));
