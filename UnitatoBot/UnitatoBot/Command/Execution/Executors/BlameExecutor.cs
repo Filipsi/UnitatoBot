@@ -39,7 +39,7 @@ namespace UnitatoBot.Command.Execution.Executors {
             }
             // /blame [user] for [thing]
             else if(context.Args.Length > 2 && context.Args[1] == "for") {
-                string blame = context.Message.Text.Replace("/" + context.Command + " " + context.Args[0] + " for ", string.Empty);
+                string blame = context.Message.Text.Replace("/" + context.CommandName + " " + context.Args[0] + " for ", string.Empty);
                 LogBlame(context.ResponseBuilder
                     .Block()
                         .Username()

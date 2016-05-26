@@ -30,8 +30,8 @@ namespace UnitatoBot.Command.Execution.Executors {
                 .With("here is a list of stuff I can do: (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧");
 
             builder.MultilineBlock();
-            foreach(var entry in context.CommandManager) {
-                builder.With("{0}: {1}", entry.Key, entry.Value.GetDescription())
+            foreach(Command entry in context.CommandManager) {
+                builder.With("{0}: {1}", entry.Name, entry.Executor.GetDescription())
                        .NewLine();
             }
             builder.MultilineBlock();

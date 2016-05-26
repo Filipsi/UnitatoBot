@@ -68,6 +68,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command\Command.cs" />
     <Compile Include="Command\CommandContext.cs" />
     <Compile Include="Command\CommandManager.cs" />
     <Compile Include="Command\Execution\Executors\BlameExecutor.cs" />

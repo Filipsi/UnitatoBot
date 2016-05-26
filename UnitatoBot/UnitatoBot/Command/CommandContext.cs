@@ -17,14 +17,16 @@ namespace UnitatoBot.Command {
         public CommandManager    CommandManager { private set; get; }
         public ConnectionMessage Message        { private set; get; }
 
-        public string   Command      { private set; get; }
+        public Command  Command      { private set; get; }
+        public string   CommandName  { private set; get; }
         public bool     HasArguments { private set; get; }
         public string[] Args         { private set; get; }
 
-        public CommandContext(CommandManager manager, ConnectionMessage message) {
+        public CommandContext(Command command, CommandManager manager, ConnectionMessage message) {
+            this.Command = command;
             this.CommandManager = manager;
-            this.Message = message;;
-            this.Command = Expressions.CommandParser.Capture(this.Message.Text, "command");
+            this.Message = message;
+            this.CommandName = Expressions.CommandParser.Capture(this.Message.Text, "command");
             this.HasArguments = Expressions.CommandArgsParser.Test(this.Message.Text);
             this.Args = this.HasArguments ? Expressions.CommandArgsParser.Capture(this.Message.Text, "args").Split(' ') : null;
         }
