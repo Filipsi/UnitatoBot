@@ -10,7 +10,7 @@ namespace UnitatoBot.Command.Execution.Executors {
     class BlameExecutor : IExecutionHandler{
 
         private static string DatePatten = @"d/M/yyyy hh:mm";
-        private StreamWriter Writer;
+        private StreamWriter LogWriter;
 
         // IExecutionHandler
 
@@ -56,9 +56,9 @@ namespace UnitatoBot.Command.Execution.Executors {
         // Helpers
 
         private void LogBlame(string blame) {
-            Writer = new StreamWriter("blames.txt", true, Encoding.UTF8);
-            Writer.WriteLine(string.Format("[{0}] {1}", DateTime.Now.ToString(DatePatten), blame));
-            Writer.Close();
+            LogWriter = new StreamWriter("blames.txt", true, Encoding.UTF8);
+            LogWriter.WriteLine(string.Format("[{0}] {1}", DateTime.Now.ToString(DatePatten), blame));
+            LogWriter.Close();
         }
 
     }

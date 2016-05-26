@@ -1,6 +1,10 @@
-﻿using Ini.Net;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Bson;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,14 +14,18 @@ namespace UnitatoBot.Command.Execution.Executors {
 
     internal class FaggotStatsExecutor : IExecutionHandler {
 
-        private Dictionary<string, int> FaggotStats = new Dictionary<string, int>();
-        private IniFile IniStorage;
-
+        private JsonSerializer Serializer;
+        private JObject JsonStatStorage;
+        
         // IExecutionHandler
 
         public void Initialize() {
-            this.IniStorage = new IniFile("faggotpoints.ini");
-            LoadData();
+            // Set up JsonSerializer
+            this.Serializer = new JsonSerializer();
+            this.Serializer.Formatting = Formatting.Indented;
+
+            // Read storage file
+            LoadStorageData();
         }
 
         public string GetDescription() {
@@ -32,7 +40,7 @@ namespace UnitatoBot.Command.Execution.Executors {
         }
 
         public ExecutionResult Execute(CommandContext context) {
-            // Print out whole statistics
+            // Print out all statistics
             // /faggot
             if(!context.HasArguments) {
                 // Build common part of response
@@ -44,15 +52,16 @@ namespace UnitatoBot.Command.Execution.Executors {
                     .Space();
 
                 // If there are no entries in stats, builds response
-                if(FaggotStats.Count == 0) {
+                if(!JsonStatStorage.HasValues) {
                     builder.With("(⊙.☉)7 There are no faggots.").BuildAndSend();
                     return ExecutionResult.Success;
                 }
 
                 // Add each entry in stats to the response
                 builder.MultilineBlock();
-                foreach(KeyValuePair<string, int> entry in FaggotStats) {
-                    builder.With("{0} has {1} point{2}", entry.Key, entry.Value, entry.Value > 1 ? "s" : string.Empty)
+                foreach(JProperty property in JsonStatStorage.Properties()) {
+                    int value = property.Value.ToObject<int>();
+                    builder.With("{0} has {1} point{2}", property.Name, value, value > 1 ? "s" : string.Empty)
                            .NewLine();
                 }
                 builder.MultilineBlock();
@@ -64,18 +73,20 @@ namespace UnitatoBot.Command.Execution.Executors {
             // Print out single statistic
             // /faggot stats [name]
             else if(context.Args[0].Equals("stats") && context.Args.Length == 2) {
-                // Check if there is faggot in stats with name specified by command's second argument
-                if(!FaggotStats.ContainsKey(context.Args[1].ToLower())) return ExecutionResult.Fail;
+                JProperty property = JsonStatStorage.Property(context.Args[1].ToLower());
 
-                // Retrives stats
-                int stats = FaggotStats[context.Args[1].ToLower()];
+                // Check if there is faggot in stats with name specified by command's second argument
+                if(property == null) return ExecutionResult.Fail;
+
+                // Gets the property value as int
+                int value = property.Value.ToObject<int>();
 
                 // Build response
                 context.ResponseBuilder
                     .Block()
                         .Username()
                         .With("requested faggot statistics,")
-                        .With("{0} has {1} point{2}", context.Args[1], stats, stats > 1 ? "s" : string.Empty)
+                        .With("{0} has {1} point{2}", context.Args[1], value, value > 1 ? "s" : string.Empty)
                     .Block()
                     .BuildAndSend();
                 return ExecutionResult.Success;
@@ -83,17 +94,20 @@ namespace UnitatoBot.Command.Execution.Executors {
             // Add faggotpoint to user
             // /faggot [name]
             else {
+                string name = context.Args[0].ToLower();
+                JProperty property = JsonStatStorage.Property(name);
+
                 // If user is not in the stats, creates new entry
-                if(!FaggotStats.ContainsKey(context.Args[0])) FaggotStats.Add(context.Args[0], 0);
+                if(property == null) {
+                    JsonStatStorage.Add(name, new JValue(0));
+                    property = JsonStatStorage.Property(name);
+                }
 
                 // Add one faggotpoint
-                FaggotStats[context.Args[0]]++;
+                property.Value = new JValue(property.Value.ToObject<int>() + 1);
 
-                // Retrives stats
-                int stats = FaggotStats[context.Args[0]];
-
-                // Save stat to ini file
-                SaveStat(context.Args[0], stats);
+                // Save stats to file
+                SaveStorageData();
 
                 // Build response
                 context.ResponseBuilder
@@ -109,32 +123,20 @@ namespace UnitatoBot.Command.Execution.Executors {
 
         // Helpers
 
-        public void LoadData() {
-            string users = IniStorage.ReadString("FaggotPoints", "users");
-            if(users != string.Empty) {
-                foreach(string user in users.Split(',')) {
-                    int points = IniStorage.ReadInteger("FaggotPoints", user);
-                    Console.WriteLine("Loaded faggotpoints of {0} with {1} points.", user, points);
-                    FaggotStats.Add(user, points);
-                }
+        private void LoadStorageData() {
+            StreamReader storageFileReader = new StreamReader("faggotpoints.json", Encoding.UTF8);
+            try {
+                this.JsonStatStorage = JObject.Parse(storageFileReader.ReadToEnd());
+            } catch {
+                this.JsonStatStorage = JObject.Parse("{}");
             }
+            storageFileReader.Close();
         }
 
-        // This is not acctualy used
-        public void SaveData() {
-            IniStorage.DeleteKey("FaggotPoints", "users");
-            IniStorage.WriteString("FaggotPoints", "users", string.Join(",", FaggotStats.Keys));
-            foreach(var user in FaggotStats) {
-                Console.WriteLine("Saving {1} faggotpoints of {0}.", user.Key, user.Value);
-                IniStorage.WriteInteger("FaggotPoints", user.Key, user.Value);
-            }
-        }
-
-        public void SaveStat(string user, int stat) {
-            string users = IniStorage.ReadString("FaggotPoints", "users");
-            if(!users.Contains(user)) IniStorage.WriteString("FaggotPoints", "users", string.Join(",", FaggotStats.Keys));
-
-            IniStorage.WriteInteger("FaggotPoints", user, stat);
+        private void SaveStorageData() {
+            StreamWriter fileWriter = File.CreateText("faggotpoints.json");
+            Serializer.Serialize(fileWriter, JsonStatStorage);
+            fileWriter.Close();
         }
 
     }
