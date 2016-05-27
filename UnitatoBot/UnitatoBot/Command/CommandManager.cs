@@ -51,9 +51,11 @@ namespace UnitatoBot.Command {
             if(IsInitialized) return;
 
             // Inicialize every executor
-            foreach(IExecutionHandler executor in Commands.Select(x => x.Executor).AsEnumerable()) {
-                Console.WriteLine("Initializing executor: {0}", executor.GetType().Name);
-                executor.Initialize();
+            foreach(var enumerator in Commands.Select(x => x.GetExecutorsEnumerator()).AsEnumerable()) {
+                while(enumerator.MoveNext()) {
+                    Console.WriteLine("Initializing executor: {0}", enumerator.Current.GetType().Name);
+                    enumerator.Current.Initialize();
+                }
             }
 
             Console.WriteLine("Commands initialized.");
@@ -62,7 +64,7 @@ namespace UnitatoBot.Command {
             this.IsInitialized = true;
         }
 
-        public CommandManager RegisterCommand(string name, IExecutionHandler handler) {
+        public CommandManager RegisterCommand(string name, params IExecutionHandler[] handlers) {
             // Command can be registerd only before initialization
             if(IsInitialized) {
                 Console.WriteLine("Can't register {0} after command inicialization!", name);
@@ -70,13 +72,13 @@ namespace UnitatoBot.Command {
             }
 
             // If input values are not valid or there allredy is such name for command, abort
-            if(name.Equals(string.Empty) || handler.Equals(null) || Commands.Exists(x => x.Name == name || x.IsAlias(name))) {
+            if(name.Equals(string.Empty) || handlers.Count() == 0 || Commands.Exists(x => x.Name == name || x.IsAlias(name))) {
                 Console.WriteLine("Failed to register command {0}!", name);
                 return this;
             }
 
             // Create new command
-            Commands.Add(new Command(name, handler));
+            Commands.Add(new Command(name, handlers));
             return this;
         }
 

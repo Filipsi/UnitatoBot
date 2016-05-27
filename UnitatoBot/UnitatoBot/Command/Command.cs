@@ -8,18 +8,20 @@ using UnitatoBot.Connector;
 
 namespace UnitatoBot.Command {
 
-    //TOTO: This is preparation for multiple executors support
     internal class Command {
 
-        public string            Name     { private set; get; }
-        public List<string>      Aliases  { private set; get; }
-        public IExecutionHandler Executor { private set; get; }
+        public string       Name      { private set; get; }
+        public List<string> Aliases   { private set; get; }
 
-        public Command(string name, IExecutionHandler executor) {
+        private LinkedList<IExecutionHandler> ExecutorList;
+
+        public Command(string name, params IExecutionHandler[] executors) {
             this.Aliases = new List<string>();
+            this.ExecutorList = new LinkedList<IExecutionHandler>(executors);
             this.Name = name;
-            this.Executor = executor;
         }
+
+        // Alias
 
         public bool IsAlias(string name) {
             return Aliases.Contains(name);
@@ -30,22 +32,30 @@ namespace UnitatoBot.Command {
             return this;
         }
 
-        public ExecutionResult Execute(CommandManager manager, ConnectionMessage message) {
+        // Execution
+
+        public LinkedList<IExecutionHandler>.Enumerator GetExecutorsEnumerator() {
+            return ExecutorList.GetEnumerator();
+        }
+
+        public void Execute(CommandManager manager, ConnectionMessage message) {
             // Create a execution context for this command
             CommandContext context = new CommandContext(this, manager, message);
 
-            // Check if command context is valid in order to be executied
-            ExecutionResult result = Executor.CanExecute(context);
+            // Try to execute the command using all of its executors
+            foreach(IExecutionHandler executor in ExecutorList) {
+                // Check if command context is valid in order to be executied
+                ExecutionResult result = executor.CanExecute(context);
 
-            // If command is valid, execute it, if not show error message
-            if(result == ExecutionResult.Success) {
-                result = Executor.Execute(context);
-                Console.WriteLine("Execution of {0} ended with result {1}", context.CommandName, result);
-            } else {
-                Console.WriteLine("Execution of {0} failed the execution test with result {1}", context.CommandName, result);
+                // If command is valid, execute it, if not show error message
+                if(result == ExecutionResult.Success) {
+                    result = executor.Execute(context);
+                    Console.WriteLine("Execution using {0} of {1} ended with result {2}", executor.GetType().Name, context.CommandName, result);
+                } else {
+                    Console.WriteLine("Execution using {0} of {1} failed the execution test with result {2}", executor.GetType().Name, context.CommandName, result);
+                }
             }
 
-            return result;
         }
 
     }

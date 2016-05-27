@@ -30,9 +30,13 @@ namespace UnitatoBot.Command.Execution.Executors {
                 .With("here is a list of stuff I can do: (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧");
 
             builder.MultilineBlock();
+            //TODO: Print out aliases
             foreach(Command entry in context.CommandManager) {
-                builder.With("{0}: {1}", entry.Name, entry.Executor.GetDescription())
-                       .NewLine();
+                LinkedList<IExecutionHandler>.Enumerator enumerator = entry.GetExecutorsEnumerator();
+                while(enumerator.MoveNext()) {
+                    builder.With("{0}: {1}", entry.Name, enumerator.Current.GetDescription())
+                           .NewLine();
+                }
             }
             builder.MultilineBlock();
 
