@@ -18,7 +18,7 @@ namespace UnitatoBot.Command.Execution.Executors {
         }
 
         public string GetDescription() {
-            return "Will praise the DaN! Or anything specified as an argument, but you know that it will not be as good as praising the dAn.";
+            return "Will praise anything specified as an argument, except Dan.";
         }
 
         public ExecutionResult CanExecute(CommandContext context) {
@@ -26,6 +26,26 @@ namespace UnitatoBot.Command.Execution.Executors {
         }
 
         public ExecutionResult Execute(CommandContext context) {
+            if((!context.HasArguments && context.CommandName.Equals("dan")) || (context.HasArguments && context.Args[0].ToLower().Equals("dan"))) {
+                context.ResponseBuilder
+                    .Block()
+                        .Username()
+                        .With("wants to praise {0}", context.HasArguments ? context.Args[0] : "dan")
+                    .Block()
+                    .Bold()
+                        .With("No.")
+                    .Bold()
+                    .Space()
+                    .With("¬_¬")
+                    .Space()
+                    .With("Filipsi told me that I can't do that anymore.")
+                    .BuildAndSend();
+                return ExecutionResult.Success;
+            }
+
+            // If there are not any arguments, fails
+            if(!context.HasArguments) return ExecutionResult.Fail;
+
             context.ResponseBuilder
                 .Block()
                     .Username()
@@ -34,23 +54,12 @@ namespace UnitatoBot.Command.Execution.Executors {
                 .With("（〜^∇^)〜")
                 .Space()
                 .Bold()
-                    .With("Praise the {0}", context.HasArguments ? context.Args[0] : GenerateDan())
+                    .With("Praise the {0}", context.Args[0])
                 .Bold()
                 .Space()
                 .With("ヽ(´▽｀)ノ")
                 .BuildAndSend();
             return ExecutionResult.Success;
-        }
-
-        // Helpers
-
-        private string GenerateDan() {
-            char[] dan = new char[] { 'd', 'a', 'n' };
-            for(byte i = 0; i < dan.Length; i++) {
-                if(Rng.Next(2) == 1) dan[i] = char.ToUpper(dan[i]);
-            }
-
-            return new String(dan);
         }
 
     }

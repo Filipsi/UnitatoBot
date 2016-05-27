@@ -43,7 +43,7 @@ namespace UnitatoBot.Command {
             Command command = Commands.Find(x => x.Name == commandName || x.IsAlias(commandName));
 
             // Execute, if there is such command
-            if(!command.Equals(null)) command.Execute(this, e.Message);
+            if(command != null) command.Execute(this, e.Message);
         }
 
         public void Initialize() {
@@ -82,13 +82,33 @@ namespace UnitatoBot.Command {
             return this;
         }
 
+        public CommandManager RegisterAlias(string name, string alias) {
+            // If there allredy is such name for command, abort
+            if(Commands.Exists(x => x.Name == alias || x.IsAlias(alias))) {
+                Console.WriteLine("Can't register alias {0}, it is allready used!", alias);
+                return this;
+            }
+
+            // Try to find command with given name or alias (you can add aliases using alias :P ... Wait, wat?)
+            Command command = Commands.Find(x => x.Name == alias || x.IsAlias(alias));
+
+            // If there is not a command with given name, abort
+            if(command == null) {
+                Console.WriteLine("Can't register alias {0}, no command named {1} was found!", alias, name);
+                return this;
+            }
+
+            command.AddAlias(alias);
+            return this;
+        }
+
         public CommandManager WithAlias(string alias) {
             // If there are no commands registerd, abort
-            if(Commands.Count > 0) return this;
+            if(Commands.Count == 0) return this;
 
             // If there allredy is such name for command, abort
             if(Commands.Exists(x => x.Name == alias || x.IsAlias(alias))) {
-                Console.WriteLine("Can't register alias {0} becouse it is allready used!", alias);
+                Console.WriteLine("Can't register alias {0}, it is allready used!", alias);
                 return this;
             }
 
@@ -99,6 +119,10 @@ namespace UnitatoBot.Command {
 
         public List<Command>.Enumerator GetEnumerator() {
             return Commands.GetEnumerator();
+        }
+
+        public Command GetCommand(string name) {
+            return Commands.Find(x => x.Name == name || x.IsAlias(name));
         }
 
     }
