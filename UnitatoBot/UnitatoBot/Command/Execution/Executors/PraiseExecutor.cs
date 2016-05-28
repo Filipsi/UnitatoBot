@@ -26,7 +26,8 @@ namespace UnitatoBot.Command.Execution.Executors {
         }
 
         public ExecutionResult Execute(CommandContext context) {
-            if((!context.HasArguments && context.CommandName.Equals("dan")) || (context.HasArguments && context.Args[0].ToLower().Equals("dan"))) {
+            // Dan prasing restrictions
+            if((!context.HasArguments && context.CommandName.Contains("dan")) || (context.HasArguments && context.Args[0].ToLower().Contains("dan"))) {
                 context.ResponseBuilder
                     .Block()
                         .Username()
@@ -40,26 +41,28 @@ namespace UnitatoBot.Command.Execution.Executors {
                     .Space()
                     .With("Filipsi told me that I can't do that anymore.")
                     .BuildAndSend();
+
+                return ExecutionResult.Success;
+            }
+            // Just some good old prasin' here
+            else if(context.HasArguments) {
+                context.ResponseBuilder
+                    .Block()
+                        .Username()
+                        .With("is praising")
+                    .Block()
+                    .With("（〜^∇^)〜")
+                    .Space()
+                    .Bold()
+                        .With("Praise the {0}", context.Args[0])
+                    .Bold()
+                    .Space()
+                    .With("ヽ(´▽｀)ノ")
+                    .BuildAndSend();
                 return ExecutionResult.Success;
             }
 
-            // If there are not any arguments, fails
-            if(!context.HasArguments) return ExecutionResult.Fail;
-
-            context.ResponseBuilder
-                .Block()
-                    .Username()
-                    .With("is praising")
-                .Block()
-                .With("（〜^∇^)〜")
-                .Space()
-                .Bold()
-                    .With("Praise the {0}", context.Args[0])
-                .Bold()
-                .Space()
-                .With("ヽ(´▽｀)ノ")
-                .BuildAndSend();
-            return ExecutionResult.Success;
+            return ExecutionResult.Fail;
         }
 
     }

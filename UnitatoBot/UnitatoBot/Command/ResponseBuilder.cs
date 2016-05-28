@@ -19,18 +19,20 @@ namespace UnitatoBot.Command {
             this.Context = context;
 	    }
 
-        public string BuildAndSend() {
-            Context.SendResponce(this);
-            return Build();
+        public ResponseBuilder KeepCommandMessage() {
+            ShouldDeleteMessage = false;
+            return this;
         }
+
+        // Build
 
         public string Build() {
             return Builder.ToString();
         }
 
-        public ResponseBuilder KeepCommandMessage() {
-            ShouldDeleteMessage = false;
-            return this;
+        public string BuildAndSend() {
+            Context.SendResponce(this);
+            return Build();
         }
 
         // Content
@@ -45,20 +47,13 @@ namespace UnitatoBot.Command {
             return With("{0}", entry);
         }
 
-        public ResponseBuilder WithChar(char ch, short amount = 1) {
-            for(short i = 0; i < amount; i++) { Builder.Append(ch); }
+        public ResponseBuilder With(char character, short repeat = 1) {
+            for(short i = 0; i < repeat; i++) { Builder.Append(character); }
             return this;
         }
 
-        public ResponseBuilder Space(short amount = 1) {
-            return WithChar(' ', amount);
-        }
-
-        // Utils
-
-        public ResponseBuilder Username() {
-            With(Context.Message.Sender);
-            return this;
+        public ResponseBuilder Space(short repeat = 1) {
+            return With(' ', repeat);
         }
 
         // Formating
@@ -90,6 +85,13 @@ namespace UnitatoBot.Command {
 
         public ResponseBuilder MultilineBlock() {
             Builder.Append("```");
+            return this;
+        }
+
+        // Utils
+
+        public ResponseBuilder Username() {
+            With(Context.Message.Sender);
             return this;
         }
 

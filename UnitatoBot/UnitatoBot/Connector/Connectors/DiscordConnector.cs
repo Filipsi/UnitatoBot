@@ -46,8 +46,8 @@ namespace UnitatoBot.Connector.Connectors {
         }
 
         public void Begin() {
-            Console.WriteLine("DiscordConnector event handlers inicilized.");
             InitEventhandlers();
+            Console.WriteLine("DiscordConnector event handlers inicilized.");
             CommandManager.Initialize();
         }
 
