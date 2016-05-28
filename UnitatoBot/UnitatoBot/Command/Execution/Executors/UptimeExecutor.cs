@@ -8,17 +8,9 @@ namespace UnitatoBot.Command.Execution.Executors {
 
     internal class UptimeExecutor : IExecutionHandler {
 
-        public static DateTime StartTime { private set; get; }
-
-        static  UptimeExecutor() {
-            StartTime = DateTime.Now;
-        }
+        public static readonly DateTime StartTime = DateTime.Now;
 
         // IExecutionHandler
-
-        public void Initialize() {
-            // NO-OP
-        }
 
         public string GetDescription() {
             return "Prints out uptime of the application";

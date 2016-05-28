@@ -11,10 +11,6 @@ namespace UnitatoBot.Command.Execution.Executors {
 
         // IExecutionHandler
 
-        public void Initialize() {
-            // NO-OP
-        }
-
         public string GetDescription() {
             return "Unitato will greet you and introduce itself.";
         }

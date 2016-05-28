@@ -7,15 +7,17 @@ using UnitatoBot.Command;
 
 namespace UnitatoBot.Command.Execution.Executors {
 
-    internal class DiceExecutor : IExecutionHandler {
+    internal class DiceExecutor : IExecutionHandler, IInitializable {
 
         private Random Rng;
 
-        // IExecutionHandler
+        // IInitializable
 
         public void Initialize() {
             this.Rng = new Random();
         }
+
+        // IExecutionHandler
 
         public string GetDescription() {
             return "d[number of sides] Rolls a n sided dice.";

@@ -12,12 +12,12 @@ using UnitatoBot.Command;
 
 namespace UnitatoBot.Command.Execution.Executors {
 
-    internal class FaggotStatsExecutor : IExecutionHandler {
+    internal class FaggotStatsExecutor : IExecutionHandler, IInitializable {
 
         private JsonSerializer Serializer;
         private JObject JsonStatStorage;
-        
-        // IExecutionHandler
+
+        // IInitializable
 
         public void Initialize() {
             // Set up JsonSerializer
@@ -27,6 +27,8 @@ namespace UnitatoBot.Command.Execution.Executors {
             // Read storage file
             LoadStorageData();
         }
+
+        // IExecutionHandler
 
         public string GetDescription() {
             return "Use with name as argument to mark someone as a Faggot and add one faggot point. Use wihout an argument to see statistics of all faggots. Use with argument 'stats' and name of the user as a second argument to see statistics of that faggot.";

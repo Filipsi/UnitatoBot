@@ -9,14 +9,9 @@ namespace UnitatoBot.Command.Execution.Executors {
 
     class BlameExecutor : IExecutionHandler{
 
-        private static string DatePatten = @"d/M/yyyy hh:mm";
-        private StreamWriter LogWriter;
+        public static readonly string DatePatten = @"d/M/yyyy hh:mm";
 
         // IExecutionHandler
-
-        public void Initialize() {
-            // NO-OP
-        }
 
         public string GetDescription() {
             return "Blames user specified as argument, you can use 'for' as a second argument and then specify the thing you are blaming the user for.";
@@ -56,9 +51,9 @@ namespace UnitatoBot.Command.Execution.Executors {
         // Helpers
 
         private void LogBlame(string blame) {
-            LogWriter = new StreamWriter("blames.txt", true, Encoding.UTF8);
-            LogWriter.WriteLine(string.Format("[{0}] {1}", DateTime.Now.ToString(DatePatten), blame));
-            LogWriter.Close();
+            StreamWriter logger = new StreamWriter("blames.txt", true, Encoding.UTF8);
+            logger.WriteLine(string.Format("[{0}] {1}", DateTime.Now.ToString(DatePatten), blame));
+            logger.Close();
         }
 
     }

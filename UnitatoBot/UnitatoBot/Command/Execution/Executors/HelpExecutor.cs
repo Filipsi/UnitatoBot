@@ -11,10 +11,6 @@ namespace UnitatoBot.Command.Execution.Executors {
 
         // IExecutionHandler
 
-        public void Initialize() {
-            // NO-OP
-        }
-
         public string GetDescription() {
             return "Shows help, obviously.";
         }
@@ -30,11 +26,14 @@ namespace UnitatoBot.Command.Execution.Executors {
                 .With("here is a list of stuff I can do: (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧");
 
             builder.MultilineBlock();
-            //TODO: Print out aliases
+
             foreach(Command entry in context.CommandManager) {
                 LinkedList<IExecutionHandler>.Enumerator enumerator = entry.GetExecutorsEnumerator();
                 while(enumerator.MoveNext()) {
-                    builder.With("{0}: {1}", entry.Name, enumerator.Current.GetDescription())
+                    builder.With("/{0} {1}: {2}",
+                                entry.Name,
+                                entry.Aliases.Count > 0 ? "(" + string.Join(", ", entry.Aliases) + ")" : string.Empty,
+                                enumerator.Current.GetDescription())
                            .NewLine();
                 }
             }

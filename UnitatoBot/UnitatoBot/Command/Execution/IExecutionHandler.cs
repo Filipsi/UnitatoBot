@@ -9,8 +9,6 @@ namespace UnitatoBot.Command.Execution {
 
     internal interface IExecutionHandler {
 
-        void Initialize();
-
         string GetDescription();
 
         ExecutionResult CanExecute(CommandContext context);

@@ -15,10 +15,6 @@ namespace UnitatoBot.Command.Execution.Executors {
 
         // IExecutionHandler
 
-        public void Initialize() {
-            //NO-OP
-        }
-
         public string GetDescription() {
             return "Retrives entry form http://lexicon.filipsi.net/ using it's name as a argument or prints out articles from lexicon using 'list' as a argument";
         }

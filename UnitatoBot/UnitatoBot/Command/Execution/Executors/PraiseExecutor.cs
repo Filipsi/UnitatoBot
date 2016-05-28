@@ -9,13 +9,7 @@ namespace UnitatoBot.Command.Execution.Executors {
 
     internal class PraiseExecutor : IExecutionHandler {
 
-        private Random Rng;
-
         // IExecutionHandler
-
-        public void Initialize() {
-            Rng = new Random();
-        }
 
         public string GetDescription() {
             return "Will praise anything specified as an argument, except Dan.";

@@ -73,6 +73,7 @@
     <Compile Include="Command\CommandManager.cs" />
     <Compile Include="Command\Execution\Executors\BlameExecutor.cs" />
     <Compile Include="Command\Execution\Executors\UptimeExecutor.cs" />
+    <Compile Include="Command\Execution\IInitializable.cs" />
     <Compile Include="Command\ResponseBuilder.cs" />
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Connector\ConnectionMessage.cs" />
