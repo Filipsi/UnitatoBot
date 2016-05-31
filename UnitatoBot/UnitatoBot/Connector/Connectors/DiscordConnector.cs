@@ -10,14 +10,12 @@ namespace UnitatoBot.Connector.Connectors {
 
     internal class DiscordConnector : IConnector {
 
-        public CommandManager CommandManager { private set; get; }
         public Channel Channel { private set; get; }
 
         private DiscordClient Client;
         private ulong ChannelId;
 
         public DiscordConnector(string email, string password, ulong channel) {  
-            this.CommandManager = new CommandManager(this);
             this.Client = new DiscordClient();
             this.ChannelId = channel;
 
@@ -26,16 +24,16 @@ namespace UnitatoBot.Connector.Connectors {
 
             // Bind trigger for the task to Ready event
             Client.Ready += (sender, args) => {
-                Console.WriteLine("Discord client is ready.");
+                Console.WriteLine("{0} client is ready.", this.GetType().Name);
                 taskClientReady.SetResult(true);
             };
 
             // Try to connect, handle errors if any
             try {
                 Client.Connect(email, password);
-                Console.WriteLine("Discord connection sucessfully enstablished!");
+                Console.WriteLine("{0} connection sucessfully enstablished!", this.GetType().Name);
             } catch(Exception e) {
-                Console.WriteLine("Something went wrong during Discord connection attempt!\n" + e.Message);
+                Console.WriteLine("Something went wrong during {0} connection attempt!\n" + e.Message, this.GetType().Name);
             }
 
             // Wait until Client is ready
@@ -43,16 +41,13 @@ namespace UnitatoBot.Connector.Connectors {
 
             // Retrives the channel where it should perform tasks
             this.Channel = Client.GetChannel(channel);
+
+            // Initializes event handlers 
+            InitEventHandlers();
+            Console.WriteLine("{0} event handlers inicilized.", this.GetType().Name);
         }
 
-        public void Begin() {
-            InitEventhandlers();
-            Console.WriteLine("DiscordConnector event handlers inicilized.");
-            CommandManager.Initialize();
-            Console.WriteLine("CommandManager was inicilized.");
-        }
-
-        private void InitEventhandlers() {
+        private void InitEventHandlers() {
             Client.MessageReceived += (sender, args) => {
                 if(args.Channel.Id.Equals(this.Channel.Id) && !args.User.Id.Equals(Client.CurrentUser.Id)) {
                     OnMessageReceived(this, new ConnectionMessageEventArgs(new ConnectionMessage(this, args.Message)));

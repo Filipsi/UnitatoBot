@@ -8,11 +8,11 @@ namespace UnitatoBot.Connector {
 
     internal class ConnectionMessage {
 
-        public string Id     { private set; get; }
-        public string Sender { private set; get; }
-        public string Text   { private set; get; }
+        public IConnector ConnectionProvider { private set; get; }
+        public string     Id                 { private set; get; }
+        public string     Sender             { private set; get; }
+        public string     Text               { private set; get; }
 
-        private IConnector           ConnectionProvider;
         private Func<string, object> EditHandler;
         private Func<object>         DeleteHandler;
 

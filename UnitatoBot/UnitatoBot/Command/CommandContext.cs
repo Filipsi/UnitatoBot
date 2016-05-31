@@ -33,7 +33,7 @@ namespace UnitatoBot.Command {
 
         public void SendResponce(ResponseBuilder builder) {
             if(builder.ShouldDeleteMessage) Message.Delete();
-            CommandManager.ServiceConnector.SendMessage(builder.Build());
+            Message.ConnectionProvider.SendMessage(builder.Build());
         }
 
     }

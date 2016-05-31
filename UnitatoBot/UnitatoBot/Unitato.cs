@@ -9,6 +9,7 @@ using UnitatoBot.Connector.Connectors;
 using UnitatoBot.Configuration;
 using UnitatoBot.Command;
 using UnitatoBot.Command.Execution.Executors;
+using UnitatoBot.Connector;
 
 namespace UnitatoBot {
 
@@ -16,13 +17,13 @@ namespace UnitatoBot {
 
         static void Main(string[] args) {
 
-            DiscordConnector discordConnection = new DiscordConnector(
+            IConnector connection = new DiscordConnector(
                 Config.GetEntry("Email"),
                 Config.GetEntry("Password"),
                 ulong.Parse(Config.GetEntry("ChannelUUID"))
             );
 
-            discordConnection.CommandManager
+            CommandManager cmdManager = new CommandManager(connection)
                 .RegisterCommand("unitato", new InfoExecutor())
                 .RegisterCommand("help", new HelpExecutor())
                 .RegisterCommand("uptime", new UptimeExecutor())
@@ -33,7 +34,7 @@ namespace UnitatoBot {
                 .RegisterCommand("blame", new BlameExecutor())
                 .RegisterCommand("faggot", new FaggotStatsExecutor())
                 .RegisterCommand("lexicon", new LexiconExecutor());
-            discordConnection.Begin();
+            cmdManager.Begin();
 
             Console.ReadKey();
         }

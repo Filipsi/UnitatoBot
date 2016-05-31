@@ -11,22 +11,24 @@ namespace UnitatoBot.Command {
 
     internal class CommandManager {
 
-        public IConnector ServiceConnector { private set; get; }
-        public bool       IsInitialized    { private set; get; }
+        public bool IsReady { private set; get; }
 
+        private IConnector[] ServiceConnectors;
         private List<Command> Commands;
 
-        public CommandManager(IConnector connector) {
-            this.ServiceConnector = connector;
-            this.IsInitialized = false;
+        public CommandManager(params IConnector[] connectors) {
             this.Commands = new List<Command>();
+            this.IsReady = false;
+            this.ServiceConnectors = connectors;
 
             // Bind IConnector's message event
-            ServiceConnector.OnMessageReceived += OnMessageReceived;
+            foreach(IConnector connector in connectors) {
+                connector.OnMessageReceived += OnMessageReceived;
+            }
         }
 
         private void OnMessageReceived(object sender, ConnectionMessageEventArgs e) {
-            if(!IsInitialized) return;
+            if(!IsReady) return;
 
             // Check if message is valid command or emoji
             bool isCommand = Expressions.CommandParser.Test(e.Message.Text);
@@ -46,9 +48,8 @@ namespace UnitatoBot.Command {
             if(command != null) command.Execute(this, e.Message);
         }
 
-        public void Initialize() {
-            // Inicialization can be only done once
-            if(IsInitialized) return;
+        public void Begin() {
+            if(IsReady) return;
 
             // Inicialize every executor
             foreach(var enumerator in Commands.Select(x => x.GetExecutorsEnumerator()).AsEnumerable()) {
@@ -64,13 +65,13 @@ namespace UnitatoBot.Command {
 
             Console.WriteLine("Commands initialized.");
 
-            // Go into Initialized state
-            this.IsInitialized = true;
+            // Go into ready state
+            this.IsReady = true;
         }
 
         public CommandManager RegisterCommand(string name, params IExecutionHandler[] handlers) {
             // Command can be registerd only before initialization
-            if(IsInitialized) {
+            if(IsReady) {
                 Console.WriteLine("Can't register {0} after command inicialization!", name);
                 return this;
             }
