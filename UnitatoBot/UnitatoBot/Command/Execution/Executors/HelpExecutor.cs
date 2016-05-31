@@ -26,7 +26,6 @@ namespace UnitatoBot.Command.Execution.Executors {
                 .With("here is a list of stuff I can do: (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧");
 
             builder.MultilineBlock();
-
             foreach(Command entry in context.CommandManager) {
                 LinkedList<IExecutionHandler>.Enumerator enumerator = entry.GetExecutorsEnumerator();
                 while(enumerator.MoveNext()) {

@@ -50,9 +50,9 @@ namespace UnitatoBot.Command {
                 // If command is valid, execute it, if not show error message
                 if(result == ExecutionResult.Success) {
                     result = executor.Execute(context);
-                    Console.WriteLine("Execution using {0} of {1} ended with result {2}", executor.GetType().Name, context.CommandName, result);
+                    Console.WriteLine("Execution using {0} of {1} ended with result {2}", executor.GetType().Name, context.ExecutionName, result);
                 } else {
-                    Console.WriteLine("Execution using {0} of {1} failed the execution test with result {2}", executor.GetType().Name, context.CommandName, result);
+                    Console.WriteLine("Execution using {0} of {1} failed the execution test with result {2}", executor.GetType().Name, context.ExecutionName, result);
                 }
             }
 

@@ -31,8 +31,17 @@ namespace UnitatoBot.Command {
         }
 
         public string BuildAndSend() {
-            Context.SendResponce(this);
-            return Build();
+            // Delete original message if needed
+            if(ShouldDeleteMessage) Context.SourceMessage.Delete();
+
+            // Build the responce
+            string responce = Build();
+
+            // Send responce to the client
+            Context.SourceMessage.ConnectionProvider.SendMessage(responce);
+
+            // Return the build responce string for further processing
+            return responce;
         }
 
         // Content
@@ -91,7 +100,7 @@ namespace UnitatoBot.Command {
         // Utils
 
         public ResponseBuilder Username() {
-            With(Context.Message.Sender);
+            With(Context.SourceMessage.Sender);
             return this;
         }
 

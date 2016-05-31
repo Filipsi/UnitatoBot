@@ -44,7 +44,7 @@ namespace UnitatoBot.Command.Execution.Executors {
                 return ExecutionResult.Success;
             } else {
                 // Strips the /command from the arguments, this is here in order to enable reqests for articles with spaces in title
-                string strippedArgument = context.Message.Text.Substring(1 + context.CommandName.Length + 1);
+                string strippedArgument = context.SourceMessage.Text.Substring(1 + context.ExecutionName.Length + 1);
 
                 // Make an reqest
                 Request request = Http.QueryRequest(HttpMethod.GET, "http://lexicon.filipsi.net/php/articles/processor.php", "title", strippedArgument);

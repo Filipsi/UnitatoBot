@@ -21,7 +21,7 @@ namespace UnitatoBot.Command.Execution.Executors {
 
         public ExecutionResult Execute(CommandContext context) {
             // Dan prasing restrictions
-            if((!context.HasArguments && context.CommandName.Contains("dan")) || (context.HasArguments && context.Args[0].ToLower().Contains("dan"))) {
+            if((!context.HasArguments && context.ExecutionName.Contains("dan")) || (context.HasArguments && context.Args[0].ToLower().Contains("dan"))) {
                 context.ResponseBuilder
                     .Block()
                         .Username()
