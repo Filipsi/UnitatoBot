@@ -8,21 +8,30 @@ namespace UnitatoBot.Connector {
 
     internal class ConnectionMessage {
 
-        private IConnector Connector;
-
         public string Id     { private set; get; }
         public string Sender { private set; get; }
         public string Text   { private set; get; }
 
-        public ConnectionMessage(IConnector connector, Discord.Message msg) {
-            this.Connector = connector;
-            this.Id = msg.Id.ToString();
-            this.Sender = msg.User.Name;
-            this.Text = msg.Text;
+        private IConnector           ConnectionProvider;
+        private Func<string, object> EditHandler;
+        private Func<object>         DeleteHandler;
+
+        public ConnectionMessage(IConnector connector, Discord.Message message) {
+            this.ConnectionProvider = connector;
+            this.Id = message.Id.ToString();
+            this.Sender = message.User.Name;
+            this.Text = message.Text;
+
+            this.EditHandler = message.Edit;
+            this.DeleteHandler = message.Delete;
         }
 
         public void Delete() {
-            Connector.DeleteMessage(this);
+            this.DeleteHandler.Invoke();
+        }
+
+        public void Edit(string newText) {
+            this.EditHandler.Invoke(newText);
         }
 
     }

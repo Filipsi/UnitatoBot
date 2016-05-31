@@ -13,8 +13,6 @@ namespace UnitatoBot.Connector {
 
         void SendMessage(string message);
 
-        void DeleteMessage(ConnectionMessage message);
-
     }
 
 }

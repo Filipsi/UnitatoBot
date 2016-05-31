@@ -13,13 +13,13 @@ namespace UnitatoBot.Connector.Connectors {
         public CommandManager CommandManager { private set; get; }
         public Channel Channel { private set; get; }
 
-        private ulong ChannelId;
         private DiscordClient Client;
+        private ulong ChannelId;
 
-        public DiscordConnector(string email, string password, ulong channel) {
-            this.ChannelId = channel;
+        public DiscordConnector(string email, string password, ulong channel) {  
             this.CommandManager = new CommandManager(this);
             this.Client = new DiscordClient();
+            this.ChannelId = channel;
 
             // Create a task that will trigger after Client fires Ready event
             TaskCompletionSource<bool> taskClientReady = new TaskCompletionSource<bool>();
@@ -49,6 +49,7 @@ namespace UnitatoBot.Connector.Connectors {
             InitEventhandlers();
             Console.WriteLine("DiscordConnector event handlers inicilized.");
             CommandManager.Initialize();
+            Console.WriteLine("CommandManager was inicilized.");
         }
 
         private void InitEventhandlers() {
@@ -65,13 +66,6 @@ namespace UnitatoBot.Connector.Connectors {
 
         public void SendMessage(string text) {
             this.Channel.SendMessage(text);
-        }
-
-        public void DeleteMessage(ConnectionMessage message) {
-            // TODO: This allredy failed once, figure out if it can be replicated, maybe do a mapping to be safe?
-            // Yea, deffinitly do the mapping thing, you will need it in order to do edits and stuff
-            Message msg = this.Channel.Messages.Single(x => x.Id == ulong.Parse(message.Id));
-            if(msg != null) msg.Delete();
         }
 
     }
