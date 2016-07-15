@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +8,22 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using UnitatoBot.Command;
-using UnitatoBot.Utilities.Http;
 
 namespace UnitatoBot.Command.Execution.Executors {
 
-    class LexiconExecutor : IExecutionHandler {
+    class LexiconExecutor : IInitializable, IExecutionHandler{
+
+        private RestClient LexiconClient;
+        private RestRequest RequestGetMenu;
+        private RestRequest RequestGetArticle;
+
+        // IInitializable
+
+        public void Initialize() {
+            LexiconClient = new RestClient("http://lexicon.filipsi.net/php");
+            RequestGetMenu = new RestRequest("menu/processor.php", Method.GET);
+            RequestGetArticle = new RestRequest("articles/processor.php", Method.GET);
+        }
 
         // IExecutionHandler
 
@@ -25,38 +37,36 @@ namespace UnitatoBot.Command.Execution.Executors {
 
         public ExecutionResult Execute(CommandContext context) {
             if(context.Args[0] == "list") {
-                // Make an request, there are no arguments required for this one, but QueryRequest requires at last pair
-                Request request = Http.QueryRequest(HttpMethod.GET, "http://lexicon.filipsi.net/php/menu/processor.php", "", "");
-
-                // Bind ReqestComplete event
-                request.OnReqestComplete += (sender, args) => {
+                LexiconClient.ExecuteAsync(RequestGetMenu, response => {
                     // Parse data from server into list of ArticleEntries
-                    List<MenuEntry> menuEntries = JsonConvert.DeserializeObject<List<MenuEntry>>(args.Responce);
+                    List<MenuEntry> menuEntries = JsonConvert.DeserializeObject<List<MenuEntry>>(response.Content);
 
                     // Print out list of articles separated by commas
                     context.ResponseBuilder
-                        .Username()
-                        .With("here is list of articles available in Lexicon at the moment:")
-                        .With(String.Join(", ", menuEntries.Select(x => x.title)))
+                        .Block()
+                            .Username()
+                        .Block()
+                        .With("here is a list of articles that are available at lexicon.filipsi.net:")
+                        .MultilineBlock()
+                            .With(String.Join(", ", menuEntries.Select(x => x.title)))
+                        .MultilineBlock()
                         .BuildAndSend();
-                };
+                });
 
                 return ExecutionResult.Success;
             } else {
                 // Strips the /command from the arguments, this is here in order to enable reqests for articles with spaces in title
                 string strippedArgument = context.SourceMessage.Text.Substring(1 + context.ExecutionName.Length + 1);
 
-                // Make an reqest
-                Request request = Http.QueryRequest(HttpMethod.GET, "http://lexicon.filipsi.net/php/articles/processor.php", "title", strippedArgument);
+                RequestGetArticle.AddParameter("title", strippedArgument);
+                LexiconClient.ExecuteAsync(RequestGetArticle, response => {
 
-                // Bind ReqestComplete event
-                request.OnReqestComplete += (sender, args) => {
                     // Check if there are data in the responce (should work, mostly ¯\_(ツ)_/¯)
-                    if(args.Responce.Equals(string.Empty) || args.Responce.Equals("") || args.Responce.Equals("[]")) return;
+                    if(response.Content.Equals(string.Empty) || response.Content.Equals("") || response.Content.Equals("[]")) return;
 
                     // Parse data from server into list of ArticleEntries, it has to be list even when
                     // responce contains only one element becouse server is allways returning it as an array
-                    List<ArticleEntry> articleEntry = JsonConvert.DeserializeObject<List<ArticleEntry>>(args.Responce);
+                    List<ArticleEntry> articleEntry = JsonConvert.DeserializeObject<List<ArticleEntry>>(response.Content);
 
                     // Get the one and only article entry
                     ArticleEntry article = articleEntry.First();
@@ -80,14 +90,17 @@ namespace UnitatoBot.Command.Execution.Executors {
                             .With(articleText)
                         .MultilineBlock()
                         .BuildAndSend();
-                };
+                });
 
                 return ExecutionResult.Success;
             }
         }
 
+        // Logic
+
+
         // JsonObjects
-        // Used to parse data from server using JsonConvert
+        // Used to parse data from server
 
         private class MenuEntry {
             public int id;
