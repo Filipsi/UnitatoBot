@@ -7,56 +7,52 @@ using UnitatoBot.Command;
 
 namespace UnitatoBot.Command.Execution.Executors {
 
-    internal class PraiseExecutor : IExecutionHandler {
+    internal class PraiseExecutor : IExecutionHandler, IInitializable {
+
+        private Random Rng;
+
+        // IInitializable
+
+        public void Initialize() {
+            Rng = new Random();
+        }
 
         // IExecutionHandler
 
         public string GetDescription() {
-            return "Will praise anything specified as an argument, except Dan.";
+            return "Will praise anything specified as an argument. Even Dan, because we were praising Dan all along, even when it was prohibited.";
         }
 
         public ExecutionResult CanExecute(CommandContext context) {
-            return !context.HasArguments || (context.HasArguments && context.Args.Length == 1) ? ExecutionResult.Success : ExecutionResult.Denied;
+            return ExecutionResult.Success;
         }
 
         public ExecutionResult Execute(CommandContext context) {
-            // Dan prasing restrictions
-            if((!context.HasArguments && context.ExecutionName.Contains("dan")) || (context.HasArguments && context.Args[0].ToLower().Contains("dan"))) {
-                context.ResponseBuilder
-                    .Block()
-                        .Username()
-                        .With("wants to praise {0}", context.HasArguments ? context.Args[0] : "dan")
-                    .Block()
-                    .Bold()
-                        .With("No.")
-                    .Bold()
-                    .Space()
-                    .With("¬_¬")
-                    .Space()
-                    .With("Filipsi told me that I can't do that anymore.")
-                    .BuildAndSend();
+            context.ResponseBuilder
+                .Block()
+                    .Username()
+                    .With("is praising")
+                .Block()
+                .With("（〜^∇^)〜")
+                .Space()
+                .Bold()
+                    .With("Praise the {0}", context.HasArguments ? context.RawArguments : GenerateDan())
+                .Bold()
+                .Space()
+                .With("ヽ(´▽｀)ノ")
+                .BuildAndSend();
+            return ExecutionResult.Success;
+        }
 
-                return ExecutionResult.Success;
-            }
-            // Just some good old prasin' here
-            else if(context.HasArguments) {
-                context.ResponseBuilder
-                    .Block()
-                        .Username()
-                        .With("is praising")
-                    .Block()
-                    .With("（〜^∇^)〜")
-                    .Space()
-                    .Bold()
-                        .With("Praise the {0}", context.Args[0])
-                    .Bold()
-                    .Space()
-                    .With("ヽ(´▽｀)ノ")
-                    .BuildAndSend();
-                return ExecutionResult.Success;
+        // Helpers
+
+        private string GenerateDan() {
+            char[] dan = new char[] { 'd', 'a', 'n' };
+            for(byte i = 0; i < dan.Length; i++) {
+                if(Rng.Next(2) == 1) dan[i] = char.ToUpper(dan[i]);
             }
 
-            return ExecutionResult.Fail;
+            return new String(dan);
         }
 
     }

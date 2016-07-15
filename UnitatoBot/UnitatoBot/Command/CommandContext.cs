@@ -20,6 +20,7 @@ namespace UnitatoBot.Command {
         public string            ExecutionName   { private set; get; }
         public bool              HasArguments    { private set; get; }
         public string[]          Args            { private set; get; }
+        public string            RawArguments    { private set; get; }
 
         public CommandContext(Command command, CommandManager manager, ConnectionMessage message) {
             this.ExecutedCommand = command;
@@ -27,7 +28,8 @@ namespace UnitatoBot.Command {
             this.SourceMessage = message;
             this.ExecutionName = Expressions.CommandParser.Capture(this.SourceMessage.Text, "command");
             this.HasArguments = Expressions.CommandArgsParser.Test(this.SourceMessage.Text);
-            this.Args = this.HasArguments ? Expressions.CommandArgsParser.Capture(this.SourceMessage.Text, "args").Split(' ') : null;
+            this.RawArguments = Expressions.CommandArgsParser.Capture(this.SourceMessage.Text, "args");
+            this.Args = this.HasArguments ? RawArguments.Split(' ') : null;
         }
 
     }

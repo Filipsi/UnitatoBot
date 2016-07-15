@@ -33,7 +33,8 @@ namespace UnitatoBot {
                     .WithAlias("dan")
                 .RegisterCommand("blame", new BlameExecutor())
                 .RegisterCommand("faggot", new FaggotStatsExecutor())
-                .RegisterCommand("lexicon", new LexiconExecutor());
+                .RegisterCommand("lexicon", new LexiconExecutor())
+                .RegisterCommand("burn", new BurnExecutor());
             cmdManager.Begin();
 
             Console.ReadKey();
