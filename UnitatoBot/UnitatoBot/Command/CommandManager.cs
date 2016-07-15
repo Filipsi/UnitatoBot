@@ -45,7 +45,9 @@ namespace UnitatoBot.Command {
             Command command = Commands.Find(x => x.Name == commandName || x.IsAlias(commandName));
 
             // Execute, if there is such command
-            if(command != null) command.Execute(this, e.Message);
+            if(command != null) {
+                command.Execute(this, e.Message);
+            } else Console.WriteLine("Error: Command {0} not found", commandName);
         }
 
         public void Begin() {

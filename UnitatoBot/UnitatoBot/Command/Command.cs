@@ -42,6 +42,10 @@ namespace UnitatoBot.Command {
             // Create a execution context for this command
             CommandContext context = new CommandContext(this, manager, message);
 
+            if(ExecutorList.Count < 1) {
+                Console.WriteLine("An error occured while trying to execute {0} command. No executors found.", Name);
+            }
+
             // Try to execute the command using all of its executors
             foreach(IExecutionHandler executor in ExecutorList) {
                 // Check if command context is valid in order to be executied
