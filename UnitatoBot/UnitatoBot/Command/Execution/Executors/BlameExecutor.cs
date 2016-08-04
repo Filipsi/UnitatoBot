@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace UnitatoBot.Command.Execution.Executors {
 
-    class BlameExecutor : IExecutionHandler{
+    internal class BlameExecutor : IExecutionHandler{
 
         public static readonly string DatePatten = @"d/M/yyyy hh:mm";
 

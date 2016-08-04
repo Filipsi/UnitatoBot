@@ -24,7 +24,7 @@ namespace UnitatoBot.Configuration {
 
             LoadEntry(ConfigSection.DiscordCredentials, "Email");
             LoadEntry(ConfigSection.DiscordCredentials, "Password");
-            LoadEntry(ConfigSection.DiscordCredentials, "ChannelUUID");
+            LoadEntry(ConfigSection.DiscordCredentials, "ServerUUID");
         }
 
         private static void LoadEntry(ConfigSection section, string key) {

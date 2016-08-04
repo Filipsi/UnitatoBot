@@ -11,7 +11,7 @@ using UnitatoBot.Command;
 
 namespace UnitatoBot.Command.Execution.Executors {
 
-    class LexiconExecutor : IInitializable, IExecutionHandler{
+    internal class LexiconExecutor : IInitializable, IExecutionHandler{
 
         private RestClient LexiconClient;
         private RestRequest RequestGetMenu;

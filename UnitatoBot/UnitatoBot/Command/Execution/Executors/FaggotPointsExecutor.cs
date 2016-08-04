@@ -126,13 +126,13 @@ namespace UnitatoBot.Command.Execution.Executors {
         // Helpers
 
         private void LoadStorageData() {
-            StreamReader storageFileReader = new StreamReader("faggotpoints.json", Encoding.UTF8);
-            try {
+            if(File.Exists("faggotpoints.json")) {
+                StreamReader storageFileReader = new StreamReader("faggotpoints.json", Encoding.UTF8);
                 this.JsonStatStorage = JObject.Parse(storageFileReader.ReadToEnd());
-            } catch {
+                storageFileReader.Close();
+            } else {
                 this.JsonStatStorage = JObject.Parse("{}");
             }
-            storageFileReader.Close();
         }
 
         private void SaveStorageData() {

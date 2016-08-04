@@ -11,7 +11,7 @@ namespace UnitatoBot.Connector {
 
         event EventHandler<ConnectionMessageEventArgs> OnMessageReceived;
 
-        void SendMessage(string message);
+        void SendMessage(string destination, string message);
 
     }
 

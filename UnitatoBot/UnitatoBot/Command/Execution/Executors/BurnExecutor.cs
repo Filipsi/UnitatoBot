@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UnitatoBot.Command.Execution.Executors {
 
-    class BurnExecutor : IExecutionHandler {
+    internal class BurnExecutor : IExecutionHandler {
 
         // IExecutionHandler
 

@@ -20,7 +20,7 @@ namespace UnitatoBot {
             IConnector connection = new DiscordConnector(
                 Config.GetEntry("Email"),
                 Config.GetEntry("Password"),
-                ulong.Parse(Config.GetEntry("ChannelUUID"))
+                ulong.Parse(Config.GetEntry("ServerUUID"))
             );
 
             CommandManager cmdManager = new CommandManager(connection)

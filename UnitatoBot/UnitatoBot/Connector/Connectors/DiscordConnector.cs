@@ -10,14 +10,14 @@ namespace UnitatoBot.Connector.Connectors {
 
     internal class DiscordConnector : IConnector {
 
-        public Channel Channel { private set; get; }
+        public Server Server { private set; get; }
 
         private DiscordClient Client;
-        private ulong ChannelId;
+        private ulong ServerId;
 
-        public DiscordConnector(string email, string password, ulong channel) {  
+        public DiscordConnector(string email, string password, ulong serverId) {  
             this.Client = new DiscordClient();
-            this.ChannelId = channel;
+            this.ServerId = serverId;
 
             // Create a task that will trigger after Client fires Ready event
             TaskCompletionSource<bool> taskClientReady = new TaskCompletionSource<bool>();
@@ -40,7 +40,7 @@ namespace UnitatoBot.Connector.Connectors {
             while(!taskClientReady.Task.IsCompleted) { /* NO-OP */ }
 
             // Retrives the channel where it should perform tasks
-            this.Channel = Client.GetChannel(channel);
+            this.Server = Client.GetServer(serverId);
 
             // Initializes event handlers 
             InitEventHandlers();
@@ -49,7 +49,7 @@ namespace UnitatoBot.Connector.Connectors {
 
         private void InitEventHandlers() {
             Client.MessageReceived += (sender, args) => {
-                if(args.Channel.Id.Equals(this.Channel.Id) && !args.User.Id.Equals(Client.CurrentUser.Id)) {
+                if(args.Server.Id.Equals(this.Server.Id) && !args.User.Id.Equals(Client.CurrentUser.Id)) {
                     OnMessageReceived(this, new ConnectionMessageEventArgs(new ConnectionMessage(this, args.Message)));
                 }
             };
@@ -59,8 +59,9 @@ namespace UnitatoBot.Connector.Connectors {
 
         public event EventHandler<ConnectionMessageEventArgs> OnMessageReceived;
 
-        public void SendMessage(string text) {
-            this.Channel.SendMessage(text);
+        public void SendMessage(string destination, string text) {
+            Channel channel = Server.TextChannels.First(c => c.Id.ToString().Equals(destination));
+            if(channel != null) channel.SendMessage(text);
         }
 
     }

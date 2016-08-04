@@ -38,7 +38,7 @@ namespace UnitatoBot.Command {
             string responce = Build();
 
             // Send responce to the client
-            Context.SourceMessage.ConnectionProvider.SendMessage(responce);
+            Context.SourceMessage.ConnectionProvider.SendMessage(Context.SourceMessage.Origin, responce);
 
             // Return the build responce string for further processing
             return responce;
