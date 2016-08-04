@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnitatoBot.Command;
-
-namespace UnitatoBot.Command.Execution {
+﻿namespace UnitatoBot.Command.Execution {
 
     internal interface IExecutionHandler {
 

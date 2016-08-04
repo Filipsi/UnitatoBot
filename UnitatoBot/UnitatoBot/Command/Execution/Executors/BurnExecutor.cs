@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UnitatoBot.Command.Execution.Executors {
+﻿namespace UnitatoBot.Command.Execution.Executors {
 
     internal class BurnExecutor : IExecutionHandler {
 

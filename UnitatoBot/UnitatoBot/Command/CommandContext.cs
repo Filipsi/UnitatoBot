@@ -1,17 +1,15 @@
-﻿using Discord;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnitatoBot.Connector;
+﻿using UnitatoBot.Connector;
 
 namespace UnitatoBot.Command {
 
     internal class CommandContext {
 
+        private ResponseBuilder _response;
         public ResponseBuilder ResponseBuilder {
-            get { return new ResponseBuilder(this); }
+            get {
+                if(_response == null) _response = new ResponseBuilder(this);
+                return _response;
+            }
         }
 
         public ConnectionMessage SourceMessage   { private set; get; }
