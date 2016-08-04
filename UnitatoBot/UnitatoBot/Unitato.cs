@@ -12,9 +12,9 @@ namespace UnitatoBot {
         static void Main(string[] args) {
 
             IConnector connection = new DiscordConnector(
-                Config.GetEntry("Email"),
-                Config.GetEntry("Password"),
-                ulong.Parse(Config.GetEntry("ServerUUID"))
+                Config.GetEntry<string>("Email"),
+                Config.GetEntry<string>("Password"),
+                Config.GetEntry<ulong>("ServerUUID")
             );
 
             CommandManager cmdManager = new CommandManager(connection)
