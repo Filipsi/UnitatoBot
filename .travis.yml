@@ -1,9 +1,0 @@
-language: csharp
-solution: UnitatoBot/UnitatoBot.sln
-deploy:
-  provider: releases
-  api_key: GUTHUB_OAUTH_KEY
-  file: UnitatoBot\bin\Debug"
-  skip_cleanup: true
-  on:
-    tags: true
