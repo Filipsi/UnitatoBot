@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,7 +29,7 @@ namespace UnitatoBot.Command.Execution.Executors {
         }
 
         public ExecutionResult Execute(CommandContext context) {
-            context.ResponseBuilder
+            Log(context.ResponseBuilder
                 .Block()
                     .Username()
                     .With("is praising")
@@ -40,7 +41,7 @@ namespace UnitatoBot.Command.Execution.Executors {
                 .Bold()
                 .Space()
                 .With("ヽ(´▽｀)ノ")
-                .BuildAndSend();
+                .BuildAndSend());
             return ExecutionResult.Success;
         }
 
@@ -53,6 +54,12 @@ namespace UnitatoBot.Command.Execution.Executors {
             }
 
             return new String(dan);
+        }
+
+        private void Log(string blame) {
+            StreamWriter logger = new StreamWriter("praising.txt", true, Encoding.UTF8);
+            logger.WriteLine(string.Format("[{0}] {1}", DateTime.Now.ToString(BlameExecutor.DatePatten), blame));
+            logger.Close();
         }
 
     }
