@@ -48,7 +48,7 @@ namespace UnitatoBot.Command.Execution.Executors {
 
                 // If there are no entries in stats, builds response
                 if(!JsonStatStorage.HasValues) {
-                    builder.With(SymbolFactory.Emoticon.WaitWhat).With("There are no faggots.").BuildAndSend();
+                    builder.With(SymbolFactory.Emoticon.But).With("There are no faggots.").BuildAndSend();
                     return ExecutionResult.Success;
                 }
 

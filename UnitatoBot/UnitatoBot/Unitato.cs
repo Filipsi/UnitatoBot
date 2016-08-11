@@ -28,6 +28,8 @@ namespace UnitatoBot {
                 .RegisterCommand("blame", new BlameExecutor())
                 .RegisterCommand("faggot", new FaggotStatsExecutor())
                 .RegisterCommand("lexicon", new LexiconExecutor())
+                .RegisterCommand("emoticon", new EmoticonExecutor())
+                    .WithAlias("e")
                 .RegisterCommand("burn", new BurnExecutor());
             cmdManager.Begin();
 

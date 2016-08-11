@@ -21,7 +21,14 @@ namespace UnitatoBot {
             Praise,
             Greet,
             Pleased,
-            WaitWhat
+            But,
+            Yeeaahh,
+            Creep,
+            Cry,
+            Hide,
+            Food,
+            Why,
+            Sleep
         }
 
         public static string AsString(Emoji emoji) {
@@ -51,11 +58,34 @@ namespace UnitatoBot {
                     return "(•̀ᴗ•́)و";
                 case Emoticon.Pleased:
                     return "(　＾∇＾)";
-                case Emoticon.WaitWhat:
-                    return "(⊙.☉)7";
+                case Emoticon.But:
+                    return "(☉.☉)7";
+                case Emoticon.Yeeaahh:
+                    return "(⌐■_■)";
+                case Emoticon.Creep:
+                    return "ಠᴗಠ";
+                case Emoticon.Cry:
+                    return "(╥_╥)";
+                case Emoticon.Hide:
+                    return "|_・)";
+                case Emoticon.Food:
+                    return "( ^-^)_旦””";
+                case Emoticon.Why:
+                    return "ლ(ಠ_ಠლ)";
+                case Emoticon.Sleep:
+                    return "(ᴗ˳ᴗ)";
             }
 
             return string.Empty;
+        }
+
+        public static Emoticon? FromName(string name) {
+            foreach(Emoticon emoticon in Enum.GetValues(typeof(Emoticon))) {
+                if(name.ToLower().Equals(emoticon.ToString().ToLower()))
+                    return emoticon;
+            }
+
+            return null;
         }
 
     }

@@ -17,11 +17,14 @@ namespace UnitatoBot.Command.Execution.Executors {
         public ExecutionResult Execute(CommandContext context) {
             ResponseBuilder builder = context.ResponseBuilder
                 .With("Sure,")
-                .Username()
+                .Space()
+                .Block()
+                    .Username()
+                .Block()
                 .With("here is a list of stuff I can do: ")
-                .With(SymbolFactory.Emoticon.Magic);
+                .With(SymbolFactory.Emoticon.Magic)
+                .MultilineBlock();
 
-            builder.MultilineBlock();
             foreach(Command entry in context.CommandManager) {
                 LinkedList<IExecutionHandler>.Enumerator enumerator = entry.GetExecutorsEnumerator();
                 while(enumerator.MoveNext()) {
@@ -32,9 +35,11 @@ namespace UnitatoBot.Command.Execution.Executors {
                            .NewLine();
                 }
             }
-            builder.MultilineBlock();
 
-            builder.BuildAndSend();
+            builder
+                .MultilineBlock()
+                .BuildAndSend();
+
             return ExecutionResult.Success;
         }
     }
