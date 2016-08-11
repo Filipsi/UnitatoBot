@@ -58,6 +58,16 @@ namespace UnitatoBot.Command {
             return this;
         }
 
+        public ResponseBuilder With(SymbolFactory.Emoji emoji) {
+            Builder.Append(SymbolFactory.AsString(emoji));
+            return this;
+        }
+
+        public ResponseBuilder With(SymbolFactory.Emoticon emoticon) {
+            Builder.Append(SymbolFactory.AsString(emoticon));
+            return this;
+        }
+
         public ResponseBuilder Space(short repeat = 1) {
             return With(' ', repeat);
         }

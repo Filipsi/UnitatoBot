@@ -30,13 +30,13 @@ namespace UnitatoBot.Command.Execution.Executors {
                     .Username()
                     .With("is praising")
                 .Block()
-                .With("（〜^∇^)〜")
+                .With(SymbolFactory.Emoticon.Dance)
                 .Space()
                 .Bold()
                     .With("Praise the {0}", context.HasArguments ? context.RawArguments : GenerateDan())
                 .Bold()
                 .Space()
-                .With("ヽ(´▽｀)ノ")
+                .With(SymbolFactory.Emoticon.Praise)
                 .BuildAndSend());
             return ExecutionResult.Success;
         }

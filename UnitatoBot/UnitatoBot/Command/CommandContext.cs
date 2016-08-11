@@ -24,9 +24,9 @@ namespace UnitatoBot.Command {
             this.ExecutedCommand = command;
             this.CommandManager = manager;
             this.SourceMessage = message;
-            this.ExecutionName = Expressions.CommandParser.Capture(this.SourceMessage.Text, "command");
-            this.HasArguments = Expressions.CommandArgsParser.Test(this.SourceMessage.Text);
-            this.RawArguments = Expressions.CommandArgsParser.Capture(this.SourceMessage.Text, "args");
+            this.ExecutionName = Expression.CommandParser.Capture(this.SourceMessage.Text, "command");
+            this.HasArguments = Expression.CommandArgumentParser.Test(this.SourceMessage.Text);
+            this.RawArguments = Expression.CommandArgumentParser.Capture(this.SourceMessage.Text, "args");
             this.Args = this.HasArguments ? RawArguments.Split(' ') : null;
         }
 

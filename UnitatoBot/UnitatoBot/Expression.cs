@@ -2,7 +2,7 @@
 
 namespace UnitatoBot {
 
-    public static class Expressions {
+    public static class Expression {
 
         public static VerbalExpressions CommandParser = new VerbalExpressions()
             .StartOfLine()
@@ -15,7 +15,7 @@ namespace UnitatoBot {
             .Anything()
             .EndOfLine();
 
-        public static VerbalExpressions CommandArgsParser = new VerbalExpressions()
+        public static VerbalExpressions CommandArgumentParser = new VerbalExpressions()
             .StartOfLine()
             .SomethingBut(" ")
             .Then(" ")

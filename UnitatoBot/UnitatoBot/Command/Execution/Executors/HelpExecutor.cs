@@ -18,7 +18,8 @@ namespace UnitatoBot.Command.Execution.Executors {
             ResponseBuilder builder = context.ResponseBuilder
                 .With("Sure,")
                 .Username()
-                .With("here is a list of stuff I can do: (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧");
+                .With("here is a list of stuff I can do: ")
+                .With(SymbolFactory.Emoticon.Magic);
 
             builder.MultilineBlock();
             foreach(Command entry in context.CommandManager) {

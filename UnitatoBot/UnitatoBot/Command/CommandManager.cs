@@ -28,7 +28,7 @@ namespace UnitatoBot.Command {
             if(!IsReady) return;
 
             // Check if message is valid command or emoji
-            bool isCommand = Expressions.CommandParser.Test(e.Message.Text);
+            bool isCommand = Expression.CommandParser.Test(e.Message.Text);
 
             Console.WriteLine("Received {0} from {1}, IsCommand: {2}", e.Message.Text, e.Message.Sender, isCommand);
 
@@ -36,7 +36,7 @@ namespace UnitatoBot.Command {
             if(!isCommand) return;
 
             // Parse the command name
-            string commandName = Expressions.CommandParser.Capture(e.Message.Text, "command");
+            string commandName = Expression.CommandParser.Capture(e.Message.Text, "command");
 
             // Find Command that maches the name or alias
             Command command = Commands.Find(x => x.Name == commandName || x.IsAlias(commandName));

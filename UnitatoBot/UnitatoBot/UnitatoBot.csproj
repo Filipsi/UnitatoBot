@@ -89,7 +89,8 @@
     <Compile Include="Command\Execution\Executors\InfoExecutor.cs" />
     <Compile Include="Command\Execution\Executors\LexiconExecutor.cs" />
     <Compile Include="Command\Execution\Executors\PraiseExecutor.cs" />
-    <Compile Include="Expressions.cs" />
+    <Compile Include="SymbolFactory.cs" />
+    <Compile Include="Expression.cs" />
     <Compile Include="Connector\IConnector.cs" />
     <Compile Include="Command\Execution\IExecutionHandler.cs" />
     <Compile Include="Unitato.cs" />
