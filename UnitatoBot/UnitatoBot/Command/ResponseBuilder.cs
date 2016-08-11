@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using UnitatoBot.Connector;
 
 namespace UnitatoBot.Command {
 
@@ -39,6 +40,13 @@ namespace UnitatoBot.Command {
 
             // Return the build responce string for further processing
             return responce;
+        }
+
+        public ConnectionMessage Send() {
+            if(ShouldDeleteMessage)
+                Context.SourceMessage.Delete();
+
+            return Context.SourceMessage.ConnectionProvider.SendMessage(Context.SourceMessage.Origin, Build()).Result;
         }
 
         // Content

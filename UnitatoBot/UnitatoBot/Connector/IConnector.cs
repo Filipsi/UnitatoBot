@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace UnitatoBot.Connector {
 
@@ -6,7 +7,7 @@ namespace UnitatoBot.Connector {
 
         event EventHandler<ConnectionMessageEventArgs> OnMessageReceived;
 
-        void SendMessage(string destination, string message);
+        Task<ConnectionMessage> SendMessage(string destination, string message);
 
     }
 

@@ -56,9 +56,9 @@ namespace UnitatoBot.Connector.Connectors {
 
         public event EventHandler<ConnectionMessageEventArgs> OnMessageReceived;
 
-        public void SendMessage(string destination, string text) {
+        public async Task<ConnectionMessage> SendMessage(string destination, string text) {
             Channel channel = Server.TextChannels.First(c => c.Id.ToString().Equals(destination));
-            if(channel != null) channel.SendMessage(text);
+            return channel != null ? new ConnectionMessage(this, await channel.SendMessage(text)) : null;
         }
 
     }

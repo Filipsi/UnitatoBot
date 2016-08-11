@@ -31,14 +31,19 @@ namespace UnitatoBot.Command.Execution.Executors {
         // Helpers
 
         public static string GetUptime() {
-            TimeSpan delta = DateTime.Now - StartTime;
+            return GetFormatedTime(DateTime.Now - StartTime);
+        }
 
-            string uptime = "";
-            if(delta.Days > 0)      uptime += string.Format("{0} day{1} ", delta.Days, delta.Days > 1 ? "s" : string.Empty);
-            if(delta.Hours > 0)     uptime += string.Format("{0} hour{1} ", delta.Hours, delta.Hours > 1 ? "s" : string.Empty);
-            if(delta.Minutes > 0)   uptime += string.Format("{0} minute{1} ", delta.Minutes, delta.Minutes > 1 ? "s" : string.Empty);
+        public static string GetFormatedTime(TimeSpan time) {
+            string text = "";
+            if(time.Days > 0)
+                text += string.Format("{0} day{1} ", time.Days, time.Days > 1 ? "s" : string.Empty);
+            if(time.Hours > 0)
+                text += string.Format("{0} hour{1} ", time.Hours, time.Hours > 1 ? "s" : string.Empty);
+            if(time.Minutes > 0)
+                text += string.Format("{0} minute{1} ", time.Minutes, time.Minutes > 1 ? "s" : string.Empty);
 
-            return uptime + string.Format("{0} second{1}", delta.Seconds, delta.Seconds > 1 ? "s" : string.Empty);
+            return text + string.Format("{0} second{1}", time.Seconds, time.Seconds > 1 ? "s" : string.Empty);
         }
 
     }

@@ -6,7 +6,7 @@ namespace UnitatoBot.Command.Execution.Executors {
 
     internal class BlameExecutor : IExecutionHandler {
 
-        public static readonly string DatePatten = @"d/M/yyyy hh:mm";
+        public static readonly string DatePatten = @"d/M/yyyy HH:mm";
 
         // IExecutionHandler
 
