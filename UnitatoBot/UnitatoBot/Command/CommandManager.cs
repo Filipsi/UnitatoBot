@@ -54,7 +54,7 @@ namespace UnitatoBot.Command {
             foreach(var enumerator in Commands.Select(x => x.GetExecutorsEnumerator()).AsEnumerable()) {
                 while(enumerator.MoveNext()) {
                     if(enumerator.Current is IInitializable) {
-                        ((IInitializable)enumerator.Current).Initialize();
+                        ((IInitializable)enumerator.Current).Initialize(this);
                         Console.WriteLine("Executor {0} was initialized", enumerator.Current.GetType().Name);
                     } else {
                         Console.WriteLine("Executor {0} is ready", enumerator.Current.GetType().Name);

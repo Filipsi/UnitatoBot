@@ -12,7 +12,7 @@ namespace UnitatoBot.Command.Execution.Executors {
 
         // IInitializable
 
-        public void Initialize() {
+        public void Initialize(CommandManager manager) {
             // Set up JsonSerializer
             this.Serializer = new JsonSerializer();
             this.Serializer.Formatting = Formatting.Indented;

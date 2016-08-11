@@ -9,7 +9,7 @@ namespace UnitatoBot.Command.Execution.Executors {
 
         // IInitializable
 
-        public void Initialize() {
+        public void Initialize(CommandManager manager) {
             this.Rng = new Random();
         }
 

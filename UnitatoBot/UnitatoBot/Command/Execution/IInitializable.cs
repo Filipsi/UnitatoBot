@@ -2,7 +2,7 @@
 
     interface IInitializable {
 
-        void Initialize();
+        void Initialize(CommandManager manager);
 
     }
 

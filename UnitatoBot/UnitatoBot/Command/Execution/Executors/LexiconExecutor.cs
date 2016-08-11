@@ -15,7 +15,7 @@ namespace UnitatoBot.Command.Execution.Executors {
 
         // IInitializable
 
-        public void Initialize() {
+        public void Initialize(CommandManager manager) {
             LexiconClient = new RestClient("http://lexicon.filipsi.net/php");
             RequestGetMenu = new RestRequest("menu/processor.php", Method.GET);
             RequestGetArticle = new RestRequest("articles/processor.php", Method.GET);
