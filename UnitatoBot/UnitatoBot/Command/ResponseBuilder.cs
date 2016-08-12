@@ -67,12 +67,12 @@ namespace UnitatoBot.Command {
         }
 
         public ResponseBuilder With(SymbolFactory.Emoji emoji) {
-            Builder.Append(SymbolFactory.AsString(emoji));
+            With(SymbolFactory.AsString(emoji));
             return this;
         }
 
         public ResponseBuilder With(SymbolFactory.Emoticon emoticon) {
-            Builder.Append(SymbolFactory.AsString(emoticon));
+            With(SymbolFactory.AsString(emoticon));
             return this;
         }
 
