@@ -52,14 +52,42 @@ namespace UnitatoBot.Connector.Connectors {
             };
         }
 
+        public async Task<Message> Send(string destination, string text) {
+            Channel channel = Server.TextChannels.First(c => c.Id.ToString().Equals(destination));
+            return channel != null ? await channel.SendMessage(text) : null;
+        }
+
         // IConnector
+
+        public string GetIdentificator() {
+            return Server.Id.ToString();
+        }
 
         public event EventHandler<ConnectionMessageEventArgs> OnMessageReceived;
 
-        public async Task<ConnectionMessage> SendMessage(string destination, string text) {
-            Channel channel = Server.TextChannels.First(c => c.Id.ToString().Equals(destination));
-            return channel != null ? new ConnectionMessage(this, await channel.SendMessage(text)) : null;
+        public ConnectionMessage SendMessage(string destination, string text) {
+            Message msg = Send(destination, text).Result;
+
+            if(msg == null)
+                return null;
+
+            // Oh god, this is wrong.
+            while(msg.Id == 0) {
+                /* NO-OP */
+            }
+
+            return new ConnectionMessage(this, msg);
         }
+
+        public ConnectionMessage FindMessage(string destination, string id) {
+            Channel channel = Server.TextChannels.First(c => c.Id.ToString().Equals(destination));
+
+            // Message has no data (https://github.com/RogueException/Discord.Net/blob/master/src/Discord.Net/Models/Channel.cs#L284)
+            Message msg = channel.GetMessage(Convert.ToUInt64(id));
+            
+            return channel == null ? null : new ConnectionMessage(this, msg);
+        }
+
 
     }
 

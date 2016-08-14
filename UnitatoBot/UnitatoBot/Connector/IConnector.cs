@@ -5,9 +5,13 @@ namespace UnitatoBot.Connector {
 
     internal interface IConnector {
 
+        string GetIdentificator();
+
         event EventHandler<ConnectionMessageEventArgs> OnMessageReceived;
 
-        Task<ConnectionMessage> SendMessage(string destination, string message);
+        ConnectionMessage SendMessage(string destination, string message);
+
+        ConnectionMessage FindMessage(string destination, string id);
 
     }
 

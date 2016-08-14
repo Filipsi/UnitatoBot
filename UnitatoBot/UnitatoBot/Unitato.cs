@@ -31,7 +31,8 @@ namespace UnitatoBot {
                 .RegisterCommand("emoticon", new EmoticonExecutor())
                     .WithAlias("e")
                 .RegisterCommand("burn", new BurnExecutor())
-                .RegisterCommand("timer", new TimerExecutor());
+                .RegisterCommand("timer", new TimerExecutor())
+                .RegisterCommand("checklist", new ChecklistExecutor());
             cmdManager.Begin();
 
             Console.ReadKey();

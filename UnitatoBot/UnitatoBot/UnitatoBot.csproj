@@ -75,11 +75,16 @@
     <Compile Include="Command\CommandManager.cs" />
     <Compile Include="Command\Execution\Executors\BlameExecutor.cs" />
     <Compile Include="Command\Execution\Executors\BurnExecutor.cs" />
+    <Compile Include="Command\Execution\Executors\ChecklistExecutor.cs" />
     <Compile Include="Command\Execution\Executors\EmoticonExecutor.cs" />
     <Compile Include="Command\Execution\Executors\TimerExecutor.cs" />
     <Compile Include="Command\Execution\Executors\UptimeExecutor.cs" />
     <Compile Include="Command\Execution\IInitializable.cs" />
     <Compile Include="Command\ResponseBuilder.cs" />
+    <Compile Include="Component\Checklist\Checklist.cs" />
+    <Compile Include="Component\Checklist\Entry.cs" />
+    <Compile Include="Component\Countdown\Countdown.cs" />
+    <Compile Include="Component\Countdown\StateChangedEventArgs.cs" />
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Connector\ConnectionMessage.cs" />
     <Compile Include="Connector\ConnectionMessageEventArgs.cs" />

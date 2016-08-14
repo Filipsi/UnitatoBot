@@ -35,7 +35,6 @@ namespace UnitatoBot.Command.Execution.Executors {
 
                 builder
                     .BuildAndSend();
-
             } else {
                 context.ResponseBuilder
                     .Block()

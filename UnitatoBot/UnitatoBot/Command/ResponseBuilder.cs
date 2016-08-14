@@ -6,15 +6,16 @@ namespace UnitatoBot.Command {
 
     internal class ResponseBuilder {
 
-        private CommandContext Context;
+        private ConnectionMessage Message;
         private StringBuilder Builder;
+        private bool HasNewline = false;
 
         public bool ShouldDeleteMessage { private set; get; }
 
-        public ResponseBuilder (CommandContext context, bool removeOriginalMessage = true) {
+        public ResponseBuilder(ConnectionMessage message, bool removeOriginalMessage = true) {
             this.Builder = new StringBuilder();
             this.ShouldDeleteMessage = removeOriginalMessage;
-            this.Context = context;
+            this.Message = message;
 	    }
 
         public ResponseBuilder KeepCommandMessage() {
@@ -30,13 +31,13 @@ namespace UnitatoBot.Command {
 
         public string BuildAndSend() {
             // Delete original message if needed
-            if(ShouldDeleteMessage) Context.SourceMessage.Delete();
+            if(ShouldDeleteMessage) Message.Delete();
 
             // Build the responce
             string responce = Build();
 
             // Send responce to the client
-            Context.SourceMessage.ConnectionProvider.SendMessage(Context.SourceMessage.Origin, responce);
+            Message.ConnectionProvider.SendMessage(Message.Origin, responce);
 
             // Return the build responce string for further processing
             return responce;
@@ -44,16 +45,19 @@ namespace UnitatoBot.Command {
 
         public ConnectionMessage Send() {
             if(ShouldDeleteMessage)
-                Context.SourceMessage.Delete();
+                Message.Delete();
 
-            return Context.SourceMessage.ConnectionProvider.SendMessage(Context.SourceMessage.Origin, Build()).Result;
+            return Message.ConnectionProvider.SendMessage(Message.Origin, Build());
         }
 
         // Content
 
         public ResponseBuilder With(string format, params object[] args) {
-            if(Builder.Length > 0) Builder.Append(" ");
+            if(Builder.Length > 0 && !HasNewline)
+                Builder.Append(" ");
+
             Builder.Append(string.Format(format, args));
+            HasNewline = false;
             return this;
         }
 
@@ -83,44 +87,45 @@ namespace UnitatoBot.Command {
         // Formating
 
         public ResponseBuilder Italic() {
-            Builder.Append("*");
+            With("*");
             return this;
         }
 
         public ResponseBuilder Bold() {
-            Builder.Append("**");
+            With("**");
             return this;
         }
 
         public ResponseBuilder Strikeout() {
-            Builder.Append("~~");
+            With("~~");
             return this;
         }
 
         public ResponseBuilder Underline() {
-            Builder.Append("__");
+            With("__");
             return this;
         }
 
         public ResponseBuilder Block() {
-            Builder.Append("`");
+            With("`");
             return this;
         }
 
         public ResponseBuilder MultilineBlock() {
-            Builder.Append("```");
+            With("```");
             return this;
         }
 
         // Utils
 
         public ResponseBuilder Username() {
-            With(Context.SourceMessage.Sender);
+            With(Message.Sender);
             return this;
         }
 
         public ResponseBuilder NewLine() {
             Builder.Append(Environment.NewLine);
+            HasNewline = true;
             return this;
         }
 

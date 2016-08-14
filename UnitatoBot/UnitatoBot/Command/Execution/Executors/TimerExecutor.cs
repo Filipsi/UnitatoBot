@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using UnitatoBot.Component.Countdown;
 using UnitatoBot.Connector;
 
 namespace UnitatoBot.Command.Execution.Executors {
@@ -30,15 +31,11 @@ namespace UnitatoBot.Command.Execution.Executors {
                 sec += res;
             }
 
-            
-
             Countdown countdown = new Countdown(TimeSpan.FromSeconds(sec));
 
             ConnectionMessage responce = context.ResponseBuilder
                 .With(SymbolFactory.Emoji.Stopwatch)
-                .With("Timer was set to")
-                .With(sec)
-                .With("seconds. Timer is running!")
+                .With("Timer was set to {0} seconds. Timer is running!", sec)
                 .Send();
 
             countdown.OnStateChanged += (sender, args) => {
@@ -53,7 +50,7 @@ namespace UnitatoBot.Command.Execution.Executors {
             return ExecutionResult.Success;
         }
 
-        // Utils
+        // Utilities
 
         public static int GetSecondsFromInput(string input) {
             int numeric;
@@ -71,65 +68,6 @@ namespace UnitatoBot.Command.Execution.Executors {
             }
 
             return -1;
-        }
-
-        // Countdown
-
-        public class Countdown {
-
-            public class StateChangedEventArgs : EventArgs {
-
-                public double   State       { private set; get; }
-                public string   Emoji       { private set; get; }
-                public TimeSpan Remining    { private set; get; }
-
-                public StateChangedEventArgs(Countdown countdown) {
-                    this.State = countdown.GetState();
-                    this.Emoji = string.Format(":clock{0}:", this.State);
-                    this.Remining = countdown.GetReminingTime();
-                }
-
-            }
-
-            private Timer Timer;
-            private TimeSpan Time;
-            private double ElapsedSeconds;
-            private double LastState;
-
-            public event EventHandler<StateChangedEventArgs> OnStateChanged;
-
-            public Countdown(TimeSpan time) {
-                ElapsedSeconds = 0;
-                Time = time;
-                Timer = new Timer(1000);
-                Timer.Elapsed += OnTimerElapsed;
-                Timer.Start();
-            }
-
-            private void OnTimerElapsed(object sender, ElapsedEventArgs e) {
-                if(ElapsedSeconds < Time.TotalSeconds) {
-                    ElapsedSeconds++;
-
-                    double state = GetState();
-                    if(state != LastState) {
-                        LastState = state;
-                        OnStateChanged(this, new StateChangedEventArgs(this));
-                    }
-                } else {
-                    Timer.Stop();
-                    Timer.Dispose();
-                    OnStateChanged(this, new StateChangedEventArgs(this));
-                }
-            }
-
-            public double GetState() {
-                return Math.Round(12 / 100F * (ElapsedSeconds / Time.TotalSeconds * 100F));
-            }
-
-            public TimeSpan GetReminingTime() {
-                return TimeSpan.FromSeconds(Time.TotalSeconds - ElapsedSeconds);
-            }
-
         }
 
     }

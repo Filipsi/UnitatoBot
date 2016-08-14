@@ -13,7 +13,8 @@ namespace UnitatoBot {
             BoxUnchecked,
             BoxChecked,
             Tada,
-            Stopwatch
+            Stopwatch,
+            Label
         }
 
         public enum Emoticon {
@@ -35,15 +36,17 @@ namespace UnitatoBot {
         public static string AsString(Emoji emoji) {
             switch(emoji) {
                 case Emoji.Checklist:
-                    return ":pencil:";
+                    return ":clipboard:";
                 case Emoji.BoxUnchecked:
-                    return ":white_large_square:";
+                    return ":white_medium_small_square:";
                 case Emoji.BoxChecked:
-                    return ":white_check_mark:";
+                    return ":black_medium_small_square:";
                 case Emoji.Tada:
                     return ":tada:";
                 case Emoji.Stopwatch:
                     return ":stopwatch:";
+                case Emoji.Label:
+                    return ":label:";
             }
 
             return string.Empty;

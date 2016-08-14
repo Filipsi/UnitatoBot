@@ -7,7 +7,7 @@ namespace UnitatoBot.Command {
         private ResponseBuilder _response;
         public ResponseBuilder ResponseBuilder {
             get {
-                if(_response == null) _response = new ResponseBuilder(this);
+                if(_response == null) _response = new ResponseBuilder(SourceMessage);
                 return _response;
             }
         }
