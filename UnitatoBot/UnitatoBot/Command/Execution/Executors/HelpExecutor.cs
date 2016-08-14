@@ -16,28 +16,27 @@ namespace UnitatoBot.Command.Execution.Executors {
 
         public ExecutionResult Execute(CommandContext context) {
             ResponseBuilder builder = context.ResponseBuilder
-                .With("Sure,")
-                .Space()
-                .Block()
-                    .Username()
-                .Block()
-                .With("here is a list of stuff I can do: ")
+                .Username()
+                .With(", here is a list of stuff I can do: ")
                 .With(SymbolFactory.Emoticon.Magic)
-                .MultilineBlock();
+                .NewLine()
+                .NewLine();
 
             foreach(Command entry in context.CommandManager) {
                 LinkedList<IExecutionHandler>.Enumerator enumerator = entry.GetExecutorsEnumerator();
                 while(enumerator.MoveNext()) {
-                    builder.With("/{0} {1}: {2}",
-                                entry.Name,
-                                entry.Aliases.Count > 0 ? "(" + string.Join(", ", entry.Aliases) + ")" : string.Empty,
-                                enumerator.Current.GetDescription())
-                           .NewLine();
+                    builder
+                        .Block()
+                            .With("/{0}", entry.Name)
+                        .Block()
+                        .With("{0}: {1}",
+                            entry.Aliases.Count > 0 ? "(alias: " + string.Join(", ", entry.Aliases) + ")" : string.Empty,
+                            enumerator.Current.GetDescription())
+                        .NewLine();
                 }
             }
 
             builder
-                .MultilineBlock()
                 .BuildAndSend();
 
             return ExecutionResult.Success;

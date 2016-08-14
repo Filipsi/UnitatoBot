@@ -27,7 +27,7 @@ namespace UnitatoBot.Command.Execution.Executors {
         // IExecutionHandler
 
         public string GetDescription() {
-            return "";
+            return "Create checklist with items that you can check out. To create a checklist use with argument 'create' [checklist-id] [title]. To add item to checklist use with argument 'add' [checklist-id](optional) [text]. To check or uncheck the item use with argument 'check' or 'uncheck' [checklist-id](optional) [item-index](from 0)";
         }
 
         public ExecutionResult CanExecute(CommandContext context) {

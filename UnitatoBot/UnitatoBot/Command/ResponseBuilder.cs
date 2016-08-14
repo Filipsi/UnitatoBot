@@ -116,16 +116,16 @@ namespace UnitatoBot.Command {
             return this;
         }
 
+        public ResponseBuilder NewLine() {
+            With(Environment.NewLine);
+            HasNewline = true;
+            return this;
+        }
+
         // Utils
 
         public ResponseBuilder Username() {
             With(Message.Sender);
-            return this;
-        }
-
-        public ResponseBuilder NewLine() {
-            Builder.Append(Environment.NewLine);
-            HasNewline = true;
             return this;
         }
 
