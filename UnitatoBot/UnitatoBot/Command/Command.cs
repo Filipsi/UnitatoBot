@@ -40,7 +40,7 @@ namespace UnitatoBot.Command {
             CommandContext context = new CommandContext(this, manager, message);
 
             if(ExecutorList.Count < 1) {
-                Console.WriteLine("An error occured while trying to execute {0} command. No executors found.", Name);
+                Logger.Error("No executors found while trying to execute {0} command. ", Name);
             }
 
             // Try to execute the command using all of its executors
@@ -51,9 +51,9 @@ namespace UnitatoBot.Command {
                 // If command is valid, execute it, if not show error message
                 if(result == ExecutionResult.Success) {
                     result = executor.Execute(context);
-                    Console.WriteLine("Execution using {0} of {1} ended with result {2}", executor.GetType().Name, context.ExecutionName, result);
+                    Logger.Log("Execution using {0} of {1} ended with result {2}", executor.GetType().Name, context.ExecutionName, result);
                 } else {
-                    Console.WriteLine("Execution using {0} of {1} failed the execution test with result {2}", executor.GetType().Name, context.ExecutionName, result);
+                    Logger.Log("Execution using {0} of {1} failed the execution test with result {2}", executor.GetType().Name, context.ExecutionName, result);
                 }
             }
 

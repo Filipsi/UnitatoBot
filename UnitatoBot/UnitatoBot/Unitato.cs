@@ -11,11 +11,15 @@ namespace UnitatoBot {
 
         static void Main(string[] args) {
 
+            Logger.Log("Initializing connectors");
+            Logger.SectionStart();
             IConnector connection = new DiscordConnector(
                 Config.GetEntry<string>("Email"),
                 Config.GetEntry<string>("Password"),
                 Config.GetEntry<ulong>("ServerUUID")
             );
+            Logger.SectionEnd();
+            Logger.Log("Connectors initialized");
 
             CommandManager cmdManager = new CommandManager(connection)
                 .RegisterCommand("unitato", new InfoExecutor())
@@ -32,8 +36,11 @@ namespace UnitatoBot {
                     .WithAlias("e")
                 .RegisterCommand("burn", new BurnExecutor())
                 .RegisterCommand("timer", new TimerExecutor())
-                .RegisterCommand("checklist", new ChecklistExecutor());
+                .RegisterCommand("checklist", new ChecklistExecutor())
+                    .WithAlias("list");
+
             cmdManager.Begin();
+            Logger.Log("Ready to go.");
 
             Console.ReadKey();
         }

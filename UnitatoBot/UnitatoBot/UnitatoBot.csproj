@@ -96,6 +96,7 @@
     <Compile Include="Command\Execution\Executors\InfoExecutor.cs" />
     <Compile Include="Command\Execution\Executors\LexiconExecutor.cs" />
     <Compile Include="Command\Execution\Executors\PraiseExecutor.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="SymbolFactory.cs" />
     <Compile Include="Expression.cs" />
     <Compile Include="Connector\IConnector.cs" />

@@ -21,16 +21,16 @@ namespace UnitatoBot.Connector.Connectors {
 
             // Bind trigger for the task to Ready event
             Client.Ready += (sender, args) => {
-                Console.WriteLine("{0} client is ready.", this.GetType().Name);
+                Logger.Log("{0} client is ready.", this.GetType().Name);
                 taskClientReady.SetResult(true);
             };
 
             // Try to connect, handle errors if any
             try {
                 Client.Connect(email, password);
-                Console.WriteLine("{0} connection sucessfully enstablished!", this.GetType().Name);
+                Logger.Log("{0} connection sucessfully enstablished!", this.GetType().Name);
             } catch(Exception e) {
-                Console.WriteLine("Something went wrong during {0} connection attempt!\n" + e.Message, this.GetType().Name);
+                Logger.Error("Something went wrong during {0} connection attempt!\n" + e.Message, this.GetType().Name);
             }
 
             // Wait until Client is ready
@@ -41,7 +41,7 @@ namespace UnitatoBot.Connector.Connectors {
 
             // Initializes event handlers 
             InitEventHandlers();
-            Console.WriteLine("{0} event handlers inicilized.", this.GetType().Name);
+            Logger.Log("{0} event handlers inicilized.", this.GetType().Name);
         }
 
         private void InitEventHandlers() {

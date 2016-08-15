@@ -111,10 +111,16 @@ namespace UnitatoBot.Command.Execution.Executors {
         private List<Checklist> LoadAll(CommandManager manager) {
             List <Checklist> list = new List<Checklist>();
 
+            StreamReader reader;
             foreach(FileInfo file in new DirectoryInfo("checklist").GetFiles("*.json", SearchOption.TopDirectoryOnly)) {
-                StreamReader reader = new StreamReader(file.FullName);
+                reader = new StreamReader(file.FullName);
 
                 Checklist checklist = JsonConvert.DeserializeObject<Checklist>(reader.ReadToEnd());
+
+                reader.Close();
+                reader.Dispose();
+
+                // This is only dummy message created by deserialization (contains Connection, Origin and Id)
                 ConnectionMessage container = checklist.Message;
 
                 IConnector connector = manager.FindConnector(container.Connection);
@@ -122,10 +128,9 @@ namespace UnitatoBot.Command.Execution.Executors {
                     checklist.Message = connector.FindMessage(container.Origin, container.Id);
                     list.Add(checklist);
                 }
-
-                reader.Close();
-                reader.Dispose();
             }
+
+            Logger.Info("Loaded {0} entr{1}", list.Count, list.Count == 1 ? "y" : "ies");
 
             return list;
         }

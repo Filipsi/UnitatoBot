@@ -121,11 +121,13 @@ namespace UnitatoBot.Command.Execution.Executors {
         private void LoadStorageData() {
             if(File.Exists("faggotpoints.json")) {
                 StreamReader storageFileReader = new StreamReader("faggotpoints.json", Encoding.UTF8);
-                this.JsonStatStorage = JObject.Parse(storageFileReader.ReadToEnd());
+                JsonStatStorage = JObject.Parse(storageFileReader.ReadToEnd());
                 storageFileReader.Close();
             } else {
-                this.JsonStatStorage = JObject.Parse("{}");
+                JsonStatStorage = JObject.Parse("{}");
             }
+
+            Logger.Info("Loaded {0} faggot entr{1}", JsonStatStorage.Count, JsonStatStorage.Count == 1 ? "y" : "ies");
         }
 
         private void SaveStorageData() {
