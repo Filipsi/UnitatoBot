@@ -21,7 +21,7 @@ namespace UnitatoBot.Command.Execution.Executors {
             if(!Directory.Exists("checklist"))
                 Directory.CreateDirectory("checklist");
 
-            Checklists = LoadAll(manager);
+            Checklists = LoadSaves(manager);
         }
 
         // IExecutionHandler
@@ -97,10 +97,18 @@ namespace UnitatoBot.Command.Execution.Executors {
 
             if(byte.TryParse(index, out i)) {
                 bool result = checklist.SetEntryState(i, state, msg.Sender);
-                checklist.UpdateMessage();
-
-                if(result)
+                
+                if(result) {
+                    checklist.UpdateMessage();
                     msg.Delete();
+                }
+
+                if(checklist.IsCompleted) {
+                    Checklists.Remove(checklist);
+                    checklist.Delete();
+                    checklist.UpdateMessage("Checklist was completed, no further edits can be made.");
+                    Logger.Info("Checklist {0} was deleted", checklist.Id);
+                }
 
                 return result;
             }
@@ -108,31 +116,27 @@ namespace UnitatoBot.Command.Execution.Executors {
             return false;
         }
 
-        private List<Checklist> LoadAll(CommandManager manager) {
-            List <Checklist> list = new List<Checklist>();
+        private List<Checklist> LoadSaves(CommandManager manager) {
+            Logger.SectionStart();
 
-            StreamReader reader;
+            List<Checklist> list = new List<Checklist>();
             foreach(FileInfo file in new DirectoryInfo("checklist").GetFiles("*.json", SearchOption.TopDirectoryOnly)) {
-                reader = new StreamReader(file.FullName);
+                Logger.Info("Loading file {0} ...", file);
 
-                Checklist checklist = JsonConvert.DeserializeObject<Checklist>(reader.ReadToEnd());
+                Checklist checklist = Checklist.LoadFrom(manager, file);
 
-                reader.Close();
-                reader.Dispose();
-
-                // This is only dummy message created by deserialization (contains Connection, Origin and Id)
-                ConnectionMessage container = checklist.Message;
-
-                IConnector connector = manager.FindConnector(container.Connection);
-                if(connector != null) {
-                    checklist.Message = connector.FindMessage(container.Origin, container.Id);
+                if(checklist != null)
                     list.Add(checklist);
-                }
             }
 
+            Logger.SectionEnd();
             Logger.Info("Loaded {0} entr{1}", list.Count, list.Count == 1 ? "y" : "ies");
 
             return list;
+        }
+
+        private void DeleteSave(Checklist list) {
+            
         }
  
     }

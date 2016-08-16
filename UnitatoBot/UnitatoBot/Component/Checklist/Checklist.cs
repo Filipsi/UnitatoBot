@@ -17,6 +17,12 @@ namespace UnitatoBot.Component.Checklist {
         public string               Title   { private set;  get; }
         public ConnectionMessage    Message { set;          get; }
 
+        public bool IsCompleted {
+            get {
+                return Entries.Count > 0 && Entries.Count(e => e.IsChecked) == Entries.Count;
+            }
+        }
+
         [JsonProperty]
         private List<Entry> Entries;
 
@@ -27,7 +33,7 @@ namespace UnitatoBot.Component.Checklist {
             Entries = new List<Entry>();
         }
 
-        public void UpdateMessage() {
+        public void UpdateMessage(string append = "") {
             if(Message == null)
                 return;
 
@@ -44,6 +50,9 @@ namespace UnitatoBot.Component.Checklist {
                 if(entry.IsChecked)
                     builder.With("(Checked by {0})", entry.CheckedBy);
             }
+
+            if(append != null || append != string.Empty || append != "")
+                builder.NewLine().With(append);
 
             Message.Edit(builder.Build());
         }
@@ -64,11 +73,44 @@ namespace UnitatoBot.Component.Checklist {
             return false;
         }
 
+        public static Checklist LoadFrom(CommandManager manager, FileInfo file) {
+            StreamReader reader = file.OpenText();
+            string data = reader.ReadToEnd();
+            reader.Close();
+            reader.Dispose();
+
+            Checklist checklist = JsonConvert.DeserializeObject<Checklist>(data);
+
+            // This is dummy message created by deserialization (contains connection, origin and id)
+            ConnectionMessage container = checklist.Message;
+            Logger.Info("Connection: {0}, Origin: {1}, Message: {2}", container.Connection, container.Origin, container.Id);
+
+            IConnector connector = manager.FindConnector(container.Connection);
+            if(connector != null) {
+                checklist.Message = connector.FindMessage(container.Origin, container.Id);
+                if(checklist.Message != null) {
+                    return checklist;
+                } else
+                    Logger.Warn("Message {0} not found", container.Id);
+            } else {
+                Logger.Warn("Connector {0} not found", container.Connection);
+            }
+
+            return null;
+        }
+
         public void Save() {
             StreamWriter writer = File.CreateText(Path.Combine("checklist", Id + ".json"));
             writer.Write(JsonConvert.SerializeObject(this, Formatting.Indented));
             writer.Close();
             writer.Dispose();
+        }
+
+        public void Delete() {
+            string path = Path.Combine("checklist", Id + ".json");
+
+            if(File.Exists(path))
+                File.Delete(path);
         }
 
     }

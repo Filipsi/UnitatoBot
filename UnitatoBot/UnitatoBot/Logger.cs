@@ -12,19 +12,23 @@ namespace UnitatoBot {
         private static byte Depth = 0;
 
         public static void Log(string entry, params object[] args) {
-            WriteLineColored(GetDepthIndentation() + string.Format(entry, args), ConsoleColor.Gray);
+            Print(ConsoleColor.Gray, entry, args);
         }
 
         public static void Info(string entry, params object[] args) {
-            WriteLineColored(GetDepthIndentation() + string.Format(entry, args), ConsoleColor.DarkGray);
+            Print(ConsoleColor.DarkGray, entry, args);
         }
 
         public static void Warn(string entry, params object[] args) {
-            WriteLineColored(GetDepthIndentation() + "[Warning]" + string.Format(entry, args), ConsoleColor.Yellow);
+            Print(ConsoleColor.Yellow, "[Warning] " + entry, args);
         }
 
         public static void Error(string entry, params object[] args) {
-            WriteLineColored(GetDepthIndentation() + "[Error]" + string.Format(entry, args), ConsoleColor.Red);
+            Print(ConsoleColor.Red, "[Error] " + entry, args);
+        }
+
+        private static void Print(ConsoleColor color, string entry, params object[] args) {
+            WriteLineColored(GetDepthIndentation() + string.Format(entry, args), color);
         }
 
         public static void SectionStart() {
