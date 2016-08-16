@@ -74,11 +74,11 @@ namespace UnitatoBot.Component.Checklist {
         }
 
         public static Checklist LoadFrom(CommandManager manager, FileInfo file) {
-            StreamReader reader = file.OpenText();
-            string data = reader.ReadToEnd();
-            reader.Close();
-            reader.Dispose();
-
+            string data = "{}";
+            using(StreamReader reader = file.OpenText()) {
+                data = reader.ReadToEnd();
+            }
+            
             Checklist checklist = JsonConvert.DeserializeObject<Checklist>(data);
 
             // This is dummy message created by deserialization (contains connection, origin and id)

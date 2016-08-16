@@ -134,10 +134,6 @@ namespace UnitatoBot.Command.Execution.Executors {
 
             return list;
         }
-
-        private void DeleteSave(Checklist list) {
-            
-        }
  
     }
 }

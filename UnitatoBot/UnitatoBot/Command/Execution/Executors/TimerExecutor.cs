@@ -41,9 +41,9 @@ namespace UnitatoBot.Command.Execution.Executors {
             countdown.OnStateChanged += (sender, args) => {
                 TimeSpan remining = args.Remining;
                 if(remining.TotalSeconds > 0) {
-                    responce.Edit(string.Format("{0} Timer is running! Time left: {1}", args.Emoji, UptimeExecutor.GetFormatedTime(remining)));
+                    responce.Edit(string.Format("{0} Timer is running! Time left: {1}", args.Icon, UptimeExecutor.GetFormatedTime(remining)));
                 } else {
-                    responce.Edit(string.Format("{0} Timer finished {1}", args.Emoji, DateTime.Now.ToString(BlameExecutor.DatePatten)));
+                    responce.Edit(string.Format("{0} Timer finished {1}", args.Icon, DateTime.Now.ToString(BlameExecutor.DatePatten)));
                 }
             };
 

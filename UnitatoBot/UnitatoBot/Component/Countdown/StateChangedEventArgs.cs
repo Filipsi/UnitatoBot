@@ -10,14 +10,14 @@ namespace UnitatoBot.Component.Countdown {
 
         public class StateChangedEventArgs : EventArgs {
 
-            public double State { private set; get; }
-            public string Emoji { private set; get; }
+            public double Stage { private set; get; }
+            public string Icon { private set; get; }
             public TimeSpan Remining { private set; get; }
 
             public StateChangedEventArgs(Countdown countdown) {
-                this.State = countdown.GetState();
-                this.Emoji = string.Format(":clock{0}:", this.State);
-                this.Remining = countdown.GetReminingTime();
+                this.Stage = countdown.Stage;
+                this.Icon = string.Format(":clock{0}:", this.Stage);
+                this.Remining = countdown.Remining;
             }
 
         }
