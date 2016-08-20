@@ -8,7 +8,7 @@ namespace UnitatoBot.Connector {
 
     internal interface IAudioCapability {
 
-        void SendAudio(string destination, string file);
+        bool SendAudio(string destination, string file);
 
     }
 

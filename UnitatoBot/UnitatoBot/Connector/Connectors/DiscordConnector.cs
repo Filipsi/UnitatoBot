@@ -11,12 +11,14 @@ namespace UnitatoBot.Connector.Connectors {
 
         private Server          Server;
         private DiscordClient   Client;
-        private AudioService    Audio; 
+        private AudioService    Audio;
+        private bool            IsPlayingAudio;
         private ulong           ServerId;
 
         public DiscordConnector(string email, string password, ulong serverId) {  
-            this.Client = new DiscordClient();
-            this.ServerId = serverId;
+            Client = new DiscordClient();
+            ServerId = serverId;
+            IsPlayingAudio = false;
 
             // Create a task that will trigger after Client fires Ready event
             TaskCompletionSource<bool> taskClientReady = new TaskCompletionSource<bool>();
@@ -73,8 +75,8 @@ namespace UnitatoBot.Connector.Connectors {
         private async void PlaySoundFile(Channel channel, string file) {
             // https://github.com/RogueException/Discord.Net/blob/master/src/Discord.Net.Audio/opus.dll
 
+            IsPlayingAudio = true;
             IAudioClient ac = await Audio.Join(channel);
-
             System.Threading.Thread.Sleep(250);
 
             var OutFormat = new WaveFormat(48000, 16, Audio.Config.Channels);
@@ -90,13 +92,14 @@ namespace UnitatoBot.Connector.Connectors {
                         for(int i = byteCount; i < blockSize; i++)
                             buffer[i] = 0;
                     }
+
                     ac.Send(buffer, 0, blockSize);
                 }
             }
 
             System.Threading.Thread.Sleep(1000);
-
             await ac.Disconnect();
+            IsPlayingAudio = false;
         }
 
         // IConnector
@@ -145,15 +148,19 @@ namespace UnitatoBot.Connector.Connectors {
 
         // IAudioCapability
 
-        public void SendAudio(string destination, string file) {
+        public bool SendAudio(string destination, string file) {
+            if(IsPlayingAudio)
+                return false;
+
             Channel channel = Server.VoiceChannels.FirstOrDefault(c => c.Name.ToString().Equals(destination));
 
             if(channel == null) {
                 Logger.Warn("Audio channel {0} not found!", destination);
-                return;
+                return false;
             }
 
             PlaySoundFile(channel, file);
+            return true;
         }
 
     }

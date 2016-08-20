@@ -40,8 +40,10 @@ namespace UnitatoBot.Component.Audio {
             }
         }
 
-        public void Play(IAudioCapability player, ResponseBuilder builder = null) {
-            if(builder != null) {
+        public bool Play(IAudioCapability player, ResponseBuilder builder = null) {
+            bool playing = player.SendAudio("General", Source);
+
+            if(builder != null && playing) {
                 ConnectionMessage msg = builder
                     .With(SymbolFactory.Emoji.Note)
                     .Block()
@@ -67,7 +69,7 @@ namespace UnitatoBot.Component.Audio {
                 t.Start();
             }
 
-            player.SendAudio("General", Source);
+            return playing;
         }
 
         public void Save() {
