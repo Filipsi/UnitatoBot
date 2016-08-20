@@ -37,7 +37,10 @@ namespace UnitatoBot {
                 .RegisterCommand("burn", new BurnExecutor())
                 .RegisterCommand("timer", new TimerExecutor())
                 .RegisterCommand("checklist", new ChecklistExecutor())
-                    .WithAlias("list");
+                    .WithAlias("list")
+                .RegisterCommand("sound", new SoundExecutor())
+                    .WithAlias("s")
+                    .WithAlias("play");
 
             cmdManager.Begin();
             Logger.Log("Ready to go.");

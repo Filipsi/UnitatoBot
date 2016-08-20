@@ -36,8 +36,16 @@
       <HintPath>..\packages\Discord.Net.0.9.4\lib\net45\Discord.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Discord.Net.Audio, Version=0.9.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Discord.Net.Audio.0.9.4\lib\net45\Discord.Net.Audio.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Ini.Net">
       <HintPath>..\packages\ini.net.1.1.0\lib\net20\Ini.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio, Version=1.7.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.7.3\lib\net35\NAudio.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -77,10 +85,12 @@
     <Compile Include="Command\Execution\Executors\BurnExecutor.cs" />
     <Compile Include="Command\Execution\Executors\ChecklistExecutor.cs" />
     <Compile Include="Command\Execution\Executors\EmoticonExecutor.cs" />
+    <Compile Include="Command\Execution\Executors\SoundExecutor.cs" />
     <Compile Include="Command\Execution\Executors\TimerExecutor.cs" />
     <Compile Include="Command\Execution\Executors\UptimeExecutor.cs" />
     <Compile Include="Command\Execution\IInitializable.cs" />
     <Compile Include="Command\ResponseBuilder.cs" />
+    <Compile Include="Component\Audio\Sound.cs" />
     <Compile Include="Component\Checklist\Checklist.cs" />
     <Compile Include="Component\Checklist\Entry.cs" />
     <Compile Include="Component\Countdown\Countdown.cs" />
@@ -96,6 +106,7 @@
     <Compile Include="Command\Execution\Executors\InfoExecutor.cs" />
     <Compile Include="Command\Execution\Executors\LexiconExecutor.cs" />
     <Compile Include="Command\Execution\Executors\PraiseExecutor.cs" />
+    <Compile Include="Connector\IAudioCapability.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="SymbolFactory.cs" />
     <Compile Include="Expression.cs" />
@@ -113,6 +124,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -7,18 +7,19 @@ namespace UnitatoBot.Command.Execution.Executors {
 
     internal class FaggotStatsExecutor : IExecutionHandler, IInitializable {
 
-        private JsonSerializer Serializer;
+        private static JsonSerializer SERIALIZER;
+
+        static FaggotStatsExecutor() {
+            SERIALIZER = new JsonSerializer();
+            SERIALIZER.Formatting = Formatting.Indented;
+        }
+
         private JObject JsonStatStorage;
 
         // IInitializable
 
         public void Initialize(CommandManager manager) {
-            // Set up JsonSerializer
-            this.Serializer = new JsonSerializer();
-            this.Serializer.Formatting = Formatting.Indented;
-
-            // Read storage file
-            LoadStorageData();
+            LoadFrom(new FileInfo("faggotpoints.json"));
         }
 
         // IExecutionHandler
@@ -102,7 +103,7 @@ namespace UnitatoBot.Command.Execution.Executors {
                 property.Value = new JValue(property.Value.ToObject<int>() + 1);
 
                 // Save stats to file
-                SaveStorageData();
+                Save();
 
                 // Build response
                 context.ResponseBuilder
@@ -118,11 +119,11 @@ namespace UnitatoBot.Command.Execution.Executors {
 
         // Helpers
 
-        private void LoadStorageData() {
-            if(File.Exists("faggotpoints.json")) {
-                StreamReader storageFileReader = new StreamReader("faggotpoints.json", Encoding.UTF8);
-                JsonStatStorage = JObject.Parse(storageFileReader.ReadToEnd());
-                storageFileReader.Close();
+        private void LoadFrom(FileInfo file) {
+            if(file.Exists) {
+                using(StreamReader storageFileReader = file.OpenText()) {
+                    JsonStatStorage = JObject.Parse(storageFileReader.ReadToEnd());
+                }
             } else {
                 JsonStatStorage = JObject.Parse("{}");
             }
@@ -130,10 +131,10 @@ namespace UnitatoBot.Command.Execution.Executors {
             Logger.Info("Loaded {0} faggot entr{1}", JsonStatStorage.Count, JsonStatStorage.Count == 1 ? "y" : "ies");
         }
 
-        private void SaveStorageData() {
-            StreamWriter fileWriter = File.CreateText("faggotpoints.json");
-            Serializer.Serialize(fileWriter, JsonStatStorage);
-            fileWriter.Close();
+        private void Save() {
+            using(StreamWriter fileWriter = File.CreateText("faggotpoints.json")) {
+                SERIALIZER.Serialize(fileWriter, JsonStatStorage);
+            }
         }
 
     }

@@ -12,9 +12,9 @@ namespace UnitatoBot {
             Checklist,
             BoxUnchecked,
             BoxChecked,
-            Tada,
             Stopwatch,
-            Label
+            Radio,
+            Note
         }
 
         public enum Emoticon {
@@ -41,12 +41,12 @@ namespace UnitatoBot {
                     return ":white_medium_small_square:";
                 case Emoji.BoxChecked:
                     return ":black_medium_small_square:";
-                case Emoji.Tada:
-                    return ":tada:";
                 case Emoji.Stopwatch:
                     return ":stopwatch:";
-                case Emoji.Label:
-                    return ":label:";
+                case Emoji.Radio:
+                    return ":radio:";
+                case Emoji.Note:
+                    return ":musical_score:";
             }
 
             return string.Empty;

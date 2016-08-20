@@ -39,7 +39,7 @@ namespace UnitatoBot.Configuration {
         }
 
         public static T GetEntry<T>(string key) {
-            return ConfigurationMapping.ContainsKey(key) ? (T) Convert.ChangeType(ConfigurationMapping[key], typeof(T)) : default(T);
+            return ConfigurationMapping.ContainsKey(key) && ConfigurationMapping[key] != "" ? (T) Convert.ChangeType(ConfigurationMapping[key], typeof(T)) : default(T);
         }
 
     }

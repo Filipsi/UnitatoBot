@@ -6,21 +6,19 @@ namespace UnitatoBot.Command {
 
     internal class ResponseBuilder {
 
-        private ConnectionMessage Message;
-        private StringBuilder Builder;
-        private bool HasNewline = false;
+        private ConnectionMessage   Message;
+        private StringBuilder       Builder     = new StringBuilder();
+        private bool                HasNewline  = false;
 
         public bool ShouldDeleteMessage { private set; get; }
 
         public ResponseBuilder(ConnectionMessage message, bool removeOriginalMessage = true) {
-            this.Builder = new StringBuilder();
-            this.ShouldDeleteMessage = removeOriginalMessage;
-            this.Message = message;
+            ShouldDeleteMessage = removeOriginalMessage;
+            Message = message;
 	    }
 
-        public ResponseBuilder KeepCommandMessage() {
+        public ResponseBuilder() {
             ShouldDeleteMessage = false;
-            return this;
         }
 
         // Build
@@ -30,20 +28,22 @@ namespace UnitatoBot.Command {
         }
 
         public string BuildAndSend() {
-            // Delete original message if needed
-            if(ShouldDeleteMessage) Message.Delete();
+            if(Message == null)
+                return Build();
 
-            // Build the responce
+            if(ShouldDeleteMessage)
+                Message.Delete();
+
             string responce = Build();
-
-            // Send responce to the client
             Message.ConnectionProvider.SendMessage(Message.Origin, responce);
 
-            // Return the build responce string for further processing
             return responce;
         }
 
         public ConnectionMessage Send() {
+            if(Message == null)
+                return null;
+
             if(ShouldDeleteMessage)
                 Message.Delete();
 
@@ -126,6 +126,16 @@ namespace UnitatoBot.Command {
 
         public ResponseBuilder Username() {
             With(Message.Sender);
+            return this;
+        }
+
+        public ResponseBuilder Clear() {
+            Builder.Clear();
+            return this;
+        }
+
+        public ResponseBuilder KeepSourceMessage() {
+            ShouldDeleteMessage = false;
             return this;
         }
 

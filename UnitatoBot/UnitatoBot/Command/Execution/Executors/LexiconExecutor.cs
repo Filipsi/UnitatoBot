@@ -44,7 +44,7 @@ namespace UnitatoBot.Command.Execution.Executors {
                         .Block()
                         .With("here is a list of articles that are available at lexicon.filipsi.net:")
                         .MultilineBlock()
-                            .With(String.Join(", ", menuEntries.Select(x => x.title)))
+                            .With(string.Join(", ", menuEntries.Select(x => x.title)))
                         .MultilineBlock()
                         .BuildAndSend();
                 });

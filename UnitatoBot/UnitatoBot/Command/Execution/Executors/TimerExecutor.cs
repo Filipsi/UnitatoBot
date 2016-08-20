@@ -22,7 +22,6 @@ namespace UnitatoBot.Command.Execution.Executors {
         }
 
         public ExecutionResult Execute(CommandContext context) {
-
             int sec = 0;
             foreach(string argument in context.Args) {
                 int res = GetSecondsFromInput(argument);

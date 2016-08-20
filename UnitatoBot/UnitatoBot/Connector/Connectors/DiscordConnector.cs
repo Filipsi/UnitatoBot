@@ -1,16 +1,18 @@
 ﻿using Discord;
+using Discord.Audio;
+using NAudio.Wave;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace UnitatoBot.Connector.Connectors {
 
-    internal class DiscordConnector : IConnector {
+    internal class DiscordConnector : IConnector, IAudioCapability {
 
-        public Server Server { private set; get; }
-
-        private DiscordClient Client;
-        private ulong ServerId;
+        private Server          Server;
+        private DiscordClient   Client;
+        private AudioService    Audio; 
+        private ulong           ServerId;
 
         public DiscordConnector(string email, string password, ulong serverId) {  
             this.Client = new DiscordClient();
@@ -36,8 +38,18 @@ namespace UnitatoBot.Connector.Connectors {
             // Wait until Client is ready
             while(!taskClientReady.Task.IsCompleted) { /* NO-OP */ }
 
-            // Retrives the channel where it should perform tasks
-            this.Server = Client.GetServer(serverId);
+            // Retrives server where it should perform tasks
+            Server = Client.GetServer(serverId);
+
+            // Audio service setup
+            Client.AddService(new AudioService(new AudioServiceConfigBuilder() {
+                Mode = AudioMode.Outgoing,
+                EnableEncryption = false,
+                Bitrate = 128
+            }));
+
+            // Retrives audio service from client
+            Audio = Client.GetService<AudioService>();
 
             // Initializes event handlers 
             InitEventHandlers();
@@ -52,9 +64,39 @@ namespace UnitatoBot.Connector.Connectors {
             };
         }
 
-        public async Task<Message> Send(string destination, string text) {
-            Channel channel = Server.TextChannels.First(c => c.Id.ToString().Equals(destination));
+        // Util
+
+        private async Task<Message> SendText(Channel channel, string text) {
             return channel != null ? await channel.SendMessage(text) : null;
+        }
+
+        private async void PlaySoundFile(Channel channel, string file) {
+            // https://github.com/RogueException/Discord.Net/blob/master/src/Discord.Net.Audio/opus.dll
+
+            IAudioClient ac = await Audio.Join(channel);
+
+            System.Threading.Thread.Sleep(250);
+
+            var OutFormat = new WaveFormat(48000, 16, Audio.Config.Channels);
+            using(var MP3Reader = new Mp3FileReader(file))
+            using(var resampler = new MediaFoundationResampler(MP3Reader, OutFormat)) {
+                resampler.ResamplerQuality = 60;
+                int blockSize = OutFormat.AverageBytesPerSecond / 50;
+                byte[] buffer = new byte[blockSize];
+                int byteCount;
+
+                while((byteCount = resampler.Read(buffer, 0, blockSize)) > 0) {
+                    if(byteCount < blockSize) {
+                        for(int i = byteCount; i < blockSize; i++)
+                            buffer[i] = 0;
+                    }
+                    ac.Send(buffer, 0, blockSize);
+                }
+            }
+
+            System.Threading.Thread.Sleep(1000);
+
+            await ac.Disconnect();
         }
 
         // IConnector
@@ -66,7 +108,14 @@ namespace UnitatoBot.Connector.Connectors {
         public event EventHandler<ConnectionMessageEventArgs> OnMessageReceived;
 
         public ConnectionMessage SendMessage(string destination, string text) {
-            Message msg = Send(destination, text).Result;
+            Channel channel = Server.TextChannels.First(c => c.Id.ToString().Equals(destination));
+
+            if(channel == null) {
+                Logger.Warn("Text channel {0} not found while sending message!", destination);
+                return null;
+            }
+
+            Message msg = SendText(channel, text).Result;
 
             if(msg == null)
                 return null;
@@ -80,14 +129,32 @@ namespace UnitatoBot.Connector.Connectors {
         }
 
         public ConnectionMessage FindMessage(string destination, string id) {
-            Channel channel = Server.TextChannels.First(c => c.Id.ToString().Equals(destination));
+            Channel channel = Server.TextChannels.FirstOrDefault(c => c.Id.ToString().Equals(destination));
+
+            if(channel == null) {
+                Logger.Warn("Text channel {0} not found while searching for message {1}", destination, id);
+                return null;
+            }
 
             // Message has no data (https://github.com/RogueException/Discord.Net/blob/master/src/Discord.Net/Models/Channel.cs#L284)
             Message msg = channel.GetMessage(Convert.ToUInt64(id));
             
-            return channel == null ? null : new ConnectionMessage(this, msg);
+            return msg == null ? null : new ConnectionMessage(this, msg);
         }
 
+
+        // IAudioCapability
+
+        public void SendAudio(string destination, string file) {
+            Channel channel = Server.VoiceChannels.FirstOrDefault(c => c.Name.ToString().Equals(destination));
+
+            if(channel == null) {
+                Logger.Warn("Audio channel {0} not found!", destination);
+                return;
+            }
+
+            PlaySoundFile(channel, file);
+        }
 
     }
 
