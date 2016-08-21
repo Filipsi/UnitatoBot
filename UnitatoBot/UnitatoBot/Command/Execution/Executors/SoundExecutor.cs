@@ -77,7 +77,7 @@ namespace UnitatoBot.Command.Execution.Executors {
                 if(metaFile.Exists) {
                     sound = Sound.LoadFrom(metaFile);
                 } else {
-                    Logger.Warn("Metadata file for {0} was not found, generating default ...", soundFile);
+                    Logger.Warn("Metadata file for {0} not found, generating default ...", soundFile);
                     sound = new Sound(soundFile);
                     sound.Save();
                 }

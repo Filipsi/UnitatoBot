@@ -43,11 +43,11 @@ namespace UnitatoBot.Connector {
         }
 
         public void Delete() {
-            this.DeleteHandler.Invoke();
+            DeleteHandler.Invoke();
         }
 
         public void Edit(string newText) {
-            this.EditHandler.Invoke(newText);
+           EditHandler.Invoke(newText);
         }
 
     }
