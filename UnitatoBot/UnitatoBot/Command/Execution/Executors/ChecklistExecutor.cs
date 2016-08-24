@@ -62,6 +62,7 @@ namespace UnitatoBot.Command.Execution.Executors {
                         Checklist checklist = Checklists.Find(c => c.Id.Equals(context.Args[1]));
 
                         if(checklist != null) {
+                            context.SourceMessage.Delete();
                             Checklists.Remove(checklist);
                             checklist.Delete();
                             checklist.UpdateMessage("Checklist was deleted, no further edits can be made.");
