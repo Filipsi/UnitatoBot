@@ -16,16 +16,14 @@ namespace UnitatoBot {
             .EndOfLine();
 
         public static VerbalExpressions CommandArgumentParser = new VerbalExpressions()
+            .AddModifier('m')
+            .AddModifier('s')
             .StartOfLine()
             .SomethingBut(" ")
             .Then(" ")
             .BeginCapture("args")
             .Something()
-            .Maybe(" ")
-            .Anything()
-            .Maybe(" ")
-            .EndCapture()
-            .EndOfLine();
+            .EndCapture();
 
     }
 

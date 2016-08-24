@@ -4,6 +4,8 @@ namespace UnitatoBot.Command.Execution.Executors {
 
     internal class HelpExecutor : IExecutionHandler {
 
+        private const byte SPLIT_AFTER = 7;
+
         // IExecutionHandler
 
         public string GetDescription() {
@@ -19,10 +21,18 @@ namespace UnitatoBot.Command.Execution.Executors {
                 .Username()
                 .With(", here is a list of stuff I can do: ")
                 .With(SymbolFactory.Emoticon.Magic)
-                .NewLine()
                 .NewLine();
 
+            byte printed = 0;
             foreach(Command entry in context.CommandManager) {
+
+                if(printed >= SPLIT_AFTER) {
+                    printed = 0;
+                    builder.BuildAndSend();
+                    builder = new ResponseBuilder(context.SourceMessage)
+                        .KeepSourceMessage();
+                }
+
                 LinkedList<IExecutionHandler>.Enumerator enumerator = entry.GetExecutorsEnumerator();
                 while(enumerator.MoveNext()) {
                     builder
@@ -34,10 +44,12 @@ namespace UnitatoBot.Command.Execution.Executors {
                             enumerator.Current.GetDescription())
                         .NewLine();
                 }
+                printed++;
+
             }
 
-            builder
-                .BuildAndSend();
+            if(printed > 0)
+                builder.BuildAndSend();
 
             return ExecutionResult.Success;
         }

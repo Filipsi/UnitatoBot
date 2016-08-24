@@ -57,9 +57,21 @@ namespace UnitatoBot.Component.Checklist {
             Message.Edit(builder.Build());
         }
 
-        public void AddEntry(string text) {
+        public void Add(string text, bool update = true) {
             Entries.Add(new Entry(text));
-            UpdateMessage();
+
+            if(update)
+                UpdateMessage();
+
+            Save();
+        }
+
+        public void Remove(byte index, bool update = true) {
+            Entries.RemoveAt(index);
+
+            if(update)
+                UpdateMessage();
+
             Save();
         }
 

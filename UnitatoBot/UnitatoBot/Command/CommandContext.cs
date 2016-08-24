@@ -1,4 +1,5 @@
-﻿using UnitatoBot.Connector;
+﻿using System.Text.RegularExpressions;
+using UnitatoBot.Connector;
 
 namespace UnitatoBot.Command {
 
@@ -21,13 +22,17 @@ namespace UnitatoBot.Command {
         public string            RawArguments    { private set; get; }
 
         public CommandContext(Command command, CommandManager manager, ConnectionMessage message) {
-            this.ExecutedCommand = command;
-            this.CommandManager = manager;
-            this.SourceMessage = message;
-            this.ExecutionName = Expression.CommandParser.Capture(this.SourceMessage.Text, "command");
-            this.HasArguments = Expression.CommandArgumentParser.Test(this.SourceMessage.Text);
-            this.RawArguments = Expression.CommandArgumentParser.Capture(this.SourceMessage.Text, "args");
-            this.Args = this.HasArguments ? RawArguments.Split(' ') : null;
+            ExecutedCommand = command;
+            CommandManager = manager;
+            SourceMessage = message;
+            ExecutionName = Expression.CommandParser.Capture(SourceMessage.Text, "command");
+            HasArguments = Expression.CommandArgumentParser.Test(SourceMessage.Text);
+
+            RawArguments = Expression.CommandArgumentParser.Capture(SourceMessage.Text, "args");
+            if(RawArguments != null && RawArguments != string.Empty)
+                RawArguments = Regex.Replace(RawArguments, @"\r\n?|\n", string.Empty);
+
+            Args = HasArguments ? RawArguments.Split(' ') : null;
         }
 
     }

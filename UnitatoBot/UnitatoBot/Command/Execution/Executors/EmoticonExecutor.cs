@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -40,7 +40,7 @@ namespace UnitatoBot.Command.Execution.Executors {
                     .Block()
                         .Username()
                     .Block()
-                    .With((SymbolFactory.Emoticon)SymbolFactory.FromName(context.Args[0]))
+                    .With(SymbolFactory.FromName(context.Args[0]))
                     .BuildAndSend();
             }
 
