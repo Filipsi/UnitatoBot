@@ -45,7 +45,8 @@ namespace UnitatoBot.Command.Execution.Executors {
                             .With(SymbolFactory.Emoji.Checklist)
                             .With("{0} (Checklist '{1}' by {2})", checklist.Title, checklist.Id, checklist.Owner)
                             .NewLine()
-                                .With("        Use '/checklist add [checklist-id] [text]' to add items to the checklist by id or '/checklist add [text]' to add item to the last checklist created.")
+                                .With("        Use '/checklist add [text]' to add item to last checklist (example: '/checklist add Hello world')")
+                                .With("        Use '/checklist import [separator] [text]' to add multiple items last checklist (example: '/checklist import - -item1-item2-item3')")
                                 .Send();
 
                         checklist.Message = msg;
