@@ -43,12 +43,16 @@ namespace UnitatoBot.Command.Execution.Executors {
                         ConnectionMessage msg = context.ResponseBuilder
                             .Space()
                             .With(SymbolFactory.Emoji.Checklist)
-                            .With("{0} (Checklist '{1}' by {2})", checklist.Title, checklist.Id, checklist.Owner)
+                            .With("{0} (Checklist", checklist.Title)
+                            .Block(checklist.Id)
+                            .With("by")
+                            .Block(checklist.Owner)
+                            .With(")")
                             .NewLine()
-                                .With("        Use '/checklist add [text]' to add item to last checklist (example: '/checklist add Hello world')")
-                                .NewLine()
-                                .With("        Use '/checklist import [separator] [text]' to add multiple items to last checklist (example: '/checklist import - item1-item2-item3')")
-                                .Send();
+                                .Space(8).With("Use").Block("!checklist add [text]").With("to add item to last checklist (example: '!checklist add Hello world')")
+                            .NewLine()
+                                .Space(8).With("Use").Block("!checklist import [separator] [text]").With("to add multiple items to last checklist (example: '!checklist import - item1-item2-item3')")
+                            .Send();
 
                         checklist.Message = msg;
                         Checklists.Add(checklist);
@@ -66,8 +70,8 @@ namespace UnitatoBot.Command.Execution.Executors {
                         if(checklist != null) {
                             context.SourceMessage.Delete();
                             Checklists.Remove(checklist);
+                            checklist.Message.Delete();
                             checklist.Delete();
-                            checklist.UpdateMessage("Checklist was deleted, no further edits can be made.");
                             Logger.Info("Checklist {0} was deleted", checklist.Id);
                             return ExecutionResult.Success;
                         }

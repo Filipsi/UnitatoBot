@@ -90,16 +90,6 @@ namespace UnitatoBot.Command {
             return this;
         }
 
-        public ResponseBuilder Block(string format, params object[] args) {
-            Block().With(format, args).Block();
-            return this;
-        }
-
-        public ResponseBuilder Block(object entry) {
-            Block().With(entry).Block();
-            return this;
-        }
-
         public ResponseBuilder Space(short repeat = 1) {
             return With(' ', repeat);
         }
@@ -118,6 +108,7 @@ namespace UnitatoBot.Command {
 
         public ResponseBuilder Strikeout() {
             With("~~");
+            SkipSpace = true;
             return this;
         }
 
@@ -140,6 +131,38 @@ namespace UnitatoBot.Command {
         public ResponseBuilder NewLine() {
             With(Environment.NewLine);
             SkipSpace = true;
+            return this;
+        }
+
+        // Formating contnet
+
+        public ResponseBuilder MultilineBlock(string format, params object[] args) {
+            MultilineBlock().With(format, args).MultilineBlock();
+            return this;
+        }
+
+        public ResponseBuilder MultilineBlock(object entry) {
+            MultilineBlock().With(entry).MultilineBlock();
+            return this;
+        }
+
+        public ResponseBuilder Block(string format, params object[] args) {
+            Block().With(format, args).Block();
+            return this;
+        }
+
+        public ResponseBuilder Block(object entry) {
+            Block().With(entry).Block();
+            return this;
+        }
+
+        public ResponseBuilder Bold(string format, params object[] args) {
+            Bold().With(format, args).Bold();
+            return this;
+        }
+
+        public ResponseBuilder Bold(object entry) {
+            Bold().With(entry).Bold();
             return this;
         }
 

@@ -39,13 +39,9 @@ namespace UnitatoBot.Command.Execution.Executors {
 
                     // Print out list of articles separated by commas
                     context.ResponseBuilder
-                        .Block()
-                            .Username()
-                        .Block()
-                        .With("here is a list of articles that are available at lexicon.filipsi.net:")
-                        .MultilineBlock()
-                            .With(string.Join(", ", menuEntries.Select(x => x.title)))
-                        .MultilineBlock()
+                        .Username()
+                        .With("here is a list of articles that are available at http://lexicon.filipsi.net")
+                        .MultilineBlock(string.Join(", ", menuEntries.Select(x => x.title)))
                         .BuildAndSend();
                 });
 
@@ -73,18 +69,16 @@ namespace UnitatoBot.Command.Execution.Executors {
                     articleText = Regex.Replace(articleText, "<.*?>", String.Empty);
                     // Remove Empty lines
                     articleText = Regex.Replace(articleText, @"^\s+$[\r\n]*", "", RegexOptions.Multiline);
+                    // Remove newlines
+                    articleText = articleText.Replace(Environment.NewLine, string.Empty);
 
                     context.ResponseBuilder
-                        .Block()
-                            .Username()
-                            .With("requested article {0} from Lexicon", article.title)
-                        .Block()
-                        .Space()
+                        .Username()
+                        .With("requested article")
+                        .Block(article.title)
+                        .With("from Lexicon")
                         .With("http://lexicon.filipsi.net/#article/{0}", article.id)
-                        .Space()
-                        .MultilineBlock()
-                            .With(articleText)
-                        .MultilineBlock()
+                        .MultilineBlock(articleText)
                         .BuildAndSend();
                 });
 

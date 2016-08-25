@@ -11,7 +11,8 @@ namespace UnitatoBot.Command.Execution.Executors {
 
     internal class TimerExecutor : IExecutionHandler {
 
-        public static readonly string DatePatten = @"d/M/yyyy HH:mm";
+        public static readonly string DatePattenFull = @"d/M/yyyy HH:mm:ss";
+        public static readonly string DatePattenTime = @"HH:mm:ss";
 
         // IExecutionHandler
 
@@ -32,20 +33,54 @@ namespace UnitatoBot.Command.Execution.Executors {
                 sec += res;
             }
 
-            Countdown countdown = new Countdown(TimeSpan.FromSeconds(sec));
+
+            TimeSpan runTime = TimeSpan.FromSeconds(sec);
+            DateTime finishTime = DateTime.Now.Add(runTime);
+            Countdown countdown = new Countdown(runTime);
 
             ConnectionMessage responce = context.ResponseBuilder
                 .With(SymbolFactory.Emoji.Stopwatch)
-                .With("Timer was set to {0} seconds. Timer is running!", sec)
+                .Username()
+                .With("created timer that will run for")
+                .Block(UptimeExecutor.GetFormatedTime(runTime))
+                .With("and will finish at")
+                .Block(finishTime.ToString(DatePattenFull))
                 .Send();
 
             countdown.OnStateChanged += (sender, args) => {
                 TimeSpan remining = args.Remining;
+
                 if(remining.TotalSeconds > 0) {
-                    responce.Edit(string.Format("{0} Timer is running! Time left: {1}", args.Icon, UptimeExecutor.GetFormatedTime(remining)));
+                    context.ResponseBuilder
+                        .Clear()
+                        .With(args.Icon)
+                        .With("Timer created by")
+                        .Username()
+                        .With("is running!")
+                        .NewLine()
+                        .Space(8)
+                        .With("Time left")
+                        .Block(UptimeExecutor.GetFormatedTime(remining))
+                        .With("; Will finish at ")
+                        .Block(finishTime.ToString(DatePattenTime))
+                        .With("; Updated")
+                        .Block(DateTime.Now.ToString(DatePattenTime));
                 } else {
-                    responce.Edit(string.Format("{0} Timer finished {1}", args.Icon, DateTime.Now.ToString(DatePatten)));
+                    context.ResponseBuilder
+                        .Clear()
+                        .With(args.Icon)
+                        .With("Timer created by")
+                        .Username()
+                        .With("finished.")
+                        .NewLine()
+                        .Space(8)
+                        .With("Time passed")
+                        .Block(UptimeExecutor.GetFormatedTime(runTime))
+                        .With("; Timer finised")
+                        .Block(finishTime.ToString(DatePattenFull));
                 }
+
+                responce.Edit(context.ResponseBuilder.Build());
             };
 
             return ExecutionResult.Success;

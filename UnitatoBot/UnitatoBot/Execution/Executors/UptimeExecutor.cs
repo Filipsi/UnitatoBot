@@ -9,7 +9,7 @@ namespace UnitatoBot.Command.Execution.Executors {
         // IExecutionHandler
 
         public string GetDescription() {
-            return "Prints out uptime of the application";
+            return "Prints out uptime of the bot";
         }
 
         public ExecutionResult CanExecute(CommandContext context) {
@@ -19,11 +19,9 @@ namespace UnitatoBot.Command.Execution.Executors {
         public ExecutionResult Execute(CommandContext context) {
             string uptime = GetUptime();
             context.ResponseBuilder
-                .Block()
-                    .Username()
-                .Block()
-                .Space()
-                .With("I am here for " + GetUptime())
+                .Username()
+                .With("I am here for")
+                .Block(GetUptime())
                 .BuildAndSend();
             return ExecutionResult.Success;
         }
@@ -42,8 +40,10 @@ namespace UnitatoBot.Command.Execution.Executors {
                 text += string.Format("{0} hour{1} ", time.Hours, time.Hours > 1 ? "s" : string.Empty);
             if(time.Minutes > 0)
                 text += string.Format("{0} minute{1} ", time.Minutes, time.Minutes > 1 ? "s" : string.Empty);
+            if(time.Seconds > 0)
+                text += string.Format("{0} second{1}", time.Seconds, time.Seconds > 1 ? "s" : string.Empty);
 
-            return text + string.Format("{0} second{1}", time.Seconds, time.Seconds > 1 ? "s" : string.Empty);
+            return text;
         }
 
     }

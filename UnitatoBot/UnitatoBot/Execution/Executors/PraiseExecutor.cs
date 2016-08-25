@@ -27,19 +27,15 @@ namespace UnitatoBot.Command.Execution.Executors {
         }
 
         public ExecutionResult Execute(CommandContext context) {
-            Log(context.ResponseBuilder
-                .Block()
-                    .Username()
-                    .With("is praising")
-                .Block()
+            context.ResponseBuilder
+                .Username()
+                .With("is praising!")
+                .Space(5)
                 .With(SymbolFactory.Emoticon.Dance)
-                .Space()
-                .Bold()
-                    .With("Praise the {0}", context.HasArguments ? context.RawArguments : GenerateDan())
-                .Bold()
-                .Space()
+                .With("Praise the")
+                .Bold(context.HasArguments ? context.RawArguments : GenerateDan())
                 .With(SymbolFactory.Emoticon.Praise)
-                .BuildAndSend());
+                .BuildAndSend();
             return ExecutionResult.Success;
         }
 
@@ -52,12 +48,6 @@ namespace UnitatoBot.Command.Execution.Executors {
             }
 
             return new String(dan);
-        }
-
-        private void Log(string blame) {
-            StreamWriter logger = new StreamWriter("praising.txt", true, Encoding.UTF8);
-            logger.WriteLine(string.Format("[{0}] {1}", DateTime.Now.ToString(DatePatten), blame));
-            logger.Close();
         }
 
     }

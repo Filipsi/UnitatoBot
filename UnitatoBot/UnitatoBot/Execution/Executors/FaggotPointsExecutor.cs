@@ -39,31 +39,27 @@ namespace UnitatoBot.Command.Execution.Executors {
             // Print out all statistics
             // /faggot
             if(!context.HasArguments) {
-                // Build common part of response
                 ResponseBuilder builder = context.ResponseBuilder
-                    .Block()
-                        .Username()
-                        .With("requested list of faggots")
-                    .Block()
-                    .Space();
+                    .Username()
+                    .With("wants to know how much of a faggots you people are.");
 
-                // If there are no entries in stats, builds response
                 if(!JsonStatStorage.HasValues) {
-                    builder.With(SymbolFactory.Emoticon.But).With("There are no faggots.").BuildAndSend();
+                    builder
+                        .NewLine()
+                        .Space(8)
+                        .With(SymbolFactory.Emoticon.But)
+                        .With("There are no faggots.")
+                        .BuildAndSend();
                     return ExecutionResult.Success;
                 }
 
-                // Add each entry in stats to the response
-                builder.MultilineBlock();
+                builder.TableStart(20, "Name", "Points");
                 foreach(JProperty property in JsonStatStorage.Properties()) {
-                    int value = property.Value.ToObject<int>();
-                    builder.With("{0} has {1} point{2}", property.Name, value, value > 1 ? "s" : string.Empty)
-                           .NewLine();
+                    builder.TableRow(property.Name, property.Value.ToString());
                 }
-                builder.MultilineBlock();
 
-                // Build response
-                builder.BuildAndSend();
+                builder.TableEnd()
+                    .BuildAndSend();
                 return ExecutionResult.Success;
             }
             // Print out single statistic
@@ -71,19 +67,16 @@ namespace UnitatoBot.Command.Execution.Executors {
             else if(context.Args[0].Equals("stats") && context.Args.Length == 2) {
                 JProperty property = JsonStatStorage.Property(context.Args[1].ToLower());
 
-                // Check if there is faggot in stats with name specified by command's second argument
                 if(property == null) return ExecutionResult.Fail;
 
-                // Gets the property value as int
-                int value = property.Value.ToObject<int>();
-
-                // Build response
+                int points = property.Value.ToObject<int>();
                 context.ResponseBuilder
-                    .Block()
-                        .Username()
-                        .With("requested faggot statistics,")
-                        .With("{0} has {1} point{2}", context.Args[1], value, value > 1 ? "s" : string.Empty)
-                    .Block()
+                    .Username()
+                    .With("wants to know how much of a faggot")
+                    .Block(context.Args[1])
+                    .With("are. User has")
+                    .Block(points)
+                    .With("point{0}", points > 1 ? "s." : ".")
                     .BuildAndSend();
                 return ExecutionResult.Success;
             } 
@@ -99,18 +92,15 @@ namespace UnitatoBot.Command.Execution.Executors {
                     property = JsonStatStorage.Property(name);
                 }
 
-                // Add one faggotpoint
                 property.Value = new JValue(property.Value.ToObject<int>() + 1);
 
-                // Save stats to file
                 Save();
 
-                // Build response
                 context.ResponseBuilder
-                    .Block()
-                        .Username()
-                        .With("marked {0} as faggot", context.Args[0])
-                    .Block()
+                    .Username()
+                    .With("marked")
+                    .Block(context.Args[0])
+                    .With("as faggot")
                     .BuildAndSend();
 
                 return ExecutionResult.Success;
