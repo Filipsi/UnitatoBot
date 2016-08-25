@@ -6,12 +6,10 @@ namespace UnitatoBot {
 
         public static VerbalExpressions CommandParser = new VerbalExpressions()
             .StartOfLine()
-            .AnyOf("/:")
+            .Then("!")
             .BeginCapture("command")
             .SomethingBut(" ")
             .EndCapture()
-            .Maybe(":")
-            .Maybe(" ")
             .Anything()
             .EndOfLine();
 

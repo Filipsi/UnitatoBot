@@ -35,20 +35,23 @@ namespace UnitatoBot.Command.Execution.Executors {
 
         public ExecutionResult Execute(CommandContext context) {
             if(context.Args[0].Equals("list")) {
-                context.ResponseBuilder
-                        .Block()
-                            .Username()
-                        .Block()
-                        .With("here is a list of sounds I can play:")
-                        .NewLine();
+                ResponseBuilder builder = context.ResponseBuilder
+                    .Username()
+                    .With("there {0}", Sounds.Count > 1 ? "are" : "is")
+                    .Block(Sounds.Count)
+                    .With("sounds that you can play.");
+
+                builder
+                    .TableStart(25, "Name", "Alias");
 
                 foreach(Sound sound in Sounds) {
-                    context.ResponseBuilder
-                        .With(sound.Name + (sound.Alias.Length > 0 ? string.Format(" (alias: {0})", string.Join(", ", sound.Alias)) : string.Empty))
-                        .NewLine();
+                    builder
+                        .TableRow(sound.Name, string.Join(",", sound.Alias));
                 }
 
-                context.ResponseBuilder.BuildAndSend();
+                builder
+                    .TableEnd()
+                    .BuildAndSend();
             } else {
                 return PlaySound((IAudioCapability)context.SourceMessage.ConnectionProvider, context.SourceMessage, context.Args[0]) ? ExecutionResult.Success : ExecutionResult.Denied;
             }

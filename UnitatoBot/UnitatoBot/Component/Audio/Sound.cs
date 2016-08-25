@@ -45,24 +45,25 @@ namespace UnitatoBot.Component.Audio {
 
             if(playing) {
                 ResponseBuilder builder = new ResponseBuilder(requestMessage);
+
                 ConnectionMessage msg = builder
                     .With(SymbolFactory.Emoji.Note)
-                    .Block()
-                        .Username()
-                    .Block()
-                    .With("Playing sound {0} ({1})", Name, Length.ToString("mm':'ss"))
+                    .Username()
+                    .With("is playing sound")
+                    .Block(Name)
+                    .With("with length")
+                    .Block(Length.ToString("mm':'ss"))
                     .Send();
 
                 Timer t = new Timer();
-                t.Interval = Length.TotalMilliseconds + 1250;
+                t.Interval = Length.TotalMilliseconds + 1000;
                 t.Elapsed += (sender, args) => {
                     builder
                         .Clear()
                         .With(SymbolFactory.Emoji.Note)
-                        .Block()
-                            .Username()
-                        .Block()
-                        .With("Played sound {0}.", Name);
+                        .Username()
+                        .With("played sound")
+                        .Block(Name);
 
                     msg.Edit(builder.Build());
                     t.Dispose();
