@@ -14,9 +14,9 @@ namespace UnitatoBot.Command {
         private List<Command> Commands;
 
         public CommandManager(params IConnector[] connectors) {
-            this.Commands = new List<Command>();
-            this.IsReady = false;
-            this.ServiceConnectors = connectors;
+            Commands = new List<Command>();
+            IsReady = false;
+            ServiceConnectors = connectors;
 
             // Bind IConnector's message event
             foreach(IConnector connector in connectors) {

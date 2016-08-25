@@ -40,7 +40,8 @@ namespace UnitatoBot.Command.Execution.Executors {
                     .Block()
                         .Username()
                     .Block()
-                    .With(SymbolFactory.FromName(context.Args[0]))
+                    .With("({0})", context.Args[0].ToLower())
+                    .With((SymbolFactory.Emoticon)SymbolFactory.FromName(context.Args[0]))
                     .BuildAndSend();
             }
 

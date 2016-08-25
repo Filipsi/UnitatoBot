@@ -3,6 +3,16 @@ using System;
 
 namespace UnitatoBot.Connector {
 
+    internal class ConnectionMessageEventArgs : EventArgs {
+
+        public ConnectionMessage Message { private set; get; }
+
+        public ConnectionMessageEventArgs(ConnectionMessage msg) {
+            Message = msg;
+        }
+
+    }
+
     [JsonObject(MemberSerialization.OptIn)]
     internal class ConnectionMessage {
 

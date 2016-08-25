@@ -13,7 +13,7 @@ namespace UnitatoBot {
 
             Logger.Log("Initializing connectors");
             Logger.SectionStart();
-            IConnector connection = new DiscordConnector(Config.GetEntry<string>("Token"));
+            IConnector connection = new DiscordConnector(Configuration.Configuration.Settings.Token);
             Logger.SectionEnd();
             Logger.Log("Connectors initialized");
 
@@ -25,12 +25,10 @@ namespace UnitatoBot {
                     .WithAlias("dice")
                 .RegisterCommand("praise", new PraiseExecutor())
                     .WithAlias("dan")
-                .RegisterCommand("blame", new BlameExecutor())
                 .RegisterCommand("faggot", new FaggotStatsExecutor())
                 .RegisterCommand("lexicon", new LexiconExecutor())
                 .RegisterCommand("emoticon", new EmoticonExecutor())
                     .WithAlias("e")
-                .RegisterCommand("burn", new BurnExecutor())
                 .RegisterCommand("timer", new TimerExecutor())
                 .RegisterCommand("checklist", new ChecklistExecutor())
                     .WithAlias("list")

@@ -6,6 +6,8 @@ namespace UnitatoBot.Command.Execution.Executors {
 
     internal class PraiseExecutor : IExecutionHandler, IInitializable {
 
+        public static readonly string DatePatten = @"d/M/yyyy HH:mm";
+
         private Random Rng;
 
         // IInitializable
@@ -54,7 +56,7 @@ namespace UnitatoBot.Command.Execution.Executors {
 
         private void Log(string blame) {
             StreamWriter logger = new StreamWriter("praising.txt", true, Encoding.UTF8);
-            logger.WriteLine(string.Format("[{0}] {1}", DateTime.Now.ToString(BlameExecutor.DatePatten), blame));
+            logger.WriteLine(string.Format("[{0}] {1}", DateTime.Now.ToString(DatePatten), blame));
             logger.Close();
         }
 

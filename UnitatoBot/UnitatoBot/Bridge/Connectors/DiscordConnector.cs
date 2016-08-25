@@ -29,8 +29,8 @@ namespace UnitatoBot.Connector.Connectors {
 
             // Try to connect, handle errors if any
             try {
+                Logger.Log("Atempting to log in ...");
                 Client.Connect(token);
-                Logger.Log("{0} connection sucessfully enstablished!", this.GetType().Name);
             } catch(Exception e) {
                 Logger.Error("Something went wrong during {0} connection attempt!\n" + e.Message, this.GetType().Name);
             }

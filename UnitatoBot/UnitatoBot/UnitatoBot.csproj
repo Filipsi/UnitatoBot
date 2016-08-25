@@ -40,9 +40,6 @@
       <HintPath>..\packages\Discord.Net.Audio.0.9.4\lib\net45\Discord.Net.Audio.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Ini.Net">
-      <HintPath>..\packages\ini.net.1.1.0\lib\net20\Ini.Net.dll</HintPath>
-    </Reference>
     <Reference Include="NAudio, Version=1.7.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NAudio.1.7.3\lib\net35\NAudio.dll</HintPath>
       <Private>True</Private>
@@ -81,37 +78,34 @@
     <Compile Include="Command\Command.cs" />
     <Compile Include="Command\CommandContext.cs" />
     <Compile Include="Command\CommandManager.cs" />
-    <Compile Include="Command\Execution\Executors\BlameExecutor.cs" />
-    <Compile Include="Command\Execution\Executors\BurnExecutor.cs" />
-    <Compile Include="Command\Execution\Executors\ChecklistExecutor.cs" />
-    <Compile Include="Command\Execution\Executors\EmoticonExecutor.cs" />
-    <Compile Include="Command\Execution\Executors\SoundExecutor.cs" />
-    <Compile Include="Command\Execution\Executors\TimerExecutor.cs" />
-    <Compile Include="Command\Execution\Executors\UptimeExecutor.cs" />
-    <Compile Include="Command\Execution\IInitializable.cs" />
+    <Compile Include="Execution\Executors\ChecklistExecutor.cs" />
+    <Compile Include="Execution\Executors\EmoticonExecutor.cs" />
+    <Compile Include="Execution\Executors\SoundExecutor.cs" />
+    <Compile Include="Execution\Executors\TimerExecutor.cs" />
+    <Compile Include="Execution\Executors\UptimeExecutor.cs" />
+    <Compile Include="Execution\IInitializable.cs" />
     <Compile Include="Command\ResponseBuilder.cs" />
     <Compile Include="Component\Audio\Sound.cs" />
     <Compile Include="Component\Checklist\Checklist.cs" />
     <Compile Include="Component\Checklist\Entry.cs" />
     <Compile Include="Component\Countdown\Countdown.cs" />
     <Compile Include="Component\Countdown\StateChangedEventArgs.cs" />
-    <Compile Include="Configuration\Config.cs" />
-    <Compile Include="Connector\ConnectionMessage.cs" />
-    <Compile Include="Connector\ConnectionMessageEventArgs.cs" />
-    <Compile Include="Connector\Connectors\DiscordConnector.cs" />
-    <Compile Include="Command\Execution\ExecutionResult.cs" />
-    <Compile Include="Command\Execution\Executors\DiceExecutor.cs" />
-    <Compile Include="Command\Execution\Executors\FaggotPointsExecutor.cs" />
-    <Compile Include="Command\Execution\Executors\HelpExecutor.cs" />
-    <Compile Include="Command\Execution\Executors\InfoExecutor.cs" />
-    <Compile Include="Command\Execution\Executors\LexiconExecutor.cs" />
-    <Compile Include="Command\Execution\Executors\PraiseExecutor.cs" />
-    <Compile Include="Connector\IAudioCapability.cs" />
+    <Compile Include="Configuration\Configuration.cs" />
+    <Compile Include="Bridge\ConnectionMessage.cs" />
+    <Compile Include="Bridge\Connectors\DiscordConnector.cs" />
+    <Compile Include="Execution\ExecutionResult.cs" />
+    <Compile Include="Execution\Executors\DiceExecutor.cs" />
+    <Compile Include="Execution\Executors\FaggotPointsExecutor.cs" />
+    <Compile Include="Execution\Executors\HelpExecutor.cs" />
+    <Compile Include="Execution\Executors\InfoExecutor.cs" />
+    <Compile Include="Execution\Executors\LexiconExecutor.cs" />
+    <Compile Include="Execution\Executors\PraiseExecutor.cs" />
+    <Compile Include="Bridge\IAudioCapability.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="SymbolFactory.cs" />
     <Compile Include="Expression.cs" />
-    <Compile Include="Connector\IConnector.cs" />
-    <Compile Include="Command\Execution\IExecutionHandler.cs" />
+    <Compile Include="Bridge\IConnector.cs" />
+    <Compile Include="Execution\IExecutionHandler.cs" />
     <Compile Include="Unitato.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -119,7 +113,7 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <Compile Include="Configuration\Config.Crypto.cs" />
+    <Compile Include="Configuration\Configuration.Entries.cs" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

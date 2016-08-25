@@ -11,6 +11,8 @@ namespace UnitatoBot.Command.Execution.Executors {
 
     internal class TimerExecutor : IExecutionHandler {
 
+        public static readonly string DatePatten = @"d/M/yyyy HH:mm";
+
         // IExecutionHandler
 
         public string GetDescription() {
@@ -42,7 +44,7 @@ namespace UnitatoBot.Command.Execution.Executors {
                 if(remining.TotalSeconds > 0) {
                     responce.Edit(string.Format("{0} Timer is running! Time left: {1}", args.Icon, UptimeExecutor.GetFormatedTime(remining)));
                 } else {
-                    responce.Edit(string.Format("{0} Timer finished {1}", args.Icon, DateTime.Now.ToString(BlameExecutor.DatePatten)));
+                    responce.Edit(string.Format("{0} Timer finished {1}", args.Icon, DateTime.Now.ToString(DatePatten)));
                 }
             };
 
