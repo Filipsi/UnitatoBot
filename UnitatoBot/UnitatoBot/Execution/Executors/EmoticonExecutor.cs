@@ -20,29 +20,34 @@ namespace UnitatoBot.Command.Execution.Executors {
 
         public ExecutionResult Execute(CommandContext context) {
             if(context.Args[0] == "list") {
+                int count = Enum.GetValues(typeof(SymbolFactory.Emoticon)).Length;
+
                 ResponseBuilder builder = context.ResponseBuilder
-                    .With("Sure,")
-                    .Space()
-                    .Block()
-                        .Username()
-                    .Block()
-                    .With("here is a list of emoticons I know: ")
-                    .NewLine();
+                    .Username()
+                    .With("there {0}", count > 1 ? "are" : "is")
+                    .Block(count)
+                    .With("emoticons that you can use.");
+
+                builder
+                    .TableStart(20, "Name", "Emoticon");
 
                 foreach(SymbolFactory.Emoticon emoticon in Enum.GetValues(typeof(SymbolFactory.Emoticon))) {
-                    builder.With(emoticon.ToString()).With("->").Space().With(emoticon).NewLine();
+                    builder
+                        .TableRow(emoticon.ToString(), SymbolFactory.AsString(emoticon));
                 }
 
                 builder
+                    .TableEnd()
                     .BuildAndSend();
+
             } else {
                 context.ResponseBuilder
-                    .Block()
-                        .Username()
-                    .Block()
-                    .With("({0})", context.Args[0].ToLower())
+                    .Username()
+                    .With("emotes")
+                    .Block(context.Args[0].ToLower())
                     .With((SymbolFactory.Emoticon)SymbolFactory.FromName(context.Args[0]))
                     .BuildAndSend();
+
             }
 
             return ExecutionResult.Success;

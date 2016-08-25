@@ -29,12 +29,13 @@ namespace UnitatoBot.Command.Execution.Executors {
             if(sides < 2) return ExecutionResult.Fail;
 
             context.ResponseBuilder
-                .Block()
-                    .Username()
-                    .With("throws {0}-sided dice", sides)
-                .Block()
-                .Space()
-                .With(Rng.Next(1, sides))
+                .Username()
+                .With("throws")
+                .Block(sides)
+                .With("sided")
+                .With(SymbolFactory.Emoji.Die)
+                .With("that lands on number")
+                .Block(Rng.Next(1, sides))
                 .BuildAndSend();
 
             return ExecutionResult.Success;

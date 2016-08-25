@@ -8,7 +8,10 @@ namespace UnitatoBot.Command {
 
         private ConnectionMessage   Message     = null;
         private StringBuilder       Builder     = new StringBuilder();
-        private bool                HasNewline  = false;
+        private bool                SkipSpace   = false;
+
+        private short               tableCellWidth  = 0;
+        private string[]            tableColumns    = null;
 
         public bool ShouldDeleteMessage {
             private set; get;
@@ -59,11 +62,12 @@ namespace UnitatoBot.Command {
         // Content
 
         public ResponseBuilder With(string format, params object[] args) {
-            if(Builder.Length > 0 && !HasNewline)
+            if(Builder.Length > 0 && !SkipSpace)
                 Builder.Append(" ");
 
             Builder.Append(string.Format(format, args));
-            HasNewline = false;
+            SkipSpace = false;
+
             return this;
         }
 
@@ -83,6 +87,16 @@ namespace UnitatoBot.Command {
 
         public ResponseBuilder With(SymbolFactory.Emoticon emoticon) {
             With(SymbolFactory.AsString(emoticon));
+            return this;
+        }
+
+        public ResponseBuilder Block(string format, params object[] args) {
+            Block().With(format, args).Block();
+            return this;
+        }
+
+        public ResponseBuilder Block(object entry) {
+            Block().With(entry).Block();
             return this;
         }
 
@@ -119,19 +133,20 @@ namespace UnitatoBot.Command {
 
         public ResponseBuilder MultilineBlock() {
             With("```");
+            SkipSpace = true;
             return this;
         }
 
         public ResponseBuilder NewLine() {
             With(Environment.NewLine);
-            HasNewline = true;
+            SkipSpace = true;
             return this;
         }
 
         // Utils
 
         public ResponseBuilder Username() {
-            With(Message.Sender);
+            Block().With(Message.Sender).Block();
             return this;
         }
 
@@ -142,6 +157,54 @@ namespace UnitatoBot.Command {
 
         public ResponseBuilder KeepSourceMessage() {
             ShouldDeleteMessage = false;
+            return this;
+        }
+
+        // Table
+
+        public ResponseBuilder TableStart(short cellWidth, params string[] columnNames) {
+            tableCellWidth = cellWidth;
+            tableColumns = columnNames;
+
+            MultilineBlock()
+                .TableRow(tableColumns)
+                .TableSpacer();
+
+            return this;
+        }
+
+        public ResponseBuilder TableRow(params string[] column) {
+            NewLine();
+
+            for(short columnIndex = 0; columnIndex < tableColumns.Length; columnIndex++) {
+                string columnContent = columnIndex < column.Length ? column[columnIndex] : string.Empty;
+
+                Builder.Append(" ");
+                Builder.Append(columnContent);
+                for(int i = columnContent.Length + 1; i < tableCellWidth; i++) {
+                    Builder.Append(" ");
+                }
+
+                if(columnIndex < tableColumns.Length - 1)
+                    Builder.Append("|");
+            }
+
+            return this;
+        }
+
+        public ResponseBuilder TableSpacer() {
+            NewLine();
+
+            for(short i = 1; i < tableCellWidth * tableColumns.Length + tableColumns.Length; i++)
+                Builder.Append(i % (tableCellWidth + 1) == 0 && i != 0 ? "|" : "-");
+
+            return this;
+        }
+
+        public ResponseBuilder TableEnd() {
+            tableCellWidth = 0;
+            tableColumns = null;
+            MultilineBlock();
             return this;
         }
 

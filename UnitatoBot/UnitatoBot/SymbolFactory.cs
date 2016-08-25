@@ -14,7 +14,8 @@ namespace UnitatoBot {
             BoxChecked,
             Stopwatch,
             Radio,
-            Note
+            Note,
+            Die
         }
 
         public enum Emoticon {
@@ -47,6 +48,8 @@ namespace UnitatoBot {
                     return ":radio:";
                 case Emoji.Note:
                     return ":musical_score:";
+                case Emoji.Die:
+                    return ":game_die:";
             }
 
             return string.Empty;
