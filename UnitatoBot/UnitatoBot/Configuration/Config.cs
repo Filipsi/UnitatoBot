@@ -28,9 +28,7 @@ namespace UnitatoBot.Configuration {
         }
 
         private static void Load() {
-            LoadEntry(ConfigSection.DiscordCredentials, "Email");
-            LoadEntry(ConfigSection.DiscordCredentials, "Password");
-            LoadEntry(ConfigSection.DiscordCredentials, "ServerUUID");
+            LoadEntry(ConfigSection.DiscordCredentials, "Token");
         }
 
         public static void Reload() {

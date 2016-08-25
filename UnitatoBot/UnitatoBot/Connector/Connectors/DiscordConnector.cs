@@ -3,21 +3,19 @@ using Discord.Audio;
 using NAudio.Wave;
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace UnitatoBot.Connector.Connectors {
 
     internal class DiscordConnector : IConnector, IAudioCapability {
 
-        private Server          Server;
         private DiscordClient   Client;
         private AudioService    Audio;
         private bool            IsPlayingAudio;
-        private ulong           ServerId;
 
-        public DiscordConnector(string email, string password, ulong serverId) {  
+        public DiscordConnector(string token) {  
             Client = new DiscordClient();
-            ServerId = serverId;
             IsPlayingAudio = false;
 
             // Create a task that will trigger after Client fires Ready event
@@ -31,7 +29,7 @@ namespace UnitatoBot.Connector.Connectors {
 
             // Try to connect, handle errors if any
             try {
-                Client.Connect(email, password);
+                Client.Connect(token);
                 Logger.Log("{0} connection sucessfully enstablished!", this.GetType().Name);
             } catch(Exception e) {
                 Logger.Error("Something went wrong during {0} connection attempt!\n" + e.Message, this.GetType().Name);
@@ -39,9 +37,6 @@ namespace UnitatoBot.Connector.Connectors {
 
             // Wait until Client is ready
             while(!taskClientReady.Task.IsCompleted) { /* NO-OP */ }
-
-            // Retrives server where it should perform tasks
-            Server = Client.GetServer(serverId);
 
             // Audio service setup
             Client.AddService(new AudioService(new AudioServiceConfigBuilder() {
@@ -60,9 +55,8 @@ namespace UnitatoBot.Connector.Connectors {
 
         private void InitEventHandlers() {
             Client.MessageReceived += (sender, args) => {
-                if(args.Server.Id.Equals(this.Server.Id) && !args.User.Id.Equals(Client.CurrentUser.Id)) {
+                if(!args.User.Id.Equals(Client.CurrentUser.Id))
                     OnMessageReceived(this, new ConnectionMessageEventArgs(new ConnectionMessage(this, args.Message)));
-                }
             };
         }
 
@@ -110,14 +104,14 @@ namespace UnitatoBot.Connector.Connectors {
 
         // IConnector
 
-        public string GetIdentificator() {
-            return Server.Id.ToString();
+        public string GetServiceType() {
+            return "Discord";
         }
 
         public event EventHandler<ConnectionMessageEventArgs> OnMessageReceived;
 
         public ConnectionMessage SendMessage(string destination, string text) {
-            Channel channel = Server.TextChannels.First(c => c.Id.ToString().Equals(destination));
+            Channel channel = Client.GetChannel(ulong.Parse(destination));
 
             if(channel == null) {
                 Logger.Warn("Text channel {0} not found while sending message!", destination);
@@ -136,19 +130,20 @@ namespace UnitatoBot.Connector.Connectors {
         }
 
         public ConnectionMessage FindMessage(string destination, string id) {
-            Channel channel = Server.TextChannels.FirstOrDefault(c => c.Id.ToString().Equals(destination));
+            Channel channel = Client.GetChannel(ulong.Parse(destination));
+
+            //TODO: Client.GetChannel allways returns null
 
             if(channel == null) {
                 Logger.Warn("Text channel {0} not found while searching for message {1}", destination, id);
                 return null;
             }
 
-            // Message has no data (https://github.com/RogueException/Discord.Net/blob/master/src/Discord.Net/Models/Channel.cs#L284)
+            //Message has no data (https://github.com/RogueException/Discord.Net/blob/master/src/Discord.Net/Models/Channel.cs#L284)
             Message msg = channel.GetMessage(Convert.ToUInt64(id));
-            
+
             return msg == null ? null : new ConnectionMessage(this, msg);
         }
-
 
         // IAudioCapability
 
@@ -156,7 +151,14 @@ namespace UnitatoBot.Connector.Connectors {
             if(IsPlayingAudio)
                 return false;
 
-            Channel channel = Server.VoiceChannels.FirstOrDefault(c => c.Name.ToString().Equals(destination));
+            Channel channel = Client.GetChannel(ulong.Parse(destination));
+
+            if(channel == null) {
+                Logger.Warn("Origin channel {0} not found!", destination);
+                return false;
+            }
+
+            channel = channel.Server.VoiceChannels.FirstOrDefault(c => c.Name.ToString().Equals("General"));
 
             if(channel == null) {
                 Logger.Warn("Audio channel {0} not found!", destination);

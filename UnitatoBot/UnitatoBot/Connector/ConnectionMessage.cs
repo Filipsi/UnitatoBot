@@ -11,7 +11,7 @@ namespace UnitatoBot.Connector {
         public string       Text                { private set; get; }
 
         [JsonProperty]
-        public string Connection { private set; get; }
+        public string ServiceType { private set; get; }
 
         [JsonProperty]
         public string Origin { private set; get; }
@@ -28,7 +28,7 @@ namespace UnitatoBot.Connector {
 
         public ConnectionMessage(IConnector connector, Discord.Message message) {
             ConnectionProvider = connector;
-            Connection = ConnectionProvider.GetIdentificator();
+            ServiceType = ConnectionProvider.GetServiceType();
 
             Origin = message.Channel.Id.ToString();
             Id = message.Id.ToString();

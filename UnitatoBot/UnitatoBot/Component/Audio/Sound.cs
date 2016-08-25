@@ -40,10 +40,11 @@ namespace UnitatoBot.Component.Audio {
             }
         }
 
-        public bool Play(IAudioCapability player, ResponseBuilder builder = null) {
-            bool playing = player.SendAudio("General", Source);
+        public bool Play(IAudioCapability player, ConnectionMessage requestMessage) {
+            bool playing = player.SendAudio(requestMessage.Origin, Source);
 
-            if(builder != null && playing) {
+            if(playing) {
+                ResponseBuilder builder = new ResponseBuilder(requestMessage);
                 ConnectionMessage msg = builder
                     .With(SymbolFactory.Emoji.Note)
                     .Block()

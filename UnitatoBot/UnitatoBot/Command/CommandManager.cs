@@ -149,8 +149,8 @@ namespace UnitatoBot.Command {
             return Commands.Find(x => x.Name == name || x.IsAlias(name));
         }
 
-        public IConnector FindConnector(string id) {
-            return Array.Find(ServiceConnectors, c => c.GetIdentificator().Equals(id));
+        public IConnector[] FindServiceConnectors(string serviceType) {
+            return Array.FindAll(ServiceConnectors, c => c.GetServiceType().Equals(serviceType));
         }
 
     }

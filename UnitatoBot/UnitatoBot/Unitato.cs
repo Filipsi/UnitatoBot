@@ -13,11 +13,7 @@ namespace UnitatoBot {
 
             Logger.Log("Initializing connectors");
             Logger.SectionStart();
-            IConnector connection = new DiscordConnector(
-                Config.GetEntry<string>("Email"),
-                Config.GetEntry<string>("Password"),
-                Config.GetEntry<ulong>("ServerUUID")
-            );
+            IConnector connection = new DiscordConnector(Config.GetEntry<string>("Token"));
             Logger.SectionEnd();
             Logger.Log("Connectors initialized");
 

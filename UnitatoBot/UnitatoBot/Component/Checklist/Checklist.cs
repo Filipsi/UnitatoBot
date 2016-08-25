@@ -93,20 +93,23 @@ namespace UnitatoBot.Component.Checklist {
             
             Checklist checklist = JsonConvert.DeserializeObject<Checklist>(data);
 
-            // This is dummy message created by deserialization (contains connection, origin and id)
+            // This is dummy message created by deserialization (contains service, origin and id)
             ConnectionMessage container = checklist.Message;
-            Logger.Info("Connection: {0}, Origin: {1}, Message: {2}", container.Connection, container.Origin, container.Id);
+            Logger.Info("Connection: {0}, Origin: {1}, Message: {2}", container.ServiceType, container.Origin, container.Id);
 
-            IConnector connector = manager.FindConnector(container.Connection);
-            if(connector != null) {
-                checklist.Message = connector.FindMessage(container.Origin, container.Id);
-                if(checklist.Message != null) {
-                    return checklist;
-                } else
-                    Logger.Warn("Message {0} not found", container.Id);
-            } else {
-                Logger.Warn("Connector {0} not found", container.Connection);
-            }
+            IConnector[] connectors = manager.FindServiceConnectors(container.ServiceType);
+            if(connectors.Length > 0) {
+                foreach(IConnector connector in connectors) {
+                    ConnectionMessage msg = connector.FindMessage(container.Origin, container.Id);
+                    if(msg != null) {
+                        checklist.Message = msg;
+                        return checklist;
+                    }
+                }
+
+                Logger.Warn("Message {0} for service {1} not found", container.Id, container.ServiceType);
+            } else
+                Logger.Warn("Connector for service {0} not found", container.ServiceType);
 
             return null;
         }

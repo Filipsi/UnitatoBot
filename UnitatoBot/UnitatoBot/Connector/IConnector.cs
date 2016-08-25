@@ -5,7 +5,7 @@ namespace UnitatoBot.Connector {
 
     internal interface IConnector {
 
-        string GetIdentificator();
+        string GetServiceType();
 
         event EventHandler<ConnectionMessageEventArgs> OnMessageReceived;
 

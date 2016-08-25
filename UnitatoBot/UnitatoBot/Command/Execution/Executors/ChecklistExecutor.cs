@@ -46,7 +46,8 @@ namespace UnitatoBot.Command.Execution.Executors {
                             .With("{0} (Checklist '{1}' by {2})", checklist.Title, checklist.Id, checklist.Owner)
                             .NewLine()
                                 .With("        Use '/checklist add [text]' to add item to last checklist (example: '/checklist add Hello world')")
-                                .With("        Use '/checklist import [separator] [text]' to add multiple items last checklist (example: '/checklist import - -item1-item2-item3')")
+                                .NewLine()
+                                .With("        Use '/checklist import [separator] [text]' to add multiple items to last checklist (example: '/checklist import - item1-item2-item3')")
                                 .Send();
 
                         checklist.Message = msg;
@@ -81,11 +82,14 @@ namespace UnitatoBot.Command.Execution.Executors {
                             Checklists.Last().Add(context.RawArguments.Substring(context.RawArguments.IndexOf(context.Args[0]) + context.Args[0].Length + 1));
                             context.SourceMessage.Delete();
                             return ExecutionResult.Success;
+
+                        } else if(context.Args.Length > 2) {
+                            checklist.Add(context.RawArguments.Substring(context.RawArguments.IndexOf(context.Args[1]) + context.Args[1].Length + 1));
+                            context.SourceMessage.Delete();
+                            return ExecutionResult.Success;
+
                         }
 
-                        checklist.Add(context.RawArguments.Substring(context.RawArguments.IndexOf(context.Args[1]) + context.Args[1].Length + 1));
-                        context.SourceMessage.Delete();
-                        return ExecutionResult.Success;
                     }
                     break;
 
@@ -99,11 +103,15 @@ namespace UnitatoBot.Command.Execution.Executors {
                             hasId = false;
                         }
 
-                        byte index;
-                        if(byte.TryParse(context.Args[hasId ? 2 : 1], out index)) {
-                            context.SourceMessage.Delete();
-                            checklist.Remove(index);
-                            return ExecutionResult.Success;
+                        if(!hasId || (hasId && context.Args.Length > 2)) {
+
+                            byte index;
+                            if(byte.TryParse(context.Args[hasId ? 2 : 1], out index)) {
+                                context.SourceMessage.Delete();
+                                checklist.Remove(index);
+                                return ExecutionResult.Success;
+                            }
+
                         }
                     }
                     break;
@@ -118,16 +126,20 @@ namespace UnitatoBot.Command.Execution.Executors {
                             hasId = false;
                         }
 
-                        string[] separator = new string[] { context.Args[hasId ? 2 : 1] };
-                        string import = context.RawArguments.Substring(context.RawArguments.IndexOf(separator[0]) + separator[0].Length + 1).Trim();
+                        if(!hasId || (hasId && context.Args.Length > 3)) {
 
-                        foreach(string entry in import.Split(separator, StringSplitOptions.RemoveEmptyEntries)) {
-                            checklist.Add(entry, false);
+                            string[] separator = new string[] { context.Args[hasId ? 2 : 1] };
+                            string import = context.RawArguments.Substring(context.RawArguments.IndexOf(separator[0]) + separator[0].Length + 1).Trim();
+
+                            foreach(string entry in import.Split(separator, StringSplitOptions.RemoveEmptyEntries)) {
+                                checklist.Add(entry, false);
+                            }
+
+                            context.SourceMessage.Delete();
+                            checklist.UpdateMessage();
+                            return ExecutionResult.Success;
+
                         }
-
-                        context.SourceMessage.Delete();
-                        checklist.UpdateMessage();
-                        return ExecutionResult.Success;
                     }
                     break;
 
@@ -140,7 +152,7 @@ namespace UnitatoBot.Command.Execution.Executors {
                         if(checklist == null)
                             return CheckEntry(context.SourceMessage, Checklists.Last(), context.Args[1], checkState) ? ExecutionResult.Success : ExecutionResult.Fail;
 
-                        return CheckEntry(context.SourceMessage, checklist, context.Args[2], checkState) ? ExecutionResult.Success : ExecutionResult.Fail;
+                        return context.Args.Length > 2 && CheckEntry(context.SourceMessage, checklist, context.Args[2], checkState) ? ExecutionResult.Success : ExecutionResult.Fail;
                     }
                     break;
             }

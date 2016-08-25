@@ -50,7 +50,7 @@ namespace UnitatoBot.Command.Execution.Executors {
 
                 context.ResponseBuilder.BuildAndSend();
             } else {
-                return PlaySound((IAudioCapability)context.SourceMessage.ConnectionProvider, context.Args[0], context.ResponseBuilder) ? ExecutionResult.Success : ExecutionResult.Denied;
+                return PlaySound((IAudioCapability)context.SourceMessage.ConnectionProvider, context.SourceMessage, context.Args[0]) ? ExecutionResult.Success : ExecutionResult.Denied;
             }
 
             return ExecutionResult.Success;
@@ -58,8 +58,8 @@ namespace UnitatoBot.Command.Execution.Executors {
 
         // Logic
 
-        private bool PlaySound(IAudioCapability player, string name, ResponseBuilder builder = null) {
-            return Sounds.Find(s => s.Name.Equals(name) || s.Alias.Contains(name)).Play(player, builder);
+        private bool PlaySound(IAudioCapability player, ConnectionMessage requestMessage, string soundName) {
+            return Sounds.Find(s => s.Name.Equals(soundName) || s.Alias.Contains(soundName)).Play(player, requestMessage);
         }
 
         private bool HasSound(string name) {
