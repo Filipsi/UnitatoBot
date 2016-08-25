@@ -4,8 +4,6 @@ namespace UnitatoBot.Command.Execution.Executors {
 
     internal class HelpExecutor : IExecutionHandler {
 
-        private const byte SPLIT_AFTER = 7;
-
         // IExecutionHandler
 
         public string GetDescription() {
@@ -23,18 +21,18 @@ namespace UnitatoBot.Command.Execution.Executors {
                 .With(SymbolFactory.Emoticon.Magic)
                 .NewLine();
 
-            byte printed = 0;
             foreach(Command entry in context.CommandManager) {
-
-                if(printed >= SPLIT_AFTER) {
-                    printed = 0;
-                    builder.BuildAndSend();
-                    builder = new ResponseBuilder(context.SourceMessage)
-                        .KeepSourceMessage();
-                }
 
                 LinkedList<IExecutionHandler>.Enumerator enumerator = entry.GetExecutorsEnumerator();
                 while(enumerator.MoveNext()) {
+
+                    // Split responce into multiple messages if responce length is greater then maximal responce length
+                    if(builder.Length + enumerator.Current.GetDescription().Length + 50 >= Discord.DiscordConfig.MaxMessageSize) {
+                        builder.BuildAndSend();
+                        builder = new ResponseBuilder(context.SourceMessage)
+                            .KeepSourceMessage();
+                    }
+
                     builder
                         .Block()
                             .With("/{0}", entry.Name)
@@ -43,12 +41,12 @@ namespace UnitatoBot.Command.Execution.Executors {
                             entry.Aliases.Count > 0 ? "(alias: " + string.Join(", ", entry.Aliases) + ")" : string.Empty,
                             enumerator.Current.GetDescription())
                         .NewLine();
+
                 }
-                printed++;
 
             }
 
-            if(printed > 0)
+            if(builder.Length > 0)
                 builder.BuildAndSend();
 
             return ExecutionResult.Success;

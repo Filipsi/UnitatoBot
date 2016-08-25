@@ -53,7 +53,7 @@ namespace UnitatoBot.Component.Audio {
                     .Send();
 
                 Timer t = new Timer();
-                t.Interval = Length.TotalMilliseconds;
+                t.Interval = Length.TotalMilliseconds + 1250;
                 t.Elapsed += (sender, args) => {
                     builder
                         .Clear()

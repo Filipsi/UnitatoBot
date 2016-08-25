@@ -6,16 +6,22 @@ namespace UnitatoBot.Command {
 
     internal class ResponseBuilder {
 
-        private ConnectionMessage   Message;
+        private ConnectionMessage   Message     = null;
         private StringBuilder       Builder     = new StringBuilder();
         private bool                HasNewline  = false;
 
-        public bool ShouldDeleteMessage { private set; get; }
+        public bool ShouldDeleteMessage {
+            private set; get;
+        }
+
+        public int Length {
+            get { return Builder.Length; }
+        }
 
         public ResponseBuilder(ConnectionMessage message, bool removeOriginalMessage = true) {
             ShouldDeleteMessage = removeOriginalMessage;
             Message = message;
-	    }
+        }
 
         public ResponseBuilder() {
             ShouldDeleteMessage = false;

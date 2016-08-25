@@ -69,6 +69,12 @@ namespace UnitatoBot.Connector.Connectors {
         // Util
 
         private async Task<Message> SendText(Channel channel, string text) {
+            if(text.Length > DiscordConfig.MaxMessageSize) {
+                text = text.Substring(0, DiscordConfig.MaxMessageSize - 33);
+                text += " !Error: MaxMessageSize exceeded!";
+                Logger.Warn("Couldn't send whole message, DiscordConfig.MaxMessageSize exceeded!");
+            }
+
             return channel != null ? await channel.SendMessage(text) : null;
         }
 
@@ -124,9 +130,7 @@ namespace UnitatoBot.Connector.Connectors {
                 return null;
 
             // Oh god, this is wrong.
-            while(msg.Id == 0) {
-                /* NO-OP */
-            }
+            while(msg.Id == 0) { /* NO-OP */ }
 
             return new ConnectionMessage(this, msg);
         }
