@@ -2,6 +2,7 @@
 using Discord.Audio;
 using NAudio.Wave;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -63,13 +64,33 @@ namespace UnitatoBot.Connector.Connectors {
         // Util
 
         private async Task<Message> SendText(Channel channel, string text) {
+            if(channel == null)
+                return null;
+
             if(text.Length > DiscordConfig.MaxMessageSize) {
-                text = text.Substring(0, DiscordConfig.MaxMessageSize - 33);
-                text += " !Error: MaxMessageSize exceeded!";
-                Logger.Warn("Couldn't send whole message, DiscordConfig.MaxMessageSize exceeded!");
+                string buffer = text;
+
+                List<string> parts = new List<string>();
+                do {
+                    int msgLength = buffer.Length >= DiscordConfig.MaxMessageSize ? DiscordConfig.MaxMessageSize : buffer.Length;
+                    int lastUsableSpace = buffer.LastIndexOf(" ", msgLength);
+
+                    int cut = lastUsableSpace > 0 ? lastUsableSpace : msgLength;
+                    parts.Add(buffer.Substring(0, cut));
+                    buffer = buffer.Substring(cut);
+
+                } while(buffer.Length > 0);
+
+                Task<Message> firstSent = null;
+                foreach(string part in parts) {
+                    if(firstSent == null) firstSent = channel.SendMessage(part); else await channel.SendMessage(part);
+                }
+
+                Logger.Info("While sending message, DiscordConfig.MaxMessageSize was exceeded! Message was split to {0} parts.", parts.Count);
+                return await firstSent;
             }
 
-            return channel != null ? await channel.SendMessage(text) : null;
+            return await channel.SendMessage(text);
         }
 
         private async void PlaySoundFile(Channel channel, string file) {
@@ -131,8 +152,6 @@ namespace UnitatoBot.Connector.Connectors {
 
         public ConnectionMessage FindMessage(string destination, string id) {
             Channel channel = Client.GetChannel(ulong.Parse(destination));
-
-            //TODO: Client.GetChannel allways returns null
 
             if(channel == null) {
                 Logger.Warn("Text channel {0} not found while searching for message {1}", destination, id);
