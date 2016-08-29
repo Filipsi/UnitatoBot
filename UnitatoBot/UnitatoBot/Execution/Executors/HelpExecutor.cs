@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using UnitatoBot.Command;
 
-namespace UnitatoBot.Command.Execution.Executors {
+namespace UnitatoBot.Execution.Executors {
 
     internal class HelpExecutor : IExecutionHandler {
 
@@ -22,7 +23,7 @@ namespace UnitatoBot.Command.Execution.Executors {
                 .NewLine()
                 .NewLine();
 
-            foreach(Command entry in context.CommandManager) {
+            foreach(Command.Command entry in context.CommandManager) {
 
                 LinkedList<IExecutionHandler>.Enumerator enumerator = entry.GetExecutorsEnumerator();
                 while(enumerator.MoveNext()) {

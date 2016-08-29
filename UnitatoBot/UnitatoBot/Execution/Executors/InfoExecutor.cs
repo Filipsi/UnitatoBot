@@ -1,4 +1,6 @@
-﻿namespace UnitatoBot.Command.Execution.Executors {
+﻿using UnitatoBot.Command;
+
+namespace UnitatoBot.Execution.Executors {
 
     internal class InfoExecutor : IExecutionHandler {
 

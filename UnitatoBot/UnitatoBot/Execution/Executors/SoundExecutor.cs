@@ -1,14 +1,11 @@
-﻿using NAudio.Wave;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using UnitatoBot.Command;
 using UnitatoBot.Component.Audio;
 using UnitatoBot.Connector;
 
-namespace UnitatoBot.Command.Execution.Executors {
+namespace UnitatoBot.Execution.Executors {
 
     class SoundExecutor : IInitializable, IExecutionHandler {
 

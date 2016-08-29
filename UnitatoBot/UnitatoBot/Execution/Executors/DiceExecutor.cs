@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Linq;
+using UnitatoBot.Command;
 
-namespace UnitatoBot.Command.Execution.Executors {
+namespace UnitatoBot.Execution.Executors {
 
-    internal class DiceExecutor : IExecutionHandler, IInitializable {
+    internal class DiceExecutor : IExecutionHandler {
 
-        private Random Rng;
-
-        // IInitializable
-
-        public void Initialize(CommandManager manager) {
-            this.Rng = new Random();
-        }
+        private static readonly Random RNG = new Random();
 
         // IExecutionHandler
 
@@ -35,7 +30,7 @@ namespace UnitatoBot.Command.Execution.Executors {
                 .With("sided")
                 .With(SymbolFactory.Emoji.Die)
                 .With("that lands on number")
-                .Block(Rng.Next(1, sides))
+                .Block(RNG.Next(1, sides))
                 .BuildAndSend();
 
             return ExecutionResult.Success;

@@ -1,15 +1,12 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using UnitatoBot.Command;
 using UnitatoBot.Component.Checklist;
 using UnitatoBot.Connector;
 
-namespace UnitatoBot.Command.Execution.Executors {
+namespace UnitatoBot.Execution.Executors {
 
     internal class ChecklistExecutor : IInitializable, IExecutionHandler {
 

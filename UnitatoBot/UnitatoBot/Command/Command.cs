@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using UnitatoBot.Command.Execution;
+﻿using System.Collections.Generic;
 using UnitatoBot.Connector;
+using UnitatoBot.Execution;
 
 namespace UnitatoBot.Command {
 

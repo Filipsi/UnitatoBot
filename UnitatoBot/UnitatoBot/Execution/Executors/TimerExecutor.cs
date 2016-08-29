@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
+using UnitatoBot.Command;
 using UnitatoBot.Component.Countdown;
 using UnitatoBot.Connector;
 
-namespace UnitatoBot.Command.Execution.Executors {
+namespace UnitatoBot.Execution.Executors {
 
     internal class TimerExecutor : IExecutionHandler {
 

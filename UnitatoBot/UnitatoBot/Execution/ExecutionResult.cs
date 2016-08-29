@@ -1,4 +1,4 @@
-﻿namespace UnitatoBot.Command.Execution {
+﻿namespace UnitatoBot.Execution {
 
     public enum ExecutionResult {
         Success,

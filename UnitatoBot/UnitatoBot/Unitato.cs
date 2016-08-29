@@ -2,8 +2,8 @@
 using UnitatoBot.Connector.Connectors;
 using UnitatoBot.Configuration;
 using UnitatoBot.Command;
-using UnitatoBot.Command.Execution.Executors;
 using UnitatoBot.Connector;
+using UnitatoBot.Execution.Executors;
 
 namespace UnitatoBot {
 
@@ -34,7 +34,9 @@ namespace UnitatoBot {
                     .WithAlias("list")
                 .RegisterCommand("sound", new SoundExecutor())
                     .WithAlias("s")
-                    .WithAlias("play");
+                    .WithAlias("play")
+                .RegisterCommand("coin", new CoinFlipExecutor())
+                    .WithAlias("flip");
 
             cmdManager.Begin();
             Logger.Log("Ready to go.");

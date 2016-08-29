@@ -1,4 +1,6 @@
-﻿namespace UnitatoBot.Command.Execution {
+﻿using UnitatoBot.Command;
+
+namespace UnitatoBot.Execution {
 
     interface IInitializable {
 

@@ -1,6 +1,7 @@
 ﻿using System;
+using UnitatoBot.Command;
 
-namespace UnitatoBot.Command.Execution.Executors {
+namespace UnitatoBot.Execution.Executors {
 
     internal class UptimeExecutor : IExecutionHandler {
 

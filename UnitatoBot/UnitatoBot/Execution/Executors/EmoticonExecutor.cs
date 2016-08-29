@@ -1,10 +1,8 @@
-﻿ using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using UnitatoBot.Command;
 
-namespace UnitatoBot.Command.Execution.Executors {
+namespace UnitatoBot.Execution.Executors {
 
     internal class EmoticonExecutor : IExecutionHandler {
 

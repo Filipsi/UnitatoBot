@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnitatoBot.Command.Execution;
 using UnitatoBot.Connector;
+using UnitatoBot.Execution;
 
 namespace UnitatoBot.Command {
 
