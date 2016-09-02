@@ -166,6 +166,16 @@ namespace UnitatoBot.Command {
             return this;
         }
 
+        public ResponseBuilder Italic(string format, params object[] args) {
+            Italic().With(format, args).Italic();
+            return this;
+        }
+
+        public ResponseBuilder Italic(object entry) {
+            Italic().With(entry).Italic();
+            return this;
+        }
+
         // Utils
 
         public ResponseBuilder Username() {

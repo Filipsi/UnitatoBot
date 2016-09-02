@@ -119,6 +119,7 @@ namespace UnitatoBot.Connector.Connectors {
 
             System.Threading.Thread.Sleep(1000);
             await ac.Disconnect();
+            System.Threading.Thread.Sleep(250);
             IsPlayingAudio = false;
         }
 
@@ -157,7 +158,7 @@ namespace UnitatoBot.Connector.Connectors {
                 return null;
             }
 
-            //Message has no data (https://github.com/RogueException/Discord.Net/blob/master/src/Discord.Net/Models/Channel.cs#L284)
+            // Message has no data (https://github.com/RogueException/Discord.Net/blob/master/src/Discord.Net/Models/Channel.cs#L284)
             Message msg = channel.GetMessage(Convert.ToUInt64(id));
 
             return msg == null ? null : new ConnectionMessage(this, msg);

@@ -36,9 +36,9 @@ namespace UnitatoBot.Component.Audio {
         }
 
         public bool Play(IAudioCapability player, ConnectionMessage requestMessage) {
-            bool playing = player.SendAudio(requestMessage.Origin, Source);
+            bool result = player.SendAudio(requestMessage.Origin, Source);
 
-            if(playing) {
+            if(result) {
                 ResponseBuilder builder = new ResponseBuilder(requestMessage);
 
                 ConnectionMessage msg = builder
@@ -66,7 +66,7 @@ namespace UnitatoBot.Component.Audio {
                 t.Start();
             }
 
-            return playing;
+            return result;
         }
 
         public void Save() {

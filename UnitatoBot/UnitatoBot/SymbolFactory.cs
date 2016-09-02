@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace UnitatoBot {
 
@@ -15,7 +11,9 @@ namespace UnitatoBot {
             Stopwatch,
             Radio,
             Note,
-            Die
+            Die,
+            Gun,
+            Bang
         }
 
         public enum Emoticon {
@@ -50,6 +48,10 @@ namespace UnitatoBot {
                     return ":musical_score:";
                 case Emoji.Die:
                     return ":game_die:";
+                case Emoji.Gun:
+                    return ":gun:";
+                case Emoji.Bang:
+                    return ":boom:";
             }
 
             return string.Empty;

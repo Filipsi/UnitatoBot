@@ -79,8 +79,9 @@
     <Compile Include="Command\CommandContext.cs" />
     <Compile Include="Command\CommandManager.cs" />
     <Compile Include="Execution\Executors\ChecklistExecutor.cs" />
-    <Compile Include="Execution\Executors\CoinExecutor.cs" />
+    <Compile Include="Execution\Executors\CoinFlipExecutor.cs" />
     <Compile Include="Execution\Executors\EmoticonExecutor.cs" />
+    <Compile Include="Execution\Executors\RussianRouletteExecutor.cs" />
     <Compile Include="Execution\Executors\SoundExecutor.cs" />
     <Compile Include="Execution\Executors\TimerExecutor.cs" />
     <Compile Include="Execution\Executors\UptimeExecutor.cs" />

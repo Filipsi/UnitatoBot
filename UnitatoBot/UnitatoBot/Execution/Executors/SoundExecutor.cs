@@ -38,17 +38,20 @@ namespace UnitatoBot.Execution.Executors {
                     .Block(Sounds.Count)
                     .With("sounds that you can play.");
 
-                builder
-                    .TableStart(25, "Name", "Alias");
-
+                builder.TableStart(25, "Name", "Alias", "Length");
                 foreach(Sound sound in Sounds) {
-                    builder
-                        .TableRow(sound.Name, string.Join(",", sound.Alias));
+                    if(builder.Length > 1900) {
+                        builder.MultilineBlock()
+                            .Send();
+                        builder.Clear()
+                            .KeepSourceMessage()
+                            .MultilineBlock();
+                    }
+                    builder.TableRow(sound.Name, string.Join(",", sound.Alias), sound.Length.ToString("mm':'ss"));
                 }
+                builder.TableEnd()
+                    .Send();
 
-                builder
-                    .TableEnd()
-                    .BuildAndSend();
             } else {
                 return PlaySound((IAudioCapability)context.SourceMessage.ConnectionProvider, context.SourceMessage, context.Args[0]) ? ExecutionResult.Success : ExecutionResult.Denied;
             }
