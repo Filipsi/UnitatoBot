@@ -1,4 +1,5 @@
 ﻿using UnitatoBot.Command;
+using UnitatoBot.Symbol;
 
 namespace UnitatoBot.Execution.Executors {
 
@@ -16,15 +17,15 @@ namespace UnitatoBot.Execution.Executors {
 
         public ExecutionResult Execute(CommandContext context) {
             context.ResponseBuilder
-                .With("Howdy")
+                .Text("Howdy")
                 .Username()
-                .With(SymbolFactory.Emoticon.Greet)
-                .With("My name is")
+                .Text(Emoticon.Greet)
+                .Text("My name is")
                 .Block("UnitatoBot")
-                .With("and I am cross between a Unicorn and a Potato. The most fabulous creature you could ever imagine.")
-                .With("Recently I had accident and had a surgery and I don't remember much before that, but I am sure that I wasn't purple and had wings. Oh well, Use")
+                .Text("and I am cross between a Unicorn and a Potato. The most fabulous creature you could ever imagine.")
+                .Text("Recently I had accident and had a surgery and I don't remember much before that, but I am sure that I wasn't purple and had wings. Oh well, Use")
                 .Block("!help")
-                .With("for more.")
+                .Text("for more.")
                 .BuildAndSend();
             return ExecutionResult.Success;
         }

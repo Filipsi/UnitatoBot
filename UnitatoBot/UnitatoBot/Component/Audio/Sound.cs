@@ -5,6 +5,7 @@ using System.IO;
 using System.Timers;
 using UnitatoBot.Command;
 using UnitatoBot.Connector;
+using UnitatoBot.Symbol;
 
 namespace UnitatoBot.Component.Audio {
 
@@ -42,11 +43,11 @@ namespace UnitatoBot.Component.Audio {
                 ResponseBuilder builder = new ResponseBuilder(requestMessage);
 
                 ConnectionMessage msg = builder
-                    .With(SymbolFactory.Emoji.Note)
+                    .Text(Emoji.Note)
                     .Username()
-                    .With("is playing sound")
+                    .Text("is playing sound")
                     .Block(Name)
-                    .With("with length")
+                    .Text("with length")
                     .Block(Length.ToString("mm':'ss"))
                     .Send();
 
@@ -55,9 +56,9 @@ namespace UnitatoBot.Component.Audio {
                 t.Elapsed += (sender, args) => {
                     builder
                         .Clear()
-                        .With(SymbolFactory.Emoji.Note)
+                        .Text(Emoji.Note)
                         .Username()
-                        .With("played sound")
+                        .Text("played sound")
                         .Block(Name);
 
                     msg.Edit(builder.Build());

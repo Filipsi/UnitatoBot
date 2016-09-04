@@ -1,5 +1,6 @@
 ﻿using System;
 using UnitatoBot.Command;
+using UnitatoBot.Symbol;
 
 namespace UnitatoBot.Execution.Executors {
 
@@ -26,38 +27,40 @@ namespace UnitatoBot.Execution.Executors {
 
                 context.ResponseBuilder
                     .Username()
-                    .With("reloaded gun with")
+                    .Text("reloaded gun with")
                     .Block("1")
-                    .With("bullet and spun the cilinder.")
+                    .Text("bullet and spun the cilinder.")
                     .Send();
 
                 return ExecutionResult.Success;
             } else {
                 if(IsEmpty()) {
                     context.ResponseBuilder
-                       .With("Gun was reloaded with")
+                       .Text("Cilinder was empty, gun was reloaded with")
                        .Block("1")
-                       .With("bullet.")
+                       .Text("bullet.")
                        .NewLine();
 
                     Reload();
                 }
 
-                context.ResponseBuilder
-                    .Username()
-                    .With("took the gun and pulled the trigger.")
-                    .NewLine()
-                    .NewLine();
-
                 if(Fire()) {
                     context.ResponseBuilder
-                        .With(SymbolFactory.Emoji.Bang)
-                        .With(SymbolFactory.Emoji.Gun);
+                        .Text(Emoji.Bang)
+                        .Space(2)
+                        .Text(Emoji.Gun);
                 } else {
                     context.ResponseBuilder
                         .Italic("click")
-                        .With(SymbolFactory.Emoji.Gun);
+                        .Space()
+                        .Text(Emoji.Gun);
                 }
+
+                context.ResponseBuilder
+                    .Space(3)
+                    .Username()
+                    .Text("took the gun and pulled the trigger.")
+                    .NewLine();
 
                 context.ResponseBuilder.Send();
                 return ExecutionResult.Success;
@@ -76,9 +79,8 @@ namespace UnitatoBot.Execution.Executors {
         private bool Fire() {
             bool result = Gun[CylinderPointer];
 
-            if(result) {
+            if(result)
                 Gun[CylinderPointer] = false;
-            }
 
             CylinderPointer++;
 

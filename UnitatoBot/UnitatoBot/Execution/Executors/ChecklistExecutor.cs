@@ -5,6 +5,7 @@ using System.Linq;
 using UnitatoBot.Command;
 using UnitatoBot.Component.Checklist;
 using UnitatoBot.Connector;
+using UnitatoBot.Symbol;
 
 namespace UnitatoBot.Execution.Executors {
 
@@ -39,16 +40,16 @@ namespace UnitatoBot.Execution.Executors {
 
                         ConnectionMessage msg = context.ResponseBuilder
                             .Space()
-                            .With(SymbolFactory.Emoji.Checklist)
-                            .With("{0} (Checklist", checklist.Title)
+                            .Text(Emoji.Checklist)
+                            .Text("{0} (Checklist", checklist.Title)
                             .Block(checklist.Id)
-                            .With("by")
+                            .Text("by")
                             .Block(checklist.Owner)
-                            .With(")")
+                            .Text(")")
                             .NewLine()
-                                .Space(8).With("Use").Block("!checklist add [text]").With("to add item to last checklist (example: '!checklist add Hello world')")
+                                .Space(8).Text("Use").Block("!checklist add [text]").Text("to add item to last checklist (example: '!checklist add Hello world')")
                             .NewLine()
-                                .Space(8).With("Use").Block("!checklist import [separator] [text]").With("to add multiple items to last checklist (example: '!checklist import - item1-item2-item3')")
+                                .Space(8).Text("Use").Block("!checklist import [separator] [text]").Text("to add multiple items to last checklist (example: '!checklist import - item1-item2-item3')")
                             .Send();
 
                         checklist.Message = msg;

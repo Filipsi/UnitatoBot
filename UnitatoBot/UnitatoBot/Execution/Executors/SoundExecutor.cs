@@ -34,9 +34,9 @@ namespace UnitatoBot.Execution.Executors {
             if(context.Args[0].Equals("list")) {
                 ResponseBuilder builder = context.ResponseBuilder
                     .Username()
-                    .With("there {0}", Sounds.Count > 1 ? "are" : "is")
+                    .Text("there {0}", Sounds.Count > 1 ? "are" : "is")
                     .Block(Sounds.Count)
-                    .With("sounds that you can play.");
+                    .Text("sounds that you can play.");
 
                 builder.TableStart(25, "Name", "Alias", "Length");
                 foreach(Sound sound in Sounds) {

@@ -20,7 +20,7 @@ namespace UnitatoBot.Execution.Executors {
         public ExecutionResult Execute(CommandContext context) {
             context.ResponseBuilder
                 .Username()
-                .With("throws coin into the air. It lands on")
+                .Text("throws coin into the air. It lands on")
                 .Block(RNG.Next(0, 2) == 0 ? "heads" : "tails")
                 .BuildAndSend();
 

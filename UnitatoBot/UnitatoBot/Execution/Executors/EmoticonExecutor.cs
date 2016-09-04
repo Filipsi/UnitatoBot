@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using UnitatoBot.Command;
+using UnitatoBot.Symbol;
 
 namespace UnitatoBot.Execution.Executors {
 
@@ -18,20 +19,19 @@ namespace UnitatoBot.Execution.Executors {
 
         public ExecutionResult Execute(CommandContext context) {
             if(context.Args[0] == "list") {
-                int count = Enum.GetValues(typeof(SymbolFactory.Emoticon)).Length;
+                int count = Enum.GetValues(typeof(Emoticon)).Length;
 
                 ResponseBuilder builder = context.ResponseBuilder
                     .Username()
-                    .With("there {0}", count > 1 ? "are" : "is")
+                    .Text("there {0}", count > 1 ? "are" : "is")
                     .Block(count)
-                    .With("emoticons that you can use.");
+                    .Text("emoticons that you can use.");
 
                 builder
                     .TableStart(20, "Name", "Emoticon");
 
-                foreach(SymbolFactory.Emoticon emoticon in Enum.GetValues(typeof(SymbolFactory.Emoticon))) {
-                    builder
-                        .TableRow(emoticon.ToString(), SymbolFactory.AsString(emoticon));
+                foreach(Emoticon emoticon in Enum.GetValues(typeof(Emoticon))) {
+                    builder.TableRow(emoticon.ToString(), SymbolFactory.AsString(emoticon));
                 }
 
                 builder
@@ -41,9 +41,9 @@ namespace UnitatoBot.Execution.Executors {
             } else {
                 context.ResponseBuilder
                     .Username()
-                    .With("emotes")
+                    .Text("emotes")
                     .Block(context.Args[0].ToLower())
-                    .With((SymbolFactory.Emoticon)SymbolFactory.FromName(context.Args[0]))
+                    .Text((Emoticon)SymbolFactory.FromName(context.Args[0]))
                     .BuildAndSend();
 
             }

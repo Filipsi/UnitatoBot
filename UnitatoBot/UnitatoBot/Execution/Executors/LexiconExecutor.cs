@@ -41,7 +41,7 @@ namespace UnitatoBot.Execution.Executors {
                     // Print out list of articles separated by commas
                     context.ResponseBuilder
                         .Username()
-                        .With("here is a list of articles that are available at http://lexicon.filipsi.net")
+                        .Text("here is a list of articles that are available at http://lexicon.filipsi.net")
                         .MultilineBlock(string.Join(", ", menuEntries.Select(x => x.title)))
                         .BuildAndSend();
                 });
@@ -75,10 +75,10 @@ namespace UnitatoBot.Execution.Executors {
 
                     context.ResponseBuilder
                         .Username()
-                        .With("requested article")
+                        .Text("requested article")
                         .Block(article.title)
-                        .With("from Lexicon")
-                        .With("http://lexicon.filipsi.net/#article/{0}", article.id)
+                        .Text("from Lexicon")
+                        .Text("http://lexicon.filipsi.net/#article/{0}", article.id)
                         .MultilineBlock(articleText)
                         .BuildAndSend();
                 });

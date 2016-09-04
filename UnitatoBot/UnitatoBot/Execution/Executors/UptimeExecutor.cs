@@ -21,7 +21,7 @@ namespace UnitatoBot.Execution.Executors {
             string uptime = GetUptime();
             context.ResponseBuilder
                 .Username()
-                .With("I am here for")
+                .Text("I am here for")
                 .Block(GetUptime())
                 .BuildAndSend();
             return ExecutionResult.Success;

@@ -1,5 +1,6 @@
 ﻿using System;
 using UnitatoBot.Command;
+using UnitatoBot.Symbol;
 
 namespace UnitatoBot.Execution.Executors {
 
@@ -28,12 +29,12 @@ namespace UnitatoBot.Execution.Executors {
         public ExecutionResult Execute(CommandContext context) {
             context.ResponseBuilder
                 .Username()
-                .With("is praising!")
+                .Text("is praising!")
                 .Space(5)
-                .With(SymbolFactory.Emoticon.Dance)
-                .With("Praise the")
+                .Text(Emoticon.Dance)
+                .Text("Praise the")
                 .Bold(context.HasArguments ? context.RawArguments : GenerateDan())
-                .With(SymbolFactory.Emoticon.Praise)
+                .Text(Emoticon.Praise)
                 .BuildAndSend();
             return ExecutionResult.Success;
         }

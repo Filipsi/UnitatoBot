@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using UnitatoBot.Connector;
+using UnitatoBot.Symbol;
 
 namespace UnitatoBot.Command {
 
@@ -61,7 +62,7 @@ namespace UnitatoBot.Command {
 
         // Content
 
-        public ResponseBuilder With(string format, params object[] args) {
+        public ResponseBuilder Text(string format, params object[] args) {
             if(Builder.Length > 0 && !SkipSpace)
                 Builder.Append(" ");
 
@@ -71,65 +72,65 @@ namespace UnitatoBot.Command {
             return this;
         }
 
-        public ResponseBuilder With(object entry) {
-            return With("{0}", entry);
+        public ResponseBuilder Text(object entry) {
+            return Text("{0}", entry);
         }
 
-        public ResponseBuilder With(char character, short repeat = 1) {
+        public ResponseBuilder Text(char character, short repeat = 1) {
             for(short i = 0; i < repeat; i++) { Builder.Append(character); }
             return this;
         }
 
-        public ResponseBuilder With(SymbolFactory.Emoji emoji) {
-            With(SymbolFactory.AsString(emoji));
+        public ResponseBuilder Text(Emoji emoji) {
+            Text(SymbolFactory.AsString(emoji));
             return this;
         }
 
-        public ResponseBuilder With(SymbolFactory.Emoticon emoticon) {
-            With(SymbolFactory.AsString(emoticon));
+        public ResponseBuilder Text(Emoticon emoticon) {
+            Text(SymbolFactory.AsString(emoticon));
             return this;
         }
 
         public ResponseBuilder Space(short repeat = 1) {
-            return With(' ', repeat);
+            return Text(' ', repeat);
         }
 
         // Formating
 
         public ResponseBuilder Italic() {
-            With("*");
+            Text("*");
             return this;
         }
 
         public ResponseBuilder Bold() {
-            With("**");
+            Text("**");
             return this;
         }
 
         public ResponseBuilder Strikeout() {
-            With("~~");
+            Text("~~");
             SkipSpace = true;
             return this;
         }
 
         public ResponseBuilder Underline() {
-            With("__");
+            Text("__");
             return this;
         }
 
         public ResponseBuilder Block() {
-            With("`");
+            Text("`");
             return this;
         }
 
         public ResponseBuilder MultilineBlock() {
-            With("```");
+            Text("```");
             SkipSpace = true;
             return this;
         }
 
         public ResponseBuilder NewLine() {
-            With(Environment.NewLine);
+            Text(Environment.NewLine);
             SkipSpace = true;
             return this;
         }
@@ -137,49 +138,57 @@ namespace UnitatoBot.Command {
         // Formating contnet
 
         public ResponseBuilder MultilineBlock(string format, params object[] args) {
-            MultilineBlock().With(format, args).MultilineBlock();
+            MultilineBlock().Text(format, args).MultilineBlock();
             return this;
         }
 
         public ResponseBuilder MultilineBlock(object entry) {
-            MultilineBlock().With(entry).MultilineBlock();
+            MultilineBlock().Text(entry).MultilineBlock();
             return this;
         }
 
         public ResponseBuilder Block(string format, params object[] args) {
-            Block().With(format, args).Block();
+            Block().Text(format, args).Block();
             return this;
         }
 
         public ResponseBuilder Block(object entry) {
-            Block().With(entry).Block();
+            Block().Text(entry).Block();
             return this;
         }
 
         public ResponseBuilder Bold(string format, params object[] args) {
-            Bold().With(format, args).Bold();
+            Bold().Text(format, args).Bold();
             return this;
         }
 
         public ResponseBuilder Bold(object entry) {
-            Bold().With(entry).Bold();
+            Bold().Text(entry).Bold();
             return this;
         }
 
         public ResponseBuilder Italic(string format, params object[] args) {
-            Italic().With(format, args).Italic();
+            Italic();
+            SkipSpace = true;
+            Text(format, args);
+            SkipSpace = true;
+            Italic();
             return this;
         }
 
         public ResponseBuilder Italic(object entry) {
-            Italic().With(entry).Italic();
+            Italic();
+            SkipSpace = true;
+            Text(entry);
+            SkipSpace = true;
+            Italic();
             return this;
         }
 
         // Utils
 
         public ResponseBuilder Username() {
-            Block().With(Message.Sender).Block();
+            Block().Text(Message.Sender).Block();
             return this;
         }
 

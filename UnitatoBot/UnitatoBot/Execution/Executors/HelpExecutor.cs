@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnitatoBot.Command;
+using UnitatoBot.Symbol;
 
 namespace UnitatoBot.Execution.Executors {
 
@@ -18,8 +19,8 @@ namespace UnitatoBot.Execution.Executors {
         public ExecutionResult Execute(CommandContext context) {
             ResponseBuilder builder = context.ResponseBuilder
                 .Username()
-                .With("here is a list of stuff I can do: ")
-                .With(SymbolFactory.Emoticon.Magic)
+                .Text("here is a list of stuff I can do: ")
+                .Text(Emoticon.Magic)
                 .NewLine()
                 .NewLine();
 
@@ -37,7 +38,7 @@ namespace UnitatoBot.Execution.Executors {
 
                     builder
                         .Block("!{0}", entry.Name)
-                        .With("{0}: {1}",
+                        .Text("{0}: {1}",
                             entry.Aliases.Count > 0 ? "(alias: " + string.Join(", ", entry.Aliases) + ")" : string.Empty,
                             enumerator.Current.GetDescription())
                         .NewLine();

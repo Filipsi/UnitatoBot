@@ -1,36 +1,36 @@
 ﻿using System;
 
-namespace UnitatoBot {
+namespace UnitatoBot.Symbol {
+
+    public enum Emoji {
+        Checklist,
+        BoxUnchecked,
+        BoxChecked,
+        Stopwatch,
+        Radio,
+        Note,
+        Die,
+        Gun,
+        Bang
+    }
+
+    public enum Emoticon {
+        Magic,
+        Dance,
+        Praise,
+        Greet,
+        Pleased,
+        But,
+        Yeeaahh,
+        Creep,
+        Cry,
+        Hide,
+        Food,
+        Why,
+        Sleep
+    }
 
     public static class SymbolFactory {
-
-        public enum Emoji {
-            Checklist,
-            BoxUnchecked,
-            BoxChecked,
-            Stopwatch,
-            Radio,
-            Note,
-            Die,
-            Gun,
-            Bang
-        }
-
-        public enum Emoticon {
-            Magic,
-            Dance,
-            Praise,
-            Greet,
-            Pleased,
-            But,
-            Yeeaahh,
-            Creep,
-            Cry,
-            Hide,
-            Food,
-            Why,
-            Sleep
-        }
 
         public static string AsString(Emoji emoji) {
             switch(emoji) {

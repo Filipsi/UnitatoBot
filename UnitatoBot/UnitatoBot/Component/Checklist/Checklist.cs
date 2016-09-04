@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnitatoBot.Command;
 using UnitatoBot.Connector;
+using UnitatoBot.Symbol;
 
 namespace UnitatoBot.Component.Checklist {
 
@@ -38,21 +39,21 @@ namespace UnitatoBot.Component.Checklist {
                 return;
 
             ResponseBuilder builder = new ResponseBuilder(Message)
-                .With(SymbolFactory.Emoji.Checklist)
-                .With("{0} (Checklist '{1}' by {2})", Title, Id, Owner);
+                .Text(Emoji.Checklist)
+                .Text("{0} (Checklist '{1}' by {2})", Title, Id, Owner);
 
             foreach(Entry entry in Entries) {
                 builder
                     .NewLine()
-                    .With(entry.IsChecked ? SymbolFactory.Emoji.BoxChecked : SymbolFactory.Emoji.BoxUnchecked)
-                    .With(entry.Text);
+                    .Text(entry.IsChecked ? Emoji.BoxChecked : Emoji.BoxUnchecked)
+                    .Text(entry.Text);
 
                 if(entry.IsChecked)
-                    builder.With("(Checked by {0})", entry.CheckedBy);
+                    builder.Text("(Checked by {0})", entry.CheckedBy);
             }
 
             if(append != null || append != string.Empty || append != "")
-                builder.NewLine().With(append);
+                builder.NewLine().Text(append);
 
             Message.Edit(builder.Build());
         }

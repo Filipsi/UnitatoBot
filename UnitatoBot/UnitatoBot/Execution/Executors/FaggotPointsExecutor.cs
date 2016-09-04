@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System.IO;
 using UnitatoBot.Command;
+using UnitatoBot.Symbol;
 
 namespace UnitatoBot.Execution.Executors {
 
@@ -41,14 +42,14 @@ namespace UnitatoBot.Execution.Executors {
             if(!context.HasArguments) {
                 ResponseBuilder builder = context.ResponseBuilder
                     .Username()
-                    .With("wants to know how much of a faggots you people are.");
+                    .Text("wants to know how much of a faggots you people are.");
 
                 if(!JsonStatStorage.HasValues) {
                     builder
                         .NewLine()
                         .Space(8)
-                        .With(SymbolFactory.Emoticon.But)
-                        .With("There are no faggots.")
+                        .Text(Emoticon.But)
+                        .Text("There are no faggots.")
                         .BuildAndSend();
                     return ExecutionResult.Success;
                 }
@@ -72,11 +73,11 @@ namespace UnitatoBot.Execution.Executors {
                 int points = property.Value.ToObject<int>();
                 context.ResponseBuilder
                     .Username()
-                    .With("wants to know how much of a faggot")
+                    .Text("wants to know how much of a faggot")
                     .Block(context.Args[1])
-                    .With("are. User has")
+                    .Text("are. User has")
                     .Block(points)
-                    .With("point{0}", points > 1 ? "s." : ".")
+                    .Text("point{0}", points > 1 ? "s." : ".")
                     .BuildAndSend();
                 return ExecutionResult.Success;
             } 
@@ -98,9 +99,9 @@ namespace UnitatoBot.Execution.Executors {
 
                 context.ResponseBuilder
                     .Username()
-                    .With("marked")
+                    .Text("marked")
                     .Block(context.Args[0])
-                    .With("as faggot")
+                    .Text("as faggot")
                     .BuildAndSend();
 
                 return ExecutionResult.Success;

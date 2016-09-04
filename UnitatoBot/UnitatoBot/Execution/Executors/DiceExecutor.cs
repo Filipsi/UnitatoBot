@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using UnitatoBot.Command;
+using UnitatoBot.Symbol;
 
 namespace UnitatoBot.Execution.Executors {
 
@@ -25,11 +26,11 @@ namespace UnitatoBot.Execution.Executors {
 
             context.ResponseBuilder
                 .Username()
-                .With("throws")
+                .Text("throws")
                 .Block(sides)
-                .With("sided")
-                .With(SymbolFactory.Emoji.Die)
-                .With("that lands on number")
+                .Text("sided")
+                .Text(Emoji.Die)
+                .Text("that lands on number")
                 .Block(RNG.Next(1, sides))
                 .BuildAndSend();
 

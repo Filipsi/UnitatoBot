@@ -2,6 +2,7 @@
 using UnitatoBot.Command;
 using UnitatoBot.Component.Countdown;
 using UnitatoBot.Connector;
+using UnitatoBot.Symbol;
 
 namespace UnitatoBot.Execution.Executors {
 
@@ -35,11 +36,11 @@ namespace UnitatoBot.Execution.Executors {
             Countdown countdown = new Countdown(runTime);
 
             ConnectionMessage responce = context.ResponseBuilder
-                .With(SymbolFactory.Emoji.Stopwatch)
+                .Text(Emoji.Stopwatch)
                 .Username()
-                .With("created timer that will run for")
+                .Text("created timer that will run for")
                 .Block(UptimeExecutor.GetFormatedTime(runTime))
-                .With("and will finish at")
+                .Text("and will finish at")
                 .Block(finishTime.ToString(DatePattenFull))
                 .Send();
 
@@ -49,30 +50,30 @@ namespace UnitatoBot.Execution.Executors {
                 if(remining.TotalSeconds > 0) {
                     context.ResponseBuilder
                         .Clear()
-                        .With(args.Icon)
-                        .With("Timer created by")
+                        .Text(args.Icon)
+                        .Text("Timer created by")
                         .Username()
-                        .With("is running!")
+                        .Text("is running!")
                         .NewLine()
                         .Space(8)
-                        .With("Time left")
+                        .Text("Time left")
                         .Block(UptimeExecutor.GetFormatedTime(remining))
-                        .With("; Will finish at ")
+                        .Text("; Will finish at ")
                         .Block(finishTime.ToString(DatePattenTime))
-                        .With("; Updated")
+                        .Text("; Updated")
                         .Block(DateTime.Now.ToString(DatePattenTime));
                 } else {
                     context.ResponseBuilder
                         .Clear()
-                        .With(args.Icon)
-                        .With("Timer created by")
+                        .Text(args.Icon)
+                        .Text("Timer created by")
                         .Username()
-                        .With("finished.")
+                        .Text("finished.")
                         .NewLine()
                         .Space(8)
-                        .With("Time passed")
+                        .Text("Time passed")
                         .Block(UptimeExecutor.GetFormatedTime(runTime))
-                        .With("; Timer finised")
+                        .Text("; Timer finised")
                         .Block(finishTime.ToString(DatePattenFull));
                 }
 
