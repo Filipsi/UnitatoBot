@@ -75,7 +75,7 @@ namespace UnitatoBot.Execution.Executors {
                     .Username()
                     .Text("wants to know how much of a faggot")
                     .Block(context.Args[1])
-                    .Text("are. User has")
+                    .Text("is. User has")
                     .Block(points)
                     .Text("point{0}", points > 1 ? "s." : ".")
                     .BuildAndSend();
