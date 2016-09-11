@@ -38,9 +38,18 @@ namespace UnitatoBot.Component.Checklist {
             if(Message == null)
                 return;
 
-            ResponseBuilder builder = new ResponseBuilder(Message)
-                .Text(Emoji.Checklist)
-                .Text("{0} (Checklist '{1}' by {2})", Title, Id, Owner);
+            ResponseBuilder builder = new ResponseBuilder(Message)     
+                .Text("Use").Block("!checklist check(or uncheck) [index]").Text("to check/uncheck item from the list (index from 0) (example: '!checklist check 2')")
+                .NewLine()
+                    .Text("Use").Block("!checklist finish").Text("after you stop using the checklist to make it not editable")
+                .NewLine()
+                .NewLine()
+                    .Text(Emoji.Checklist)
+                    .Text("{0} (Checklist", Title)
+                    .Block(Id)
+                    .Text("by")
+                    .Block(Owner)
+                    .Text(")");
 
             foreach(Entry entry in Entries) {
                 builder

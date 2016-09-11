@@ -19,7 +19,7 @@ namespace UnitatoBot.Execution.Executors {
             if(!Directory.Exists("checklist"))
                 Directory.CreateDirectory("checklist");
 
-            Checklists = LoadSaves(manager);
+            Checklists = LoadSaved(manager);
         }
 
         // IExecutionHandler
@@ -39,7 +39,6 @@ namespace UnitatoBot.Execution.Executors {
                         Checklist checklist = new Checklist(context.Args[1], context.SourceMessage.Sender, context.RawArguments.Substring(context.RawArguments.IndexOf(context.Args[1]) + context.Args[1].Length + 1));
 
                         ConnectionMessage msg = context.ResponseBuilder
-                            .Space()
                             .Text(Emoji.Checklist)
                             .Text("{0} (Checklist", checklist.Title)
                             .Block(checklist.Id)
@@ -70,9 +69,33 @@ namespace UnitatoBot.Execution.Executors {
                             Checklists.Remove(checklist);
                             checklist.Message.Delete();
                             checklist.Delete();
+
                             Logger.Info("Checklist {0} was deleted", checklist.Id);
                             return ExecutionResult.Success;
                         }
+                    }
+                    break;
+
+                case "finish":
+                    if(Checklists.Count > 0) {
+
+                        Checklist checklist = null;
+                        if(context.Args.Length == 1) {
+                            checklist = Checklists.Last();
+                        } else if(context.Args.Length > 1) {
+                            checklist = Checklists.Find(c => c.Id.Equals(context.Args[1]));   
+                        }
+
+                        if(checklist != null) {
+                            context.SourceMessage.Delete();
+                            checklist.UpdateMessage("Checklist was marked as finished, no further edits can be made.");
+                            Checklists.Remove(checklist);
+                            checklist.Delete();
+
+                            Logger.Info("Checklist {0} was marked as finished and deleted", checklist.Id);
+                            return ExecutionResult.Success;
+                        }
+
                     }
                     break;
 
@@ -152,9 +175,9 @@ namespace UnitatoBot.Execution.Executors {
                         bool checkState = context.Args[0] == "check";
 
                         if(checklist == null)
-                            return CheckEntry(context.SourceMessage, Checklists.Last(), context.Args[1], checkState) ? ExecutionResult.Success : ExecutionResult.Fail;
+                            return SetEntryState(context.SourceMessage, Checklists.Last(), checkState, context.Args[1]) ? ExecutionResult.Success : ExecutionResult.Fail;
 
-                        return context.Args.Length > 2 && CheckEntry(context.SourceMessage, checklist, context.Args[2], checkState) ? ExecutionResult.Success : ExecutionResult.Fail;
+                        return context.Args.Length > 2 && SetEntryState(context.SourceMessage, checklist, checkState, context.Args[2]) ? ExecutionResult.Success : ExecutionResult.Fail;
                     }
                     break;
             }
@@ -164,21 +187,21 @@ namespace UnitatoBot.Execution.Executors {
 
         // Utilities
 
-        private bool CheckEntry(ConnectionMessage msg, Checklist checklist, string index, bool state) {
+        private bool SetEntryState(ConnectionMessage commandMsg, Checklist checklist, bool state, string index) {
             byte i;
 
             if(byte.TryParse(index, out i)) {
-                bool result = checklist.SetEntryState(i, state, msg.Sender);
+                bool result = checklist.SetEntryState(i, state, commandMsg.Sender);
                 
                 if(result) {
                     checklist.UpdateMessage();
-                    msg.Delete();
+                    commandMsg.Delete();
                 }
 
                 if(checklist.IsCompleted) {
                     Checklists.Remove(checklist);
                     checklist.Delete();
-                    checklist.UpdateMessage("Checklist was completed, no further edits can be made.");
+                    checklist.UpdateMessage("All entries on checklist was checked, no further edits can be made.");
                     Logger.Info("Checklist {0} was deleted", checklist.Id);
                 }
 
@@ -188,7 +211,7 @@ namespace UnitatoBot.Execution.Executors {
             return false;
         }
 
-        private List<Checklist> LoadSaves(CommandManager manager) {
+        private List<Checklist> LoadSaved(CommandManager manager) {
             Logger.SectionStart();
 
             List<Checklist> list = new List<Checklist>();
