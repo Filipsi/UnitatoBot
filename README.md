@@ -4,4 +4,4 @@
 
 ![ScreenShot](https://github.com/Filipsi/UnitatoBot/blob/master/Resources/unitato_page.png)
 
-Custom potato-based chat bot. Compatible with anything. Currently on Discord using Discord.Net library
+Custom potato-based chat bot with compatibility abstract layer. Currently on Discord using Discord.Net library.

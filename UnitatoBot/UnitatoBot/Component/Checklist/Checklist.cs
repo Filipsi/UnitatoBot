@@ -39,7 +39,7 @@ namespace UnitatoBot.Component.Checklist {
                 return;
 
             ResponseBuilder builder = new ResponseBuilder(Message)     
-                .Text("Use").Block("!checklist check(or uncheck) [index]").Text("to check/uncheck item from the list (index from 0) (example: '!checklist check 2')")
+                .Text("Use").Block("!checklist check(or uncheck) [index](you can use multiple indexes)").Text("to check/uncheck item from the list (index from 0) (example: '!checklist check 2')")
                 .NewLine()
                     .Text("Use").Block("!checklist finish").Text("after you stop using the checklist to make it not editable")
                 .NewLine()
