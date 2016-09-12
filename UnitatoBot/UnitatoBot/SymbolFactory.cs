@@ -68,7 +68,7 @@ namespace UnitatoBot.Symbol {
                 case Emoticon.Greet:
                     return "(•̀ᴗ•́)و";
                 case Emoticon.Pleased:
-                    return "(　＾∇＾)";
+                    return "( ^-^)";
                 case Emoticon.But:
                     return "(☉.☉)7";
                 case Emoticon.Yeeaahh:

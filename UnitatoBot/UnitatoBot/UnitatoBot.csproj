@@ -81,6 +81,7 @@
     <Compile Include="Execution\Executors\ChecklistExecutor.cs" />
     <Compile Include="Execution\Executors\CoinFlipExecutor.cs" />
     <Compile Include="Execution\Executors\EmoticonExecutor.cs" />
+    <Compile Include="Execution\Executors\InviteExecutor.cs" />
     <Compile Include="Execution\Executors\RussianRouletteExecutor.cs" />
     <Compile Include="Execution\Executors\SoundExecutor.cs" />
     <Compile Include="Execution\Executors\TimerExecutor.cs" />

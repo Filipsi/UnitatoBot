@@ -20,6 +20,7 @@ namespace UnitatoBot {
             CommandManager cmdManager = new CommandManager(connection)
                 .RegisterCommand("unitato", new InfoExecutor())
                 .RegisterCommand("help", new HelpExecutor())
+                .RegisterCommand("invite", new InviteExecutor())
                 .RegisterCommand("uptime", new UptimeExecutor())
                 .RegisterCommand("roll", new DiceExecutor())
                     .WithAlias("dice")
