@@ -87,6 +87,7 @@
     <Compile Include="Execution\Executors\CoinFlipExecutor.cs" />
     <Compile Include="Execution\Executors\EmoticonExecutor.cs" />
     <Compile Include="Execution\Executors\InviteExecutor.cs" />
+    <Compile Include="Execution\Executors\PermissionExecutor.cs" />
     <Compile Include="Execution\Executors\RebootExecutor.cs" />
     <Compile Include="Execution\Executors\RussianRouletteExecutor.cs" />
     <Compile Include="Execution\Executors\SoundExecutor.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="Execution\IExecutionHandler.cs" />
     <Compile Include="Unitato.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WrappedEnumerable.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

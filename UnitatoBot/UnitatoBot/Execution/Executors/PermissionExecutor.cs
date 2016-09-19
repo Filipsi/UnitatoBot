@@ -1,0 +1,207 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using UnitatoBot.Command;
+using UnitatoBot.Permission;
+
+namespace UnitatoBot.Execution.Executors {
+
+    internal class PermissionExecutor : IExecutionHandler {
+
+        // IExecutionHandler
+
+        public string GetDescription() {
+            return "";
+        }
+
+        public ExecutionResult CanExecute(CommandContext context) {
+            return context.HasArguments ? ExecutionResult.Success : ExecutionResult.Fail;
+        }
+
+        public ExecutionResult Execute(CommandContext context) {
+            switch(context.Args[0]) {
+
+                case "users":
+                    context.ResponseBuilder
+                        .Username()
+                        .Text("this is list of users in permission groups:")
+                        .TableStart(20, "Group", "User");
+
+                    foreach(PermissionGroup group in Permissions.Groups) {
+                        AddGroupData(context, group, group.Members);
+                    }
+
+                    context.ResponseBuilder
+                        .TableEnd()
+                        .Send();
+                    return ExecutionResult.Success;
+
+                case "list":
+                    context.ResponseBuilder
+                        .Username()
+                        .Text("this is list of permission for groups:")
+                        .TableStart(20, "Group", "Permission");
+
+                    foreach(PermissionGroup group in Permissions.Groups) {
+                        AddGroupData(context, group, group.Permissions);
+                    }
+
+                    context.ResponseBuilder
+                        .TableEnd()
+                        .Send();
+                    return ExecutionResult.Success;
+
+                case "create":
+                    if(context.Args.Length > 2 && Permissions.Has(context, Permissions.PermissionCreate)) {
+                        string[] perms = context.Args.Skip(2).ToArray();
+                        if(Permissions.CreateGroup(context.Args[1], perms) != null) {
+                            context.ResponseBuilder
+                                .Username()
+                                .Text("created new permission group")
+                                .Block(context.Args[1])
+                                .Text("with permisisons");
+
+                            foreach(string perm in perms) {
+                                context.ResponseBuilder.Block(perm);
+                            }
+
+                            context.ResponseBuilder.Send();
+                            return ExecutionResult.Success;
+                        }
+                    }
+
+                    return ExecutionResult.Fail;
+
+                case "destory":
+                    if(context.Args.Length == 2 && Permissions.Has(context, Permissions.PermissionDestroy)) {
+                        if(Permissions.DestoryGroup(context.Args[1])) {
+                            context.ResponseBuilder
+                                .Username()
+                                .Text("destoryed permission group")
+                                .Block(context.Args[1])
+                                .Send();
+
+                            return ExecutionResult.Success;
+                        }
+                    }
+
+                    return ExecutionResult.Fail;
+
+                case "allow":
+                    if(context.Args.Length > 2 && Permissions.Has(context, Permissions.PermissionAllow)) {
+                        string[] perms = context.Args.Skip(2).ToArray();
+                        if(Permissions.Allow(context.Args[1], perms)) {
+                            context.ResponseBuilder
+                                .Username()
+                                .Text("gave group")
+                                .Block(context.Args[1])
+                                .Text("permisison{0}", perms.Length > 1 ? "s" : string.Empty);
+
+                            foreach(string perm in perms) {
+                                context.ResponseBuilder.Block(perm);
+                            }
+
+                            context.ResponseBuilder.Send();
+                            return ExecutionResult.Success;
+                        }
+                    }
+                    return ExecutionResult.Fail;
+
+                case "deny":
+                    if(context.Args.Length > 2 && Permissions.Has(context, Permissions.PermissionDeny)) {
+                        string[] perms = context.Args.Skip(2).ToArray();
+                        if(Permissions.Deny(context.Args[1], perms)) {
+                            context.ResponseBuilder
+                                .Username()
+                                .Text("removed permisison{0}", perms.Length > 1 ? "s" : string.Empty);
+ 
+                            foreach(string perm in perms) {
+                                context.ResponseBuilder.Block(perm);
+                            }
+
+                            context.ResponseBuilder
+                                .Text("from group")
+                                .Block(context.Args[1])
+                                .Send();
+                            return ExecutionResult.Success;
+                        }
+                    }
+                    return ExecutionResult.Fail;
+
+                case "put":
+                    if(context.Args.Length == 3 && Permissions.Has(context, Permissions.PermissionPut)) {
+                        if(Permissions.Put(context.Args[1], context.Args[2])) {
+                            context.ResponseBuilder
+                                .Username()
+                                .Text("put user")
+                                .Block(context.Args[1])
+                                .Text("in permisison group")
+                                .Block(context.Args[2])
+                                .Send();
+
+                            return ExecutionResult.Success;
+                        }
+                    }
+                    return ExecutionResult.Fail;
+
+                case "take":
+                    if(context.Args.Length == 3 && Permissions.Has(context, Permissions.PermissionTake)) {
+                        if(Permissions.Take(context.Args[1], context.Args[2])) {
+                            context.ResponseBuilder
+                                .Username()
+                                .Text("removed user")
+                                .Block(context.Args[1])
+                                .Text("from permisison group")
+                                .Block(context.Args[2])
+                                .Send();
+
+                            return ExecutionResult.Success;
+                        }
+                    }
+                    return ExecutionResult.Fail;
+
+                case "reload":
+                    if(context.Args.Length == 1 && Permissions.Has(context, Permissions.PermissionReload)) {
+                        Permissions.Load();
+
+                        context.ResponseBuilder
+                            .Username()
+                            .Text("reloaded permissions from files")
+                            .Send();
+
+                        return ExecutionResult.Success;
+                        
+                    }
+                    return ExecutionResult.Fail;
+
+            }
+
+            return ExecutionResult.Fail;
+        }
+
+        // Util
+
+        private void AddGroupData(CommandContext context, PermissionGroup group, IEnumerable enumerable) {
+            if(group.MembersCount > 0) {
+                bool tableStart = false;
+                foreach(string user in enumerable) {
+                    if(!tableStart) {
+                        context.ResponseBuilder.TableRow(group.Name, user);
+                        tableStart = true;
+                    } else {
+                        context.ResponseBuilder.TableRow(string.Empty, user);
+                    }
+                }
+            } else {
+                context.ResponseBuilder.TableRow(group.Name, string.Empty);
+            }
+
+            context.ResponseBuilder.TableSpacer();
+        }
+
+    }
+
+}

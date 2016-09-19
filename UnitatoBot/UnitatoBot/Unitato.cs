@@ -44,7 +44,8 @@ namespace UnitatoBot {
                 .RegisterCommand("roulette", new RussianRouletteExecutor())
                     .WithAlias("rr")
                 .RegisterCommand("calc", new CalcExecutor())
-                .RegisterCommand("reboot", new RebootExecutor());
+                .RegisterCommand("reboot", new RebootExecutor())
+                .RegisterCommand("permission", new PermissionExecutor());
 
             cmdManager.Begin();
             Logger.Log("Ready to go.");
