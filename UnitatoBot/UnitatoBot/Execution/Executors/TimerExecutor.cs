@@ -30,7 +30,6 @@ namespace UnitatoBot.Execution.Executors {
                 sec += res;
             }
 
-
             TimeSpan runTime = TimeSpan.FromSeconds(sec);
             DateTime finishTime = DateTime.Now.Add(runTime);
             Countdown countdown = new Countdown(runTime);

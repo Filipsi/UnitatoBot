@@ -96,6 +96,11 @@ namespace UnitatoBot.Component.Checklist {
         }
 
         public static Checklist LoadFrom(CommandManager manager, FileInfo file) {
+            if(!file.Exists) {
+                Logger.Warn("Unable to load checklist {0}, file not found", file.Name);
+                return null;
+            }
+
             string data = "{}";
             using(StreamReader reader = file.OpenText()) {
                 data = reader.ReadToEnd();

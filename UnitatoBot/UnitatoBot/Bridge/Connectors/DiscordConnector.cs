@@ -14,6 +14,8 @@ namespace UnitatoBot.Connector.Connectors {
         private AudioService    Audio;
         private bool            IsPlayingAudio;
 
+        private readonly object AudioLock = new object();
+
         public DiscordConnector(string token) {  
             Client = new DiscordClient();
             IsPlayingAudio = false;
@@ -95,32 +97,36 @@ namespace UnitatoBot.Connector.Connectors {
         private async void PlaySoundFile(Channel channel, string file) {
             // https://github.com/RogueException/Discord.Net/blob/master/src/Discord.Net.Audio/opus.dll
 
-            IsPlayingAudio = true;
             IAudioClient ac = await Audio.Join(channel);
-            System.Threading.Thread.Sleep(250);
 
-            var OutFormat = new WaveFormat(48000, 16, Audio.Config.Channels);
-            using(var MP3Reader = new Mp3FileReader(file))
-            using(var resampler = new MediaFoundationResampler(MP3Reader, OutFormat)) {
-                resampler.ResamplerQuality = 60;
-                int blockSize = OutFormat.AverageBytesPerSecond / 50;
-                byte[] buffer = new byte[blockSize];
-                int byteCount;
+            lock(AudioLock) {
+                IsPlayingAudio = true;
+                System.Threading.Thread.Sleep(250);
 
-                while((byteCount = resampler.Read(buffer, 0, blockSize)) > 0) {
-                    if(byteCount < blockSize) {
-                        for(int i = byteCount; i < blockSize; i++)
-                            buffer[i] = 0;
+                var OutFormat = new WaveFormat(48000, 16, Audio.Config.Channels);
+                using(var MP3Reader = new Mp3FileReader(file))
+                using(var resampler = new MediaFoundationResampler(MP3Reader, OutFormat)) {
+                    resampler.ResamplerQuality = 60;
+                    int blockSize = OutFormat.AverageBytesPerSecond / 50;
+                    byte[] buffer = new byte[blockSize];
+                    int byteCount;
+
+                    while((byteCount = resampler.Read(buffer, 0, blockSize)) > 0) {
+                        if(byteCount < blockSize) {
+                            for(int i = byteCount; i < blockSize; i++)
+                                buffer[i] = 0;
+                        }
+
+                        ac.Send(buffer, 0, blockSize);
                     }
-
-                    ac.Send(buffer, 0, blockSize);
                 }
+
+                System.Threading.Thread.Sleep(1000);
+                IsPlayingAudio = false;
             }
 
-            System.Threading.Thread.Sleep(1000);
             await ac.Disconnect();
             System.Threading.Thread.Sleep(250);
-            IsPlayingAudio = false;
         }
 
         // IConnector
