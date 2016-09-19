@@ -188,8 +188,7 @@ namespace UnitatoBot.Execution.Executors {
         // Utilities
 
         private bool SetEntryState(ServiceMessage commandMsg, Checklist checklist, bool state, params string[] indexes) {
-            byte i;
-            bool anySucess = false;
+            bool anySucess = false; byte i;
 
             foreach(string index in indexes) {
                 if(byte.TryParse(index, out i)) {

@@ -44,6 +44,10 @@
       <HintPath>..\packages\NAudio.1.7.3\lib\net35\NAudio.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="NCalc, Version=1.3.8.0, Culture=neutral, PublicKeyToken=973cde3f1cafed03, processorArchitecture=MSIL">
+      <HintPath>..\packages\ncalc.1.3.8\lib\NCalc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -78,6 +82,7 @@
     <Compile Include="Command\Command.cs" />
     <Compile Include="Command\CommandContext.cs" />
     <Compile Include="Command\CommandManager.cs" />
+    <Compile Include="Execution\Executors\CalcExecutor.cs" />
     <Compile Include="Execution\Executors\ChecklistExecutor.cs" />
     <Compile Include="Execution\Executors\CoinFlipExecutor.cs" />
     <Compile Include="Execution\Executors\EmoticonExecutor.cs" />
@@ -95,7 +100,7 @@
     <Compile Include="Component\Countdown\StateChangedEventArgs.cs" />
     <Compile Include="Configuration\Configuration.cs" />
     <Compile Include="Bridge\ConnectionMessage.cs" />
-    <Compile Include="Bridge\Connectors\DiscordConnector.cs" />
+    <Compile Include="Bridge\Services\DiscordService.cs" />
     <Compile Include="Execution\ExecutionResult.cs" />
     <Compile Include="Execution\Executors\DiceExecutor.cs" />
     <Compile Include="Execution\Executors\FaggotPointsExecutor.cs" />
@@ -106,8 +111,8 @@
     <Compile Include="Bridge\IAudioCapability.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="SymbolFactory.cs" />
-    <Compile Include="Expression.cs" />
-    <Compile Include="Bridge\IConnector.cs" />
+    <Compile Include="Expressions.cs" />
+    <Compile Include="Bridge\IService.cs" />
     <Compile Include="Execution\IExecutionHandler.cs" />
     <Compile Include="Unitato.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

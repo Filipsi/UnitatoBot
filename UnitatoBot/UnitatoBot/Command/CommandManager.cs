@@ -29,11 +29,11 @@ namespace UnitatoBot.Command {
         private void OnMessageReceived(object sender, ServiceMessageEventArgs e) {
             if(!IsReady) return;
 
-            bool isCommand = Expression.CommandParser.Test(e.Message.Text);
+            bool isCommand = Expressions.CommandParser.Test(e.Message.Text);
             Logger.Log("Received {0} from {1}, IsCommand: {2}", e.Message.Text, e.Message.Sender, isCommand);
             if(!isCommand) return;
 
-            string commandName = Expression.CommandParser.Capture(e.Message.Text, "command");
+            string commandName = Expressions.CommandParser.Capture(e.Message.Text, "command");
             Command command = Commands.Find(x => x.Name == commandName || x.IsAlias(commandName));
 
             if(command != null) command.Execute(this, e.Message); else Logger.Log("Command {0} not found", commandName);

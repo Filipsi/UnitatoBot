@@ -25,10 +25,10 @@ namespace UnitatoBot.Command {
             ExecutedCommand = command;
             CommandManager = manager;
             ServiceMessage = message;
-            ExecutionName = Expression.CommandParser.Capture(ServiceMessage.Text, "command");
-            HasArguments = Expression.CommandArgumentParser.Test(ServiceMessage.Text);
+            ExecutionName = Expressions.CommandParser.Capture(ServiceMessage.Text, "command");
+            HasArguments = Expressions.CommandArgumentParser.Test(ServiceMessage.Text);
 
-            RawArguments = Expression.CommandArgumentParser.Capture(ServiceMessage.Text, "args");
+            RawArguments = Expressions.CommandArgumentParser.Capture(ServiceMessage.Text, "args");
             if(RawArguments != null && RawArguments != string.Empty)
                 RawArguments = Regex.Replace(RawArguments, @"\r\n?|\n", string.Empty);
 

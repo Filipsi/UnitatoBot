@@ -39,7 +39,8 @@ namespace UnitatoBot {
                 .RegisterCommand("coin", new CoinFlipExecutor())
                     .WithAlias("flip")
                 .RegisterCommand("roulette", new RussianRouletteExecutor())
-                    .WithAlias("rr");
+                    .WithAlias("rr")
+                .RegisterCommand("calc", new CalcExecutor());
 
             cmdManager.Begin();
             Logger.Log("Ready to go.");

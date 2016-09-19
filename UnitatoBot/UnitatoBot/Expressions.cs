@@ -2,7 +2,7 @@
 
 namespace UnitatoBot {
 
-    public static class Expression {
+    public static class Expressions {
 
         public static VerbalExpressions CommandParser = new VerbalExpressions()
             .StartOfLine()
