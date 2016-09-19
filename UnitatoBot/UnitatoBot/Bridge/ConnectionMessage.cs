@@ -1,24 +1,24 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace UnitatoBot.Connector {
+namespace UnitatoBot.Bridge {
 
-    internal class ConnectionMessageEventArgs : EventArgs {
+    internal class ServiceMessageEventArgs : EventArgs {
 
-        public ConnectionMessage Message { private set; get; }
+        public ServiceMessage Message { private set; get; }
 
-        public ConnectionMessageEventArgs(ConnectionMessage msg) {
+        public ServiceMessageEventArgs(ServiceMessage msg) {
             Message = msg;
         }
 
     }
 
     [JsonObject(MemberSerialization.OptIn)]
-    internal class ConnectionMessage {
+    internal class ServiceMessage {
 
-        public IConnector   ConnectionProvider  { private set; get; }
-        public string       Sender              { private set; get; }
-        public string       Text                { private set; get; }
+        public IService     Service     { private set; get; }
+        public string       Sender      { private set; get; }
+        public string       Text        { private set; get; }
 
         [JsonProperty]
         public string ServiceType { private set; get; }
@@ -32,13 +32,13 @@ namespace UnitatoBot.Connector {
         private Func<string, object> EditHandler;
         private Func<object>         DeleteHandler;
 
-        public ConnectionMessage() {
+        public ServiceMessage() {
             // NO-OP
         }
 
-        public ConnectionMessage(IConnector connector, Discord.Message message) {
-            ConnectionProvider = connector;
-            ServiceType = ConnectionProvider.GetServiceType();
+        public ServiceMessage(IService service, Discord.Message message) {
+            Service = service;
+            ServiceType = Service.GetServiceType();
 
             Origin = message.Channel.Id.ToString();
             Id = message.Id.ToString();

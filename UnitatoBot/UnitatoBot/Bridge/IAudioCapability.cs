@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnitatoBot.Connector {
+namespace UnitatoBot.Bridge {
 
     internal interface IAudioCapability {
 

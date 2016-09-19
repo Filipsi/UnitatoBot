@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnitatoBot.Connector;
+using UnitatoBot.Bridge;
 using UnitatoBot.Execution;
 
 namespace UnitatoBot.Command {
@@ -10,15 +10,15 @@ namespace UnitatoBot.Command {
 
         public bool IsReady { private set; get; }
 
-        private IConnector[] ServiceConnectors;
-        private List<Command> Commands;
+        private IService[]      ServiceConnectors;
+        private List<Command>   Commands;
 
-        public CommandManager(params IConnector[] connectors) {
+        public CommandManager(params IService[] connectors) {
             Commands = new List<Command>();
             IsReady = false;
             ServiceConnectors = connectors;
 
-            foreach(IConnector connector in connectors) {
+            foreach(IService connector in connectors) {
                 connector.OnMessageReceived += OnMessageReceived;
             }
 
@@ -26,7 +26,7 @@ namespace UnitatoBot.Command {
             Logger.SectionStart();
         }
 
-        private void OnMessageReceived(object sender, ConnectionMessageEventArgs e) {
+        private void OnMessageReceived(object sender, ServiceMessageEventArgs e) {
             if(!IsReady) return;
 
             bool isCommand = Expression.CommandParser.Test(e.Message.Text);
@@ -134,7 +134,7 @@ namespace UnitatoBot.Command {
             return Commands.Find(x => x.Name == name || x.IsAlias(name));
         }
 
-        public IConnector[] FindServiceConnectors(string serviceType) {
+        public IService[] FindServiceType(string serviceType) {
             return Array.FindAll(ServiceConnectors, c => c.GetServiceType().Equals(serviceType));
         }
 

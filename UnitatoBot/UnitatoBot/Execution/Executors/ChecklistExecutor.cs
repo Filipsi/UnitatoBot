@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using UnitatoBot.Command;
 using UnitatoBot.Component.Checklist;
-using UnitatoBot.Connector;
+using UnitatoBot.Bridge;
 using UnitatoBot.Symbol;
 
 namespace UnitatoBot.Execution.Executors {
@@ -36,9 +36,9 @@ namespace UnitatoBot.Execution.Executors {
             switch(context.Args[0]) {
                 case "create":
                     if(context.Args.Length > 2 && !Checklists.Exists(c => c.Id.Equals(context.Args[1]))) {
-                        Checklist checklist = new Checklist(context.Args[1], context.SourceMessage.Sender, context.RawArguments.Substring(context.RawArguments.IndexOf(context.Args[1]) + context.Args[1].Length + 1));
+                        Checklist checklist = new Checklist(context.Args[1], context.ServiceMessage.Sender, context.RawArguments.Substring(context.RawArguments.IndexOf(context.Args[1]) + context.Args[1].Length + 1));
 
-                        ConnectionMessage msg = context.ResponseBuilder
+                        ServiceMessage msg = context.ResponseBuilder
                             .Text(Emoji.Checklist)
                             .Text("{0} (Checklist", checklist.Title)
                             .Block(checklist.Id)
@@ -65,7 +65,7 @@ namespace UnitatoBot.Execution.Executors {
                         Checklist checklist = Checklists.Find(c => c.Id.Equals(context.Args[1]));
 
                         if(checklist != null) {
-                            context.SourceMessage.Delete();
+                            context.ServiceMessage.Delete();
                             Checklists.Remove(checklist);
                             checklist.Message.Delete();
                             checklist.Delete();
@@ -87,7 +87,7 @@ namespace UnitatoBot.Execution.Executors {
                         }
 
                         if(checklist != null) {
-                            context.SourceMessage.Delete();
+                            context.ServiceMessage.Delete();
                             checklist.UpdateMessage("Checklist was marked as finished, no further edits can be made.");
                             Checklists.Remove(checklist);
                             checklist.Delete();
@@ -105,12 +105,12 @@ namespace UnitatoBot.Execution.Executors {
 
                         if(checklist == null) {
                             Checklists.Last().Add(context.RawArguments.Substring(context.RawArguments.IndexOf(context.Args[0]) + context.Args[0].Length + 1));
-                            context.SourceMessage.Delete();
+                            context.ServiceMessage.Delete();
                             return ExecutionResult.Success;
 
                         } else if(context.Args.Length > 2) {
                             checklist.Add(context.RawArguments.Substring(context.RawArguments.IndexOf(context.Args[1]) + context.Args[1].Length + 1));
-                            context.SourceMessage.Delete();
+                            context.ServiceMessage.Delete();
                             return ExecutionResult.Success;
 
                         }
@@ -132,7 +132,7 @@ namespace UnitatoBot.Execution.Executors {
 
                             byte index;
                             if(byte.TryParse(context.Args[hasId ? 2 : 1], out index)) {
-                                context.SourceMessage.Delete();
+                                context.ServiceMessage.Delete();
                                 checklist.Remove(index);
                                 return ExecutionResult.Success;
                             }
@@ -160,7 +160,7 @@ namespace UnitatoBot.Execution.Executors {
                                 checklist.Add(entry, false);
                             }
 
-                            context.SourceMessage.Delete();
+                            context.ServiceMessage.Delete();
                             checklist.UpdateMessage();
                             return ExecutionResult.Success;
 
@@ -175,9 +175,9 @@ namespace UnitatoBot.Execution.Executors {
                         bool checkState = context.Args[0] == "check";
 
                         if(checklist == null)
-                            return SetEntryState(context.SourceMessage, Checklists.Last(), checkState, context.Args.Skip(1).ToArray()) ? ExecutionResult.Success : ExecutionResult.Fail;
+                            return SetEntryState(context.ServiceMessage, Checklists.Last(), checkState, context.Args.Skip(1).ToArray()) ? ExecutionResult.Success : ExecutionResult.Fail;
 
-                        return context.Args.Length > 2 && SetEntryState(context.SourceMessage, checklist, checkState, context.Args.Skip(2).ToArray()) ? ExecutionResult.Success : ExecutionResult.Fail;
+                        return context.Args.Length > 2 && SetEntryState(context.ServiceMessage, checklist, checkState, context.Args.Skip(2).ToArray()) ? ExecutionResult.Success : ExecutionResult.Fail;
                     }
                     break;
             }
@@ -187,7 +187,7 @@ namespace UnitatoBot.Execution.Executors {
 
         // Utilities
 
-        private bool SetEntryState(ConnectionMessage commandMsg, Checklist checklist, bool state, params string[] indexes) {
+        private bool SetEntryState(ServiceMessage commandMsg, Checklist checklist, bool state, params string[] indexes) {
             byte i;
             bool anySucess = false;
 

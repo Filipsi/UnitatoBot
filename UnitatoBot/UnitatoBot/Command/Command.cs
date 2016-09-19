@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using UnitatoBot.Connector;
+using UnitatoBot.Bridge;
 using UnitatoBot.Execution;
 
 namespace UnitatoBot.Command {
@@ -34,7 +34,7 @@ namespace UnitatoBot.Command {
             return ExecutorList.GetEnumerator();
         }
 
-        public void Execute(CommandManager manager, ConnectionMessage message) {
+        public void Execute(CommandManager manager, ServiceMessage message) {
             // Create a execution context for this command
             CommandContext context = new CommandContext(this, manager, message);
 

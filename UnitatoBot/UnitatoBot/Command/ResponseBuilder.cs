@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Text;
-using UnitatoBot.Connector;
+using UnitatoBot.Bridge;
 using UnitatoBot.Symbol;
 
 namespace UnitatoBot.Command {
 
     internal class ResponseBuilder {
 
-        private ConnectionMessage   Message     = null;
+        private ServiceMessage   Message     = null;
         private StringBuilder       Builder     = new StringBuilder();
         private bool                SkipSpace   = false;
 
@@ -22,7 +22,7 @@ namespace UnitatoBot.Command {
             get { return Builder.Length; }
         }
 
-        public ResponseBuilder(ConnectionMessage message, bool removeOriginalMessage = true) {
+        public ResponseBuilder(ServiceMessage message, bool removeOriginalMessage = true) {
             ShouldDeleteMessage = removeOriginalMessage;
             Message = message;
         }
@@ -45,19 +45,19 @@ namespace UnitatoBot.Command {
                 Message.Delete();
 
             string responce = Build();
-            Message.ConnectionProvider.SendMessage(Message.Origin, responce);
+            Message.Service.SendMessage(Message.Origin, responce);
 
             return responce;
         }
 
-        public ConnectionMessage Send() {
+        public ServiceMessage Send() {
             if(Message == null)
                 return null;
 
             if(ShouldDeleteMessage)
                 Message.Delete();
 
-            return Message.ConnectionProvider.SendMessage(Message.Origin, Build());
+            return Message.Service.SendMessage(Message.Origin, Build());
         }
 
         // Content

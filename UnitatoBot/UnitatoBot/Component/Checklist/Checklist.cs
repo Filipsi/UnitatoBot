@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnitatoBot.Command;
-using UnitatoBot.Connector;
+using UnitatoBot.Bridge;
 using UnitatoBot.Symbol;
 
 namespace UnitatoBot.Component.Checklist {
@@ -16,7 +16,7 @@ namespace UnitatoBot.Component.Checklist {
         public string               Id      { private set;  get; }
         public string               Owner   { private set;  get; }
         public string               Title   { private set;  get; }
-        public ConnectionMessage    Message { set;          get; }
+        public ServiceMessage    Message { set;          get; }
 
         public bool IsCompleted {
             get {
@@ -109,13 +109,13 @@ namespace UnitatoBot.Component.Checklist {
             Checklist checklist = JsonConvert.DeserializeObject<Checklist>(data);
 
             // This is dummy message created by deserialization (contains service, origin and id)
-            ConnectionMessage container = checklist.Message;
+            ServiceMessage container = checklist.Message;
             Logger.Info("Connection: {0}, Origin: {1}, Message: {2}", container.ServiceType, container.Origin, container.Id);
 
-            IConnector[] connectors = manager.FindServiceConnectors(container.ServiceType);
-            if(connectors.Length > 0) {
-                foreach(IConnector connector in connectors) {
-                    ConnectionMessage msg = connector.FindMessage(container.Origin, container.Id);
+            IService[] services = manager.FindServiceType(container.ServiceType);
+            if(services.Length > 0) {
+                foreach(IService service in services) {
+                    ServiceMessage msg = service.FindMessage(container.Origin, container.Id);
                     if(msg != null) {
                         checklist.Message = msg;
                         return checklist;

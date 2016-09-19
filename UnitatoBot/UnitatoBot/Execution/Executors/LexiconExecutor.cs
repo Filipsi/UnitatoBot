@@ -49,7 +49,7 @@ namespace UnitatoBot.Execution.Executors {
                 return ExecutionResult.Success;
             } else {
                 // Strips the /command from the arguments, this is here in order to enable reqests for articles with spaces in title
-                string strippedArgument = context.SourceMessage.Text.Substring(1 + context.ExecutionName.Length + 1);
+                string strippedArgument = context.ServiceMessage.Text.Substring(1 + context.ExecutionName.Length + 1);
 
                 RequestGetArticle.AddParameter("title", strippedArgument);
                 LexiconClient.ExecuteAsync(RequestGetArticle, response => {

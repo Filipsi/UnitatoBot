@@ -1,7 +1,7 @@
 ﻿using System;
 using UnitatoBot.Command;
 using UnitatoBot.Component.Countdown;
-using UnitatoBot.Connector;
+using UnitatoBot.Bridge;
 using UnitatoBot.Symbol;
 
 namespace UnitatoBot.Execution.Executors {
@@ -34,7 +34,7 @@ namespace UnitatoBot.Execution.Executors {
             DateTime finishTime = DateTime.Now.Add(runTime);
             Countdown countdown = new Countdown(runTime);
 
-            ConnectionMessage responce = context.ResponseBuilder
+            ServiceMessage responce = context.ResponseBuilder
                 .Text(Emoji.Stopwatch)
                 .Username()
                 .Text("created timer that will run for")

@@ -17,7 +17,7 @@ namespace UnitatoBot.Execution.Executors {
         }
 
         public ExecutionResult CanExecute(CommandContext context) {
-            return context.SourceMessage.ServiceType == "Discord" ? ExecutionResult.Success : ExecutionResult.Denied;
+            return context.ServiceMessage.ServiceType == "Discord" ? ExecutionResult.Success : ExecutionResult.Denied;
         }
 
         public ExecutionResult Execute(CommandContext context) {

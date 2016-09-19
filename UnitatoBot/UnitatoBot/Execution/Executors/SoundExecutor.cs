@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using UnitatoBot.Command;
 using UnitatoBot.Component.Audio;
-using UnitatoBot.Connector;
+using UnitatoBot.Bridge;
 
 namespace UnitatoBot.Execution.Executors {
 
@@ -27,7 +27,7 @@ namespace UnitatoBot.Execution.Executors {
         }
 
         public ExecutionResult CanExecute(CommandContext context) {
-            return context.SourceMessage.ConnectionProvider is IAudioCapability && context.HasArguments && (context.Args[0].Equals("list") || HasSound(context.Args[0])) ? ExecutionResult.Success : ExecutionResult.Denied;
+            return context.ServiceMessage.Service is IAudioCapability && context.HasArguments && (context.Args[0].Equals("list") || HasSound(context.Args[0])) ? ExecutionResult.Success : ExecutionResult.Denied;
         }
 
         public ExecutionResult Execute(CommandContext context) {
@@ -53,7 +53,7 @@ namespace UnitatoBot.Execution.Executors {
                     .Send();
 
             } else {
-                return PlaySound((IAudioCapability)context.SourceMessage.ConnectionProvider, context.SourceMessage, context.Args[0]) ? ExecutionResult.Success : ExecutionResult.Denied;
+                return PlaySound((IAudioCapability)context.ServiceMessage.Service, context.ServiceMessage, context.Args[0]) ? ExecutionResult.Success : ExecutionResult.Denied;
             }
 
             return ExecutionResult.Success;
@@ -61,7 +61,7 @@ namespace UnitatoBot.Execution.Executors {
 
         // Logic
 
-        private bool PlaySound(IAudioCapability player, ConnectionMessage requestMessage, string soundName) {
+        private bool PlaySound(IAudioCapability player, ServiceMessage requestMessage, string soundName) {
             return Sounds.Find(s => s.Name.Equals(soundName) || s.Alias.Contains(soundName)).Play(player, requestMessage);
         }
 

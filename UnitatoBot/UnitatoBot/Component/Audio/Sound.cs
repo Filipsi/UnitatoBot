@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Timers;
 using UnitatoBot.Command;
-using UnitatoBot.Connector;
+using UnitatoBot.Bridge;
 using UnitatoBot.Symbol;
 
 namespace UnitatoBot.Component.Audio {
@@ -36,13 +36,13 @@ namespace UnitatoBot.Component.Audio {
             }
         }
 
-        public bool Play(IAudioCapability player, ConnectionMessage requestMessage) {
+        public bool Play(IAudioCapability player, ServiceMessage requestMessage) {
             bool result = player.SendAudio(requestMessage.Origin, Source);
 
             if(result) {
                 ResponseBuilder builder = new ResponseBuilder(requestMessage);
 
-                ConnectionMessage msg = builder
+                ServiceMessage msg = builder
                     .Text(Emoji.Note)
                     .Username()
                     .Text("is playing sound")

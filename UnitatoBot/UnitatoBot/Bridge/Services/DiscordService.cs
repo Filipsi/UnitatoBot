@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace UnitatoBot.Connector.Connectors {
+namespace UnitatoBot.Bridge.Services {
 
-    internal class DiscordConnector : IConnector, IAudioCapability {
+    internal class DiscordService : IService, IAudioCapability {
 
         private DiscordClient   Client;
         private AudioService    Audio;
@@ -16,7 +16,7 @@ namespace UnitatoBot.Connector.Connectors {
 
         private readonly object AudioLock = new object();
 
-        public DiscordConnector(string token) {  
+        public DiscordService(string token) {  
             Client = new DiscordClient();
             IsPlayingAudio = false;
 
@@ -58,11 +58,11 @@ namespace UnitatoBot.Connector.Connectors {
         private void InitEventHandlers() {
             Client.MessageReceived += (sender, args) => {
                 if(!args.User.Id.Equals(Client.CurrentUser.Id))
-                    OnMessageReceived(this, new ConnectionMessageEventArgs(new ConnectionMessage(this, args.Message)));
+                    OnMessageReceived(this, new ServiceMessageEventArgs(new ServiceMessage(this, args.Message)));
             };
         }
 
-        // Util
+        // Logic
 
         private async Task<Message> SendText(Channel channel, string text) {
             if(channel == null)
@@ -95,6 +95,7 @@ namespace UnitatoBot.Connector.Connectors {
         }
 
         private async void PlaySoundFile(Channel channel, string file) {
+            // Discord.Net Audio requires opus.dll in order to work properly 
             // https://github.com/RogueException/Discord.Net/blob/master/src/Discord.Net.Audio/opus.dll
 
             IAudioClient ac = await Audio.Join(channel);
@@ -129,15 +130,15 @@ namespace UnitatoBot.Connector.Connectors {
             System.Threading.Thread.Sleep(250);
         }
 
-        // IConnector
+        // IService
 
         public string GetServiceType() {
             return "Discord";
         }
 
-        public event EventHandler<ConnectionMessageEventArgs> OnMessageReceived;
+        public event EventHandler<ServiceMessageEventArgs> OnMessageReceived;
 
-        public ConnectionMessage SendMessage(string destination, string text) {
+        public ServiceMessage SendMessage(string destination, string text) {
             Channel channel = Client.GetChannel(ulong.Parse(destination));
 
             if(channel == null) {
@@ -153,10 +154,10 @@ namespace UnitatoBot.Connector.Connectors {
             // Oh god, this is wrong.
             while(msg.Id == 0) { /* NO-OP */ }
 
-            return new ConnectionMessage(this, msg);
+            return new ServiceMessage(this, msg);
         }
 
-        public ConnectionMessage FindMessage(string destination, string id) {
+        public ServiceMessage FindMessage(string destination, string id) {
             Channel channel = Client.GetChannel(ulong.Parse(destination));
 
             if(channel == null) {
@@ -167,7 +168,7 @@ namespace UnitatoBot.Connector.Connectors {
             // Message has no data (https://github.com/RogueException/Discord.Net/blob/master/src/Discord.Net/Models/Channel.cs#L284)
             Message msg = channel.GetMessage(Convert.ToUInt64(id));
 
-            return msg == null ? null : new ConnectionMessage(this, msg);
+            return msg == null ? null : new ServiceMessage(this, msg);
         }
 
         // IAudioCapability

@@ -32,7 +32,7 @@ namespace UnitatoBot.Execution.Executors {
                     // Split responce into multiple messages if responce length is greater then maximal responce length
                     if(builder.Length + enumerator.Current.GetDescription().Length + 50 >= Discord.DiscordConfig.MaxMessageSize) {
                         builder.BuildAndSend();
-                        builder = new ResponseBuilder(context.SourceMessage)
+                        builder = new ResponseBuilder(context.ServiceMessage)
                             .KeepSourceMessage();
                     }
 

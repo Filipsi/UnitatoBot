@@ -1,8 +1,8 @@
 ﻿using System;
-using UnitatoBot.Connector.Connectors;
+using UnitatoBot.Bridge.Services;
 using UnitatoBot.Configuration;
 using UnitatoBot.Command;
-using UnitatoBot.Connector;
+using UnitatoBot.Bridge;
 using UnitatoBot.Execution.Executors;
 
 namespace UnitatoBot {
@@ -13,11 +13,11 @@ namespace UnitatoBot {
 
             Logger.Log("Initializing connectors");
             Logger.SectionStart();
-            IConnector connection = new DiscordConnector(Configuration.Configuration.Settings.Token);
+            IService discordService = new DiscordService(Configuration.Configuration.Settings.Token);
             Logger.SectionEnd();
             Logger.Log("Connectors initialized");
 
-            CommandManager cmdManager = new CommandManager(connection)
+            CommandManager cmdManager = new CommandManager(discordService)
                 .RegisterCommand("unitato", new InfoExecutor())
                 .RegisterCommand("help", new HelpExecutor())
                 .RegisterCommand("invite", new InviteExecutor())
