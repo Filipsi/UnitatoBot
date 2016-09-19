@@ -87,6 +87,7 @@
     <Compile Include="Execution\Executors\CoinFlipExecutor.cs" />
     <Compile Include="Execution\Executors\EmoticonExecutor.cs" />
     <Compile Include="Execution\Executors\InviteExecutor.cs" />
+    <Compile Include="Execution\Executors\RebootExecutor.cs" />
     <Compile Include="Execution\Executors\RussianRouletteExecutor.cs" />
     <Compile Include="Execution\Executors\SoundExecutor.cs" />
     <Compile Include="Execution\Executors\TimerExecutor.cs" />
@@ -99,7 +100,7 @@
     <Compile Include="Component\Countdown\Countdown.cs" />
     <Compile Include="Component\Countdown\StateChangedEventArgs.cs" />
     <Compile Include="Configuration\Configuration.cs" />
-    <Compile Include="Bridge\ConnectionMessage.cs" />
+    <Compile Include="Bridge\ServiceMessage.cs" />
     <Compile Include="Bridge\Services\DiscordService.cs" />
     <Compile Include="Execution\ExecutionResult.cs" />
     <Compile Include="Execution\Executors\DiceExecutor.cs" />
@@ -110,6 +111,8 @@
     <Compile Include="Execution\Executors\PraiseExecutor.cs" />
     <Compile Include="Bridge\IAudioCapability.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="Permission\Permission.cs" />
+    <Compile Include="Permission\PermissionGroup.cs" />
     <Compile Include="SymbolFactory.cs" />
     <Compile Include="Expressions.cs" />
     <Compile Include="Bridge\IService.cs" />

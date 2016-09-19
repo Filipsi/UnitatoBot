@@ -73,7 +73,7 @@ namespace UnitatoBot.Component.Checklist {
             if(update)
                 UpdateMessage();
 
-            Save();
+            ToFile();
         }
 
         public void Remove(byte index, bool update = true) {
@@ -82,13 +82,13 @@ namespace UnitatoBot.Component.Checklist {
             if(update)
                 UpdateMessage();
 
-            Save();
+            ToFile();
         }
 
         public bool SetEntryState(byte index, bool state, string owner) {
             if(index < Entries.Count) {
                 Entries[index].SetState(state, owner);
-                Save();
+                ToFile();
                 return true;
             }
 
@@ -129,11 +129,10 @@ namespace UnitatoBot.Component.Checklist {
             return null;
         }
 
-        public void Save() {
-            StreamWriter writer = File.CreateText(Path.Combine("checklist", Id + ".json"));
-            writer.Write(JsonConvert.SerializeObject(this, Formatting.Indented));
-            writer.Close();
-            writer.Dispose();
+        public void ToFile() {
+            using(StreamWriter writer = File.CreateText(Path.Combine("checklist", Id + ".json"))) {
+                writer.Write(JsonConvert.SerializeObject(this, Formatting.Indented));
+            }
         }
 
         public void Delete() {

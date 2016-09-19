@@ -54,7 +54,7 @@ namespace UnitatoBot.Execution.Executors {
                         checklist.Message = msg;
                         Checklists.Add(checklist);
 
-                        checklist.Save();
+                        checklist.ToFile();
 
                         return ExecutionResult.Success;
                     }

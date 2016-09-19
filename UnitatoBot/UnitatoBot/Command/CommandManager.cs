@@ -10,16 +10,16 @@ namespace UnitatoBot.Command {
 
         public bool IsReady { private set; get; }
 
-        private IService[]      ServiceConnectors;
+        private IService[]      Services;
         private List<Command>   Commands;
 
-        public CommandManager(params IService[] connectors) {
+        public CommandManager(params IService[] services) {
             Commands = new List<Command>();
             IsReady = false;
-            ServiceConnectors = connectors;
+            Services = services;
 
-            foreach(IService connector in connectors) {
-                connector.OnMessageReceived += OnMessageReceived;
+            foreach(IService service in Services) {
+                service.OnMessageReceived += OnMessageReceived;
             }
 
             Logger.Log("Command registration");
@@ -135,7 +135,7 @@ namespace UnitatoBot.Command {
         }
 
         public IService[] FindServiceType(string serviceType) {
-            return Array.FindAll(ServiceConnectors, c => c.GetServiceType().Equals(serviceType));
+            return Array.FindAll(Services, c => c.GetServiceType().Equals(serviceType));
         }
 
     }

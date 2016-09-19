@@ -4,12 +4,15 @@ using UnitatoBot.Configuration;
 using UnitatoBot.Command;
 using UnitatoBot.Bridge;
 using UnitatoBot.Execution.Executors;
+using UnitatoBot.Permission;
 
 namespace UnitatoBot {
 
     public class Unitato {
 
         static void Main(string[] args) {
+
+            Permissions.Load();
 
             Logger.Log("Initializing connectors");
             Logger.SectionStart();
@@ -40,7 +43,8 @@ namespace UnitatoBot {
                     .WithAlias("flip")
                 .RegisterCommand("roulette", new RussianRouletteExecutor())
                     .WithAlias("rr")
-                .RegisterCommand("calc", new CalcExecutor());
+                .RegisterCommand("calc", new CalcExecutor())
+                .RegisterCommand("reboot", new RebootExecutor());
 
             cmdManager.Begin();
             Logger.Log("Ready to go.");
