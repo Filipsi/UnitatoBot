@@ -11,7 +11,13 @@ namespace UnitatoBot.Symbol {
         Note,
         Die,
         Gun,
-        Bang
+        Bang,
+        Key,
+        Lock,
+        Unlock,
+        Bulb,
+        Inbox,
+        Outbox
     }
 
     public enum Emoticon {
@@ -52,6 +58,18 @@ namespace UnitatoBot.Symbol {
                     return ":gun:";
                 case Emoji.Bang:
                     return ":boom:";
+                case Emoji.Key:
+                    return ":key2:";
+                case Emoji.Lock:
+                    return ":lock:";
+                case Emoji.Unlock:
+                    return ":unlock:";
+                case Emoji.Bulb:
+                    return ":bulb:";
+                case Emoji.Inbox:
+                    return ":inbox_tray:";
+                case Emoji.Outbox:
+                    return ":outbox_tray:";
             }
 
             return string.Empty;

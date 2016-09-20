@@ -1,6 +1,6 @@
 ﻿using CSharpVerbalExpressions;
 
-namespace UnitatoBot {
+namespace UnitatoBot.Util {
 
     public static class Expressions {
 

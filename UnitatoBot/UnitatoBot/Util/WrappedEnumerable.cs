@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace UnitatoBot {
+namespace UnitatoBot.Util {
 
     public class WrappedEnumerable<T> : IEnumerable<T> {
 

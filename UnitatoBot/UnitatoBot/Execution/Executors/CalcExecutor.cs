@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnitatoBot.Command;
+using UnitatoBot.Util;
 
 namespace UnitatoBot.Execution.Executors {
 
     internal class CalcExecutor : IExecutionHandler {
 
         public string GetDescription() {
-            return "Calculate mathematical expressions. Operators: ||, &&, =, ==, !=, <>, <, <=, >, >=, +, -, *, /, %, & (bitwise and), | (bitwise or), ^(bitwise xor), << (left shift), >>(right shift), !, not, -, ~ (bitwise not); Functions: http://ncalc.codeplex.com/wikipage?title=functions&referringTitle=values";
+            return "Calculate mathematical expressions. Operators: ||, &&, =, ==, !=, <>, <, <=, >, >=, +, -, *, /, %, & (bitwise and), | (bitwise or), ^(bitwise xor), << (left shift), >>(right shift), !, not, -, ~ (bitwise not); Functions: <http://ncalc.codeplex.com/wikipage?title=functions&referringTitle=values>";
         }
 
         public ExecutionResult CanExecute(CommandContext context) {
@@ -29,7 +30,7 @@ namespace UnitatoBot.Execution.Executors {
             }
 
             context.ResponseBuilder
-                .Text(Symbol.Emoticon.Magic)
+                .Text(Symbol.Emoji.Bulb)
                 .Text("Result of expression")
                 .Block(context.RawArguments)
                 .Text("is")

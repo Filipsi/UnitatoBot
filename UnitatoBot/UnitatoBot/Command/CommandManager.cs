@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnitatoBot.Bridge;
 using UnitatoBot.Execution;
+using UnitatoBot.Util;
 
 namespace UnitatoBot.Command {
 

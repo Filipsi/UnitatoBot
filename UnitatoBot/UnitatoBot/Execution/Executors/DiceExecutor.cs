@@ -12,7 +12,7 @@ namespace UnitatoBot.Execution.Executors {
         // IExecutionHandler
 
         public string GetDescription() {
-            return "d[number of sides] Rolls a n sided dice.";
+            return "d[number of sides] Rolls a 'n' sided dice.";
         }
 
         public ExecutionResult CanExecute(CommandContext context) {

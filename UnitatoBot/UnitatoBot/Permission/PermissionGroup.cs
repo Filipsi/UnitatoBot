@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
+using UnitatoBot.Util;
 
 namespace UnitatoBot.Permission {
 

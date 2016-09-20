@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using UnitatoBot.Command;
+using UnitatoBot.Util;
 
 namespace UnitatoBot.Permission {
 
@@ -89,32 +90,32 @@ namespace UnitatoBot.Permission {
             return false;
         }
 
-        public static bool Allow(string group, params string[] permissions) {
+        public static bool[] Allow(string group, params string[] permissions) {
             PermissionGroup g = GroupList.SingleOrDefault(x => x.Name.Equals(group));
 
+            bool[] results = new bool[permissions.Length];
             if(g != null) {
-                foreach(string permission in permissions) {
-                    if(!g.HasPermission(permission))
-                        g.AddPermission(permission);
+                for(short i = 0; i < permissions.Length; i++) {
+                    if(!g.HasPermission(permissions[i]))
+                        results[i] = g.AddPermission(permissions[i]);
                 }
-                return true;
             }
 
-            return false;
+            return results;
         }
 
-        public static bool Deny(string group, params string[] permissions) {
+        public static bool[] Deny(string group, params string[] permissions) {
             PermissionGroup g = GroupList.SingleOrDefault(x => x.Name.Equals(group));
 
+            bool[] results = new bool[permissions.Length];
             if(g != null) {
-                foreach(string permission in permissions) {
-                    if(g.HasPermission(permission))
-                        g.RemovePermission(permission);
+                for(short i = 0; i < permissions.Length; i++) {
+                    if(g.HasPermission(permissions[i]))
+                        results[i] = g.RemovePermission(permissions[i]);
                 }
-                return true;
             }
 
-            return false;
+            return results;
         }
 
         public static PermissionGroup CreateGroup(string name, params string[] permissions) {

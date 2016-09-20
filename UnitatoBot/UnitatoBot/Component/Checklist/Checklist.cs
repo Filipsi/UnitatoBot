@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using UnitatoBot.Command;
 using UnitatoBot.Bridge;
 using UnitatoBot.Symbol;
+using UnitatoBot.Util;
 
 namespace UnitatoBot.Component.Checklist {
 

@@ -111,16 +111,16 @@
     <Compile Include="Execution\Executors\LexiconExecutor.cs" />
     <Compile Include="Execution\Executors\PraiseExecutor.cs" />
     <Compile Include="Bridge\IAudioCapability.cs" />
-    <Compile Include="Logger.cs" />
+    <Compile Include="Util\Logger.cs" />
     <Compile Include="Permission\Permission.cs" />
     <Compile Include="Permission\PermissionGroup.cs" />
     <Compile Include="SymbolFactory.cs" />
-    <Compile Include="Expressions.cs" />
+    <Compile Include="Util\Expressions.cs" />
     <Compile Include="Bridge\IService.cs" />
     <Compile Include="Execution\IExecutionHandler.cs" />
     <Compile Include="Unitato.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WrappedEnumerable.cs" />
+    <Compile Include="Util\WrappedEnumerable.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

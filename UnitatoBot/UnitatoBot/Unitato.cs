@@ -5,6 +5,7 @@ using UnitatoBot.Command;
 using UnitatoBot.Bridge;
 using UnitatoBot.Execution.Executors;
 using UnitatoBot.Permission;
+using UnitatoBot.Util;
 
 namespace UnitatoBot {
 
@@ -45,7 +46,8 @@ namespace UnitatoBot {
                     .WithAlias("rr")
                 .RegisterCommand("calc", new CalcExecutor())
                 .RegisterCommand("reboot", new RebootExecutor())
-                .RegisterCommand("permission", new PermissionExecutor());
+                .RegisterCommand("permission", new PermissionExecutor())
+                    .WithAlias("perm");
 
             cmdManager.Begin();
             Logger.Log("Ready to go.");

@@ -14,7 +14,7 @@ namespace UnitatoBot.Execution.Executors {
         // IExecutionHandler
 
         public string GetDescription() {
-            return "";
+            return "Permission management. Use with argument 'users' to print out list of users in given groups, use with 'list' to get list of groups and what they can do. Create group: 'create [group] [permission...](multiple allowed)'; Destory group: 'destory [group]'; Add permission to group: 'allow [group] [permission...](multiple allowed)'; Remove permission from group: 'deny [group] [permission...](multiple allowed)'; Add user to group: 'put [user] [group]'; Remove user from group: 'take [user] [group]'; Realod from reload: 'reload'";
         }
 
         public ExecutionResult CanExecute(CommandContext context) {
@@ -26,6 +26,7 @@ namespace UnitatoBot.Execution.Executors {
 
                 case "users":
                     context.ResponseBuilder
+                        .Text(Symbol.Emoji.Key)
                         .Username()
                         .Text("this is list of users in permission groups:")
                         .TableStart(20, "Group", "User");
@@ -41,6 +42,7 @@ namespace UnitatoBot.Execution.Executors {
 
                 case "list":
                     context.ResponseBuilder
+                        .Text(Symbol.Emoji.Key)
                         .Username()
                         .Text("this is list of permission for groups:")
                         .TableStart(20, "Group", "Permission");
@@ -59,6 +61,7 @@ namespace UnitatoBot.Execution.Executors {
                         string[] perms = context.Args.Skip(2).ToArray();
                         if(Permissions.CreateGroup(context.Args[1], perms) != null) {
                             context.ResponseBuilder
+                                .Text(Symbol.Emoji.Key)
                                 .Username()
                                 .Text("created new permission group")
                                 .Block(context.Args[1])
@@ -79,6 +82,7 @@ namespace UnitatoBot.Execution.Executors {
                     if(context.Args.Length == 2 && Permissions.Has(context, Permissions.PermissionDestroy)) {
                         if(Permissions.DestoryGroup(context.Args[1])) {
                             context.ResponseBuilder
+                                .Text(Symbol.Emoji.Key)
                                 .Username()
                                 .Text("destoryed permission group")
                                 .Block(context.Args[1])
@@ -93,18 +97,20 @@ namespace UnitatoBot.Execution.Executors {
                 case "allow":
                     if(context.Args.Length > 2 && Permissions.Has(context, Permissions.PermissionAllow)) {
                         string[] perms = context.Args.Skip(2).ToArray();
-                        if(Permissions.Allow(context.Args[1], perms)) {
+                        if(Permissions.Allow(context.Args[1], perms).Contains(true)) {
                             context.ResponseBuilder
+                                .Text(Symbol.Emoji.Unlock)
                                 .Username()
-                                .Text("gave group")
-                                .Block(context.Args[1])
-                                .Text("permisison{0}", perms.Length > 1 ? "s" : string.Empty);
+                                .Text("added permisison{0}", perms.Length > 1 ? "s" : string.Empty);
 
                             foreach(string perm in perms) {
                                 context.ResponseBuilder.Block(perm);
                             }
 
-                            context.ResponseBuilder.Send();
+                            context.ResponseBuilder
+                                .Text("to group")
+                                .Block(context.Args[1])
+                                .Send();
                             return ExecutionResult.Success;
                         }
                     }
@@ -113,8 +119,9 @@ namespace UnitatoBot.Execution.Executors {
                 case "deny":
                     if(context.Args.Length > 2 && Permissions.Has(context, Permissions.PermissionDeny)) {
                         string[] perms = context.Args.Skip(2).ToArray();
-                        if(Permissions.Deny(context.Args[1], perms)) {
+                        if(Permissions.Deny(context.Args[1], perms).Contains(true)) {
                             context.ResponseBuilder
+                                .Text(Symbol.Emoji.Lock)
                                 .Username()
                                 .Text("removed permisison{0}", perms.Length > 1 ? "s" : string.Empty);
  
@@ -135,6 +142,7 @@ namespace UnitatoBot.Execution.Executors {
                     if(context.Args.Length == 3 && Permissions.Has(context, Permissions.PermissionPut)) {
                         if(Permissions.Put(context.Args[1], context.Args[2])) {
                             context.ResponseBuilder
+                                .Text(Symbol.Emoji.Inbox)
                                 .Username()
                                 .Text("put user")
                                 .Block(context.Args[1])
@@ -151,6 +159,7 @@ namespace UnitatoBot.Execution.Executors {
                     if(context.Args.Length == 3 && Permissions.Has(context, Permissions.PermissionTake)) {
                         if(Permissions.Take(context.Args[1], context.Args[2])) {
                             context.ResponseBuilder
+                                .Text(Symbol.Emoji.Outbox)
                                 .Username()
                                 .Text("removed user")
                                 .Block(context.Args[1])
@@ -168,6 +177,7 @@ namespace UnitatoBot.Execution.Executors {
                         Permissions.Load();
 
                         context.ResponseBuilder
+                            .Text(Symbol.Emoji.Key)
                             .Username()
                             .Text("reloaded permissions from files")
                             .Send();
