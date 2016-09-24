@@ -44,20 +44,16 @@ namespace UnitatoBot.Permission {
                 Logger.Warn("Permission directory is missing generating one...");
             }
 
-            SanitizeAdminGroup();
+            if(!GroupList.Any(x => x.Name.Equals("Admin"))) {
+                Logger.Info("Admin permission group is mising, generating default one ...");
+                GroupList.AddLast(new PermissionGroup("Admin", All));
+            }
 
             Logger.SectionEnd();
             Logger.Log("Permission loaded.");
         }
 
-        private static void SanitizeAdminGroup() {
-            if(!GroupList.Any(x => x.Name.Equals("Admin"))) {
-                Logger.Info("Admin permission group is mising, generating default one ...");
-                GroupList.AddLast(new PermissionGroup("Admin", All));
-            }
-        }
-
-        public static bool Has(string user, string permission) {
+        public static bool Can(string user, string permission) {
             foreach(PermissionGroup group in GroupList) {
                 if(group.IsPermited(user, permission))
                     return true;
@@ -66,8 +62,8 @@ namespace UnitatoBot.Permission {
             return false;
         }
 
-        public static bool Has(CommandContext context, string permission) {
-            return Has(context.ServiceMessage.Sender, permission);
+        public static bool Can(CommandContext context, string permission) {
+            return Can(context.ServiceMessage.Sender, permission);
         }
 
         public static bool Put(string user, string group) {

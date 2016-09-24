@@ -57,18 +57,20 @@ namespace UnitatoBot.Execution.Executors {
                     return ExecutionResult.Success;
 
                 case "create":
-                    if(context.Args.Length > 2 && Permissions.Has(context, Permissions.PermissionCreate)) {
+                    if(context.Args.Length > 1 && Permissions.Can(context, Permissions.PermissionCreate)) {
                         string[] perms = context.Args.Skip(2).ToArray();
                         if(Permissions.CreateGroup(context.Args[1], perms) != null) {
                             context.ResponseBuilder
                                 .Text(Symbol.Emoji.Key)
                                 .Username()
                                 .Text("created new permission group")
-                                .Block(context.Args[1])
-                                .Text("with permisisons");
+                                .Block(context.Args[1]);
 
-                            foreach(string perm in perms) {
-                                context.ResponseBuilder.Block(perm);
+                            if(perms.Length > 0) {
+                                context.ResponseBuilder.Text("with permisisons");
+                                foreach(string perm in perms) {
+                                    context.ResponseBuilder.Block(perm);
+                                }
                             }
 
                             context.ResponseBuilder.Send();
@@ -78,8 +80,8 @@ namespace UnitatoBot.Execution.Executors {
 
                     return ExecutionResult.Fail;
 
-                case "destory":
-                    if(context.Args.Length == 2 && Permissions.Has(context, Permissions.PermissionDestroy)) {
+                case "destroy":
+                    if(context.Args.Length == 2 && Permissions.Can(context, Permissions.PermissionDestroy)) {
                         if(Permissions.DestoryGroup(context.Args[1])) {
                             context.ResponseBuilder
                                 .Text(Symbol.Emoji.Key)
@@ -95,7 +97,7 @@ namespace UnitatoBot.Execution.Executors {
                     return ExecutionResult.Fail;
 
                 case "allow":
-                    if(context.Args.Length > 2 && Permissions.Has(context, Permissions.PermissionAllow)) {
+                    if(context.Args.Length > 2 && Permissions.Can(context, Permissions.PermissionAllow)) {
                         string[] perms = context.Args.Skip(2).ToArray();
                         if(Permissions.Allow(context.Args[1], perms).Contains(true)) {
                             context.ResponseBuilder
@@ -117,7 +119,7 @@ namespace UnitatoBot.Execution.Executors {
                     return ExecutionResult.Fail;
 
                 case "deny":
-                    if(context.Args.Length > 2 && Permissions.Has(context, Permissions.PermissionDeny)) {
+                    if(context.Args.Length > 2 && Permissions.Can(context, Permissions.PermissionDeny)) {
                         string[] perms = context.Args.Skip(2).ToArray();
                         if(Permissions.Deny(context.Args[1], perms).Contains(true)) {
                             context.ResponseBuilder
@@ -139,7 +141,7 @@ namespace UnitatoBot.Execution.Executors {
                     return ExecutionResult.Fail;
 
                 case "put":
-                    if(context.Args.Length == 3 && Permissions.Has(context, Permissions.PermissionPut)) {
+                    if(context.Args.Length == 3 && Permissions.Can(context, Permissions.PermissionPut)) {
                         if(Permissions.Put(context.Args[1], context.Args[2])) {
                             context.ResponseBuilder
                                 .Text(Symbol.Emoji.Inbox)
@@ -156,7 +158,7 @@ namespace UnitatoBot.Execution.Executors {
                     return ExecutionResult.Fail;
 
                 case "take":
-                    if(context.Args.Length == 3 && Permissions.Has(context, Permissions.PermissionTake)) {
+                    if(context.Args.Length == 3 && Permissions.Can(context, Permissions.PermissionTake)) {
                         if(Permissions.Take(context.Args[1], context.Args[2])) {
                             context.ResponseBuilder
                                 .Text(Symbol.Emoji.Outbox)
@@ -173,7 +175,7 @@ namespace UnitatoBot.Execution.Executors {
                     return ExecutionResult.Fail;
 
                 case "reload":
-                    if(context.Args.Length == 1 && Permissions.Has(context, Permissions.PermissionReload)) {
+                    if(context.Args.Length == 1 && Permissions.Can(context, Permissions.PermissionReload)) {
                         Permissions.Load();
 
                         context.ResponseBuilder

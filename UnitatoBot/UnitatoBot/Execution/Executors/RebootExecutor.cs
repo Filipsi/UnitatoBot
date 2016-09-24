@@ -38,7 +38,7 @@ namespace UnitatoBot.Execution.Executors {
         }
 
         public ExecutionResult CanExecute(CommandContext context) {
-            return Permissions.Has(context, Permissions.Reboot) ? ExecutionResult.Success : ExecutionResult.Denied;
+            return Permissions.Can(context, Permissions.Reboot) ? ExecutionResult.Success : ExecutionResult.Denied;
         }
 
         public ExecutionResult Execute(CommandContext context) {

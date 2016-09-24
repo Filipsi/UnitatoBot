@@ -112,7 +112,7 @@
     <Compile Include="Execution\Executors\PraiseExecutor.cs" />
     <Compile Include="Bridge\IAudioCapability.cs" />
     <Compile Include="Util\Logger.cs" />
-    <Compile Include="Permission\Permission.cs" />
+    <Compile Include="Permission\Permissions.cs" />
     <Compile Include="Permission\PermissionGroup.cs" />
     <Compile Include="SymbolFactory.cs" />
     <Compile Include="Util\Expressions.cs" />
