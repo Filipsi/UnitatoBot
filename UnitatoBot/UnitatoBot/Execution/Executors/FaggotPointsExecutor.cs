@@ -2,16 +2,17 @@
 using Newtonsoft.Json.Linq;
 using System.IO;
 using UnitatoBot.Command;
+using UnitatoBot.Permission;
 using UnitatoBot.Symbol;
 using UnitatoBot.Util;
 
 namespace UnitatoBot.Execution.Executors {
 
-    internal class FaggotStatsExecutor : IExecutionHandler, IInitializable {
+    internal class FaggotPointsExecutor : IExecutionHandler, IInitializable {
 
         private static JsonSerializer SERIALIZER;
 
-        static FaggotStatsExecutor() {
+        static FaggotPointsExecutor() {
             SERIALIZER = new JsonSerializer();
             SERIALIZER.Formatting = Formatting.Indented;
         }
@@ -27,20 +28,17 @@ namespace UnitatoBot.Execution.Executors {
         // IExecutionHandler
 
         public string GetDescription() {
-            return "Use with name as argument to mark someone as a Faggot and add one faggot point. Use wihout an argument to see statistics of all faggots. Use with argument 'stats' and name of the user as a second argument to see statistics of that faggot.";
+            return "Use with name as argument to mark someone as a faggot and add one faggot point. Use with argument 'list' to see statistics of all faggots. Use with argument 'stats' and name of the user as a second argument to see statistics of that faggot. Use with argument 'purify' and name of the user to remove one faggot point (restricted). Use with argument 'clean' and name of the user to remove all faggot points (restricted)";
         }
 
         public ExecutionResult CanExecute(CommandContext context) {
-            if(!context.HasArguments) return ExecutionResult.Success;
-            if(context.Args[0].Equals("stats") && context.Args.Length == 2) return ExecutionResult.Success;
-            if(context.Args.Length == 1) return ExecutionResult.Success;
-            return ExecutionResult.Denied;
+            return context.HasArguments ? ExecutionResult.Success : ExecutionResult.Denied;
         }
 
         public ExecutionResult Execute(CommandContext context) {
             // Print out all statistics
-            // /faggot
-            if(!context.HasArguments) {
+            // faggot list
+            if(context.Args[0].Equals("list") && context.Args.Length == 1) {
                 ResponseBuilder builder = context.ResponseBuilder
                     .Username()
                     .Text("wants to know how much of a faggots you people are.");
@@ -61,52 +59,101 @@ namespace UnitatoBot.Execution.Executors {
                 }
 
                 builder.TableEnd()
-                    .BuildAndSend();
+                    .Send();
                 return ExecutionResult.Success;
             }
             // Print out single statistic
-            // /faggot stats [name]
+            // faggot stats [name]
             else if(context.Args[0].Equals("stats") && context.Args.Length == 2) {
-                JProperty property = JsonStatStorage.Property(context.Args[1].ToLower());
+                string name = context.Args[1].ToLower();
+                JProperty property = JsonStatStorage.Property(name);
 
-                if(property == null) return ExecutionResult.Fail;
+                if(property != null) {
+                    int points = property.Value.ToObject<int>();
 
-                int points = property.Value.ToObject<int>();
-                context.ResponseBuilder
-                    .Username()
-                    .Text("wants to know how much of a faggot")
-                    .Block(context.Args[1])
-                    .Text("is. User has")
-                    .Block(points)
-                    .Text("point{0}", points > 1 ? "s." : ".")
-                    .BuildAndSend();
-                return ExecutionResult.Success;
-            } 
+                    context.ResponseBuilder
+                        .Username()
+                        .Text("wants to know how much of a faggot")
+                        .Block(name)
+                        .Text("is. User has")
+                        .Block(points)
+                        .Text("point{0}", points > 1 ? "s." : ".")
+                        .Send();
+                    return ExecutionResult.Success;
+                }
+            // Remove one faggotpoint from user
+            // faggot purify [name]
+            } else if(context.Args[0].Equals("purify") && context.Args.Length == 2 && Permissions.Can(context, Permissions.FaggotPurify)) {
+                string name = context.Args[1].ToLower();
+                JProperty property = JsonStatStorage.Property(name);
+
+                if(property != null) {
+                    context.ResponseBuilder
+                        .Text(Emoji.Dizzy)
+                        .Username()
+                        .Text("used his divine powers to purify")
+                        .Block(name);
+
+                    int points = property.Value.ToObject<int>();
+
+                    if(points - 1 > 0) {
+                        property.Value = new JValue(points - 1);
+                        context.ResponseBuilder.Text("from been as much of a faggot!");
+                    } else {
+                        property.Remove();
+                        context.ResponseBuilder.Text("and he is not faggot anymore!");
+                    }
+
+                    Save();
+
+                    context.ResponseBuilder.Send();
+                    return ExecutionResult.Success;
+                }
+                // Remove all faggotpoints from user
+                // faggot clean [name]
+            } else if(context.Args[0].Equals("clean") && context.Args.Length == 2 && Permissions.Can(context, Permissions.FaggotClean)) {
+                string name = context.Args[1].ToLower();
+                JProperty property = JsonStatStorage.Property(name);
+
+                if(property != null) {
+                    context.ResponseBuilder
+                        .Text(Emoji.Star)
+                        .Username()
+                        .Text("usused his divine powers to clean all signs of being a faggot from")
+                        .Block(name);
+
+                    property.Remove();
+                    Save();
+
+                    context.ResponseBuilder.Send();
+                    return ExecutionResult.Success;
+                }
+            }
             // Add faggotpoint to user
-            // /faggot [name]
+            // faggot [name]
             else {
                 string name = context.Args[0].ToLower();
                 JProperty property = JsonStatStorage.Property(name);
 
-                // If user is not in the stats, creates new entry
                 if(property == null) {
                     JsonStatStorage.Add(name, new JValue(0));
                     property = JsonStatStorage.Property(name);
                 }
 
                 property.Value = new JValue(property.Value.ToObject<int>() + 1);
-
                 Save();
 
                 context.ResponseBuilder
                     .Username()
                     .Text("marked")
-                    .Block(context.Args[0])
+                    .Block(name)
                     .Text("as faggot")
-                    .BuildAndSend();
+                    .Send();
 
                 return ExecutionResult.Success;
             }
+
+            return ExecutionResult.Fail;
         }
 
         // Helpers

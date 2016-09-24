@@ -17,7 +17,9 @@ namespace UnitatoBot.Symbol {
         Unlock,
         Bulb,
         Inbox,
-        Outbox
+        Outbox,
+        Star,
+        Dizzy
     }
 
     public enum Emoticon {
@@ -70,6 +72,10 @@ namespace UnitatoBot.Symbol {
                     return ":inbox_tray:";
                 case Emoji.Outbox:
                     return ":outbox_tray:";
+                case Emoji.Star:
+                    return ":star2:";
+                case Emoji.Dizzy:
+                    return ":dizzy:";
             }
 
             return string.Empty;

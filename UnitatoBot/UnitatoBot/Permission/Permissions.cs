@@ -21,6 +21,8 @@ namespace UnitatoBot.Permission {
         public static string PermissionPut      { private set; get; } = "perm.put";
         public static string PermissionTake     { private set; get; } = "perm.take";
         public static string PermissionReload   { private set; get; } = "perm.reload";
+        public static string FaggotPurify       { private set; get; } = "faggot.purify";
+        public static string FaggotClean        { private set; get; } = "faggot.clean";
 
         public static void Load() {
             Logger.Log("Loading Permission... ");

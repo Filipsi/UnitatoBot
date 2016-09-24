@@ -30,7 +30,7 @@ namespace UnitatoBot {
                     .WithAlias("dice")
                 .RegisterCommand("praise", new PraiseExecutor())
                     .WithAlias("dan")
-                .RegisterCommand("faggot", new FaggotStatsExecutor())
+                .RegisterCommand("faggot", new FaggotPointsExecutor())
                 .RegisterCommand("lexicon", new LexiconExecutor())
                 .RegisterCommand("emoticon", new EmoticonExecutor())
                     .WithAlias("e")

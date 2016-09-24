@@ -7,7 +7,7 @@ namespace UnitatoBot.Command {
 
     internal class ResponseBuilder {
 
-        private ServiceMessage   Message     = null;
+        private ServiceMessage      Message     = null;
         private StringBuilder       Builder     = new StringBuilder();
         private bool                SkipSpace   = false;
 
