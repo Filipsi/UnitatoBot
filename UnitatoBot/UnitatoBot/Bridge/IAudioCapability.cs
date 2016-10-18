@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UnitatoBot.Bridge {
+﻿namespace UnitatoBot.Bridge {
 
     internal interface IAudioCapability {
 
-        bool SendAudio(string destination, string file);
+        string[] GetAudioChannels(string origin);
+
+        string GetUserAudioChannel(string origin, string user);
+
+        bool PlayAudio(string origin, string channel, string file);
 
     }
 

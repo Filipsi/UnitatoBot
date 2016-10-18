@@ -174,25 +174,49 @@ namespace UnitatoBot.Bridge.Services {
 
         // IAudioCapability
 
-        public bool SendAudio(string destination, string file) {
+        public string[] GetAudioChannels(string origin) {
+            Channel channel = Client.GetChannel(ulong.Parse(origin));
+            if(channel == null) {
+                Logger.Warn("Origin channel {0} not found!", origin);
+                return null;
+            }
+
+            return channel.Server.VoiceChannels.Select(x => x.Name).ToArray();
+        }
+
+        public string GetUserAudioChannel(string origin, string user) {
+            Channel channel = Client.GetChannel(ulong.Parse(origin));
+            if(channel == null) {
+                Logger.Warn("Origin channel {0} not found!", origin);
+                return null;
+            }
+
+            User u = channel.Users.Single(x => x.Name.Equals(user));
+            if(u == null) {
+                Logger.Warn("User {0} of channel {1} was not found!", user, origin);
+                return null;
+            }
+
+            return u.VoiceChannel == null ? "General" : u.VoiceChannel.Name;
+        }
+
+        public bool PlayAudio(string origin, string channel, string file) {
             if(IsPlayingAudio)
                 return false;
 
-            Channel channel = Client.GetChannel(ulong.Parse(destination));
-
-            if(channel == null) {
-                Logger.Warn("Origin channel {0} not found!", destination);
+            Channel c = Client.GetChannel(ulong.Parse(origin));
+            if(c == null) {
+                Logger.Warn("Origin channel {0} not found!", origin);
                 return false;
             }
 
-            channel = channel.Server.VoiceChannels.FirstOrDefault(c => c.Name.ToString().Equals("General"));
-
-            if(channel == null) {
-                Logger.Warn("Audio channel {0} not found!", destination);
+            c = c.Server.VoiceChannels.FirstOrDefault(x => x.Name.Equals(channel));
+            if(c == null) {
+                Logger.Warn("Audio channel {0} not found!", c);
                 return false;
             }
 
-            PlaySoundFile(channel, file);
+            PlaySoundFile(c, file);
             return true;
         }
 
