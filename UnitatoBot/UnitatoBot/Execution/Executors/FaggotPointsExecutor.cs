@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnitatoBot.Command;
 using UnitatoBot.Permission;
 using UnitatoBot.Symbol;
@@ -54,7 +56,10 @@ namespace UnitatoBot.Execution.Executors {
                 }
 
                 builder.TableStart(20, "Name", "Points");
-                foreach(JProperty property in JsonStatStorage.Properties()) {
+
+                var sorted = new List<JProperty>(JsonStatStorage.Properties());
+                sorted.Sort((x, y) => y.Value.ToObject<int>().CompareTo(x.Value.ToObject<int>()));
+                foreach(JProperty property in sorted) {
                     builder.TableRow(property.Name, property.Value.ToString());
                 }
 
