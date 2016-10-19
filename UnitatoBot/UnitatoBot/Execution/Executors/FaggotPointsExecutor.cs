@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnitatoBot.Command;
 using UnitatoBot.Permission;
 using UnitatoBot.Symbol;
@@ -82,11 +83,12 @@ namespace UnitatoBot.Execution.Executors {
                 }
             // Remove one faggotpoint from user
             // faggot purify [name]
-            } else if(context.Args[0].Equals("purify") && context.Args.Length == 2 && Permissions.Can(context, Permissions.FaggotPurify)) {
+            } else if(context.Args[0].Equals("purify") && context.Args.Length > 1 && Permissions.Can(context, Permissions.FaggotPurify)) {
                 string name = context.Args[1].ToLower();
                 JProperty property = JsonStatStorage.Property(name);
+                short modifier = 1;
 
-                if(property != null) {
+                if(property != null && (context.Args.Length == 2 || (context.Args.Length == 3 && short.TryParse(context.Args[2], out modifier)))) {
                     context.ResponseBuilder
                         .Text(Emoji.Dizzy)
                         .Username()
@@ -95,9 +97,13 @@ namespace UnitatoBot.Execution.Executors {
 
                     int points = property.Value.ToObject<int>();
 
-                    if(points - 1 > 0) {
-                        property.Value = new JValue(points - 1);
-                        context.ResponseBuilder.Text("from been as much of a faggot!");
+                    if(points - modifier > 0) {
+                        property.Value = new JValue(points - modifier);
+                        context.ResponseBuilder
+                            .Text("from been as much of a faggot! This removed ")
+                            .Block(modifier)
+                            .Text(" faggot points.");
+
                     } else {
                         property.Remove();
                         context.ResponseBuilder.Text("and he is not faggot anymore!");
@@ -110,23 +116,38 @@ namespace UnitatoBot.Execution.Executors {
                 }
             // Remove all faggotpoints from user
             // faggot clean [name]
-            } else if(context.Args[0].Equals("clean") && context.Args.Length == 2 && Permissions.Can(context, Permissions.FaggotClean)) {
-                string name = context.Args[1].ToLower();
-                JProperty property = JsonStatStorage.Property(name);
+            } else if(context.Args[0].Equals("clean") && context.Args.Length > 1 && Permissions.Can(context, Permissions.FaggotClean)) {
+                List<string> success = new List<string>();
 
-                if(property != null) {
+                foreach(string name in context.Args.Skip(1)) {
+                    JProperty property = JsonStatStorage.Property(name.ToLower());
+                    if(property != null) {
+                        success.Add(name.ToLower());
+                        property.Remove();
+                    }
+                }
+
+                if(success.Count > 0) {
+                    Save();
+
                     context.ResponseBuilder
                         .Text(Emoji.Star)
                         .Username()
-                        .Text("usused his divine powers to clean all signs of being a faggot from")
-                        .Block(name);
+                        .Text("usused his divine powers to clean all signs of being a faggot from");
 
-                    property.Remove();
-                    Save();
+                    foreach(string name in success)
+                        context.ResponseBuilder
+                            .Block(name)
+                            .Space();
 
-                    context.ResponseBuilder.Send();
+                    context.ResponseBuilder
+                        .Send();
+
                     return ExecutionResult.Success;
                 }
+
+                return ExecutionResult.Fail;
+
             }
             // Add faggotpoint to user
             // faggot [name]
