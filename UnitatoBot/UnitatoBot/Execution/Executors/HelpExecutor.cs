@@ -9,7 +9,7 @@ namespace UnitatoBot.Execution.Executors {
         // IExecutionHandler
 
         public string GetDescription() {
-            return "Shows help, obviously.";
+            return "Shows help, obviously.Use command name or alias as argument to show help only for specified command.";
         }
 
         public ExecutionResult CanExecute(CommandContext context) {
@@ -17,6 +17,40 @@ namespace UnitatoBot.Execution.Executors {
         }
 
         public ExecutionResult Execute(CommandContext context) {
+            if(!context.HasArguments) {
+                PrintHelpInfo(context);
+                return ExecutionResult.Success;
+
+            } else if(context.Args.Length == 1) {
+                Command.Command command = context.CommandManager.FindCommand(context.Args[0].ToLower());
+
+                if(command != null) {
+                    PrintHelpFor(context, command);
+                    return ExecutionResult.Success;
+                }
+            }
+
+            return ExecutionResult.Fail;
+        }
+
+        // Logic
+
+        private void PrintHelpFor(CommandContext context, Command.Command command) {
+            ResponseBuilder builder = context.ResponseBuilder
+                .Username()
+                .Text("here is help for command")
+                .Block(command.Name)
+                .Text(Emoticon.Magic)
+                .NewLine()
+                .NewLine();
+
+            BuildCommandInfo(builder, command);
+
+            if(builder.Length > 0)
+                builder.Send();
+        }
+
+        private void PrintHelpInfo(CommandContext context) {
             ResponseBuilder builder = context.ResponseBuilder
                 .Username()
                 .Text("here is a list of stuff I can do: ")
@@ -25,33 +59,32 @@ namespace UnitatoBot.Execution.Executors {
                 .NewLine();
 
             foreach(Command.Command entry in context.CommandManager) {
-
-                LinkedList<IExecutionHandler>.Enumerator enumerator = entry.GetExecutorsEnumerator();
-                while(enumerator.MoveNext()) {
-
-                    // Split responce into multiple messages if responce length is greater then maximal responce length
-                    if(builder.Length + enumerator.Current.GetDescription().Length + 50 >= Discord.DiscordConfig.MaxMessageSize) {
-                        builder.BuildAndSend();
-                        builder = new ResponseBuilder(context.ServiceMessage)
-                            .KeepSourceMessage();
-                    }
-
-                    builder
-                        .Block("!{0}", entry.Name)
-                        .Text("{0}: {1}",
-                            entry.Aliases.Count > 0 ? "(alias: " + string.Join(", ", entry.Aliases) + ")" : string.Empty,
-                            enumerator.Current.GetDescription())
-                        .NewLine();
-
-                }
-
+                BuildCommandInfo(builder, entry);
             }
 
             if(builder.Length > 0)
-                builder.BuildAndSend();
-
-            return ExecutionResult.Success;
+                builder.Send();
         }
+
+        private void BuildCommandInfo(ResponseBuilder builder, Command.Command command) {
+            LinkedList<IExecutionHandler>.Enumerator enumerator = command.GetExecutorsEnumerator();
+            while(enumerator.MoveNext()) {
+
+                // Split responce into multiple messages if responce length is greater then maximal responce length
+                if(builder.Length + enumerator.Current.GetDescription().Length + 50 >= Discord.DiscordConfig.MaxMessageSize) {
+                    builder.Send();
+                    builder.Clear().KeepSourceMessage();
+                }
+
+                builder
+                    .Block("!{0}", command.Name)
+                    .Text("{0}: {1}",
+                        command.Aliases.Count > 0 ? "(alias: " + string.Join(", ", command.Aliases) + ")" : string.Empty,
+                        enumerator.Current.GetDescription())
+                    .NewLine();
+            }
+        }
+
     }
 
 }
