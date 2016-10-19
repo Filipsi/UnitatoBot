@@ -14,27 +14,6 @@ namespace UnitatoBot {
     public class Unitato {
 
         static void Main(string[] args) {
-            /*
-            var a = new UsageManager(5, TimeSpan.FromHours(1));
-            a.Get("tut");
-            a.Get("lulz").UseOnce();
-            a.Get("lulz").UseOnce();
-            a.Get("hue").UseOnce();
-            a.Get("hue").UseOnce();
-            a.Get("hue").UseOnce();
-            a.Get("hue").UseOnce();
-            a.Get("hue").UseOnce();
-            a.Get("hue").UseOnce();
-
-            using(StreamWriter fileWriter = File.CreateText("test.json")) {
-                fileWriter.Write(JsonConvert.SerializeObject(a, Formatting.Indented));
-            }
-
-            using(StreamReader reader = new StreamReader("test.json")) {
-                var b = JsonConvert.DeserializeObject<UsageManager>(reader.ReadToEnd());
-                
-            }
-            */
             Permissions.Load();
 
             Logger.Log("Initializing connectors");

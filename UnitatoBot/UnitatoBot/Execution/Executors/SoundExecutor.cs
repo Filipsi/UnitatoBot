@@ -24,7 +24,7 @@ namespace UnitatoBot.Execution.Executors {
         // IExecutionHandler
 
         public string GetDescription() {
-            return "Play sound effect in #general voice chat. Use with 'list' as first argument to get list of available sounds. Use with name of the sound as first argument to play it.";
+            return "Play sound effect in #general voice chat. Use with 'list' as first argument to get list of available sounds. Use with name of the sound as first argument to play it. You can specifiy channel name as second argument (this is optional).";
         }
 
         public ExecutionResult CanExecute(CommandContext context) {
@@ -50,11 +50,12 @@ namespace UnitatoBot.Execution.Executors {
                     }
                     builder.TableRow(sound.Name, string.Join(",", sound.Alias), sound.Length.ToString("mm':'ss"));
                 }
-                builder.TableEnd()
+                builder
+                    .TableEnd()
                     .Send();
 
             } else {
-                return PlaySound((IAudioCapability)context.ServiceMessage.Service, context.ServiceMessage, context.Args[0]) ? ExecutionResult.Success : ExecutionResult.Denied;
+                return PlaySound((IAudioCapability)context.ServiceMessage.Service, context, context.Args[0]) ? ExecutionResult.Success : ExecutionResult.Denied;
             }
 
             return ExecutionResult.Success;
@@ -62,8 +63,9 @@ namespace UnitatoBot.Execution.Executors {
 
         // Logic
 
-        private bool PlaySound(IAudioCapability player, ServiceMessage requestMessage, string soundName) {
-            return Sounds.Find(s => s.Name.Equals(soundName) || s.Alias.Contains(soundName)).Play(player, requestMessage);
+        private bool PlaySound(IAudioCapability player, CommandContext context, string soundName) {
+            string channel = context.Args.Length == 2 ? context.Args[1] : player.GetUserAudioChannel(context.ServiceMessage.Origin, context.ServiceMessage.Sender);
+            return Sounds.Find(s => s.Name.Equals(soundName) || s.Alias.Contains(soundName)).Play(player, context.ServiceMessage, channel);
         }
 
         private bool HasSound(string name) {

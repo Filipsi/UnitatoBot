@@ -36,8 +36,7 @@ namespace UnitatoBot.Component.Audio {
             }
         }
 
-        public bool Play(IAudioCapability player, ServiceMessage requestMessage) {
-            string channel = player.GetUserAudioChannel(requestMessage.Origin, requestMessage.Sender);
+        public bool Play(IAudioCapability player, ServiceMessage requestMessage, string channel) {
             bool result = channel != null;
 
             if(result)
