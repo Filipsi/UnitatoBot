@@ -52,6 +52,8 @@ namespace UnitatoBot.Component.Audio {
                     .Block(Name)
                     .Text("with length")
                     .Block(Length.ToString("mm':'ss"))
+                    .Text("on channel")
+                    .Block(channel)
                     .Send();
 
                 Timer t = new Timer();
@@ -62,7 +64,9 @@ namespace UnitatoBot.Component.Audio {
                         .Text(Emoji.Note)
                         .Username()
                         .Text("played sound")
-                        .Block(Name);
+                        .Block(Name)
+                        .Text("on channel")
+                        .Block(channel);
 
                     msg.Edit(builder.Build());
                     t.Dispose();

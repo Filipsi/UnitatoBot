@@ -78,17 +78,7 @@ namespace UnitatoBot.Execution.Executors {
             List<Sound> list = new List<Sound>();
             foreach(FileInfo soundFile in new DirectoryInfo("sounds").GetFiles("*.mp3", SearchOption.TopDirectoryOnly)) {
                 FileInfo metaFile = new FileInfo(Path.Combine("sounds", Path.GetFileNameWithoutExtension(soundFile.Name) + ".meta"));
-
-                Sound sound;
-                if(metaFile.Exists) {
-                    sound = Sound.LoadFrom(metaFile);
-                } else {
-                    Logger.Warn("Metadata file for {0} not found, generating default ...", soundFile);
-                    sound = new Sound(soundFile);
-                    sound.Save();
-                }
-
-                list.Add(sound);
+                list.Add(metaFile.Exists ? Sound.LoadFrom(metaFile) : new Sound(soundFile));
             }
 
             Logger.SectionEnd();
