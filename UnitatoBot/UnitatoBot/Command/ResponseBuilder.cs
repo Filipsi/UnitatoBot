@@ -222,7 +222,7 @@ namespace UnitatoBot.Command {
                 string columnContent = columnIndex < column.Length ? column[columnIndex] : string.Empty;
 
                 Builder.Append(" ");
-                Builder.Append(columnContent);
+                Builder.Append(columnContent.Length > tableCellWidth ? columnContent.Remove(tableCellWidth - 3) + ".." : columnContent);
                 for(int i = columnContent.Length + 1; i < tableCellWidth; i++) {
                     Builder.Append(" ");
                 }
