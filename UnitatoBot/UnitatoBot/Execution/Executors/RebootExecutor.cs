@@ -22,15 +22,15 @@ namespace UnitatoBot.Execution.Executors {
                     data = reader.ReadToEnd();
                 }
 
-                JObject jobject = JObject.Parse(data);
+                JObject jObject = JObject.Parse(data);
 
-                ServiceMessage msg = jobject.GetValue("Message").ToObject<ServiceMessage>();
+                ServiceMessage msg = jObject.GetValue("Message").ToObject<ServiceMessage>();
                 msg = manager.FindServiceType(msg.ServiceType)[0].FindMessage(msg.Origin, msg.Id);
 
                 if(msg != null)
                     msg.Edit(new ResponseBuilder()
                         .Text("Reboot requested by user")
-                        .Block(jobject.GetValue("Issuer").ToObject<string>())
+                        .Block(jObject.GetValue("Issuer").ToObject<string>())
                         .Text("was completed!")
                         .Build());
 
@@ -64,12 +64,12 @@ namespace UnitatoBot.Execution.Executors {
         // Util
 
         private void SaveRebootFile(ServiceMessage message, string issuer) {
-            JObject jobject = new JObject();
-            jobject.Add(new JProperty("Issuer", issuer));
-            jobject.Add(new JProperty("Message", JToken.FromObject(message)));
+            JObject jObject = new JObject();
+            jObject.Add(new JProperty("Issuer", issuer));
+            jObject.Add(new JProperty("Message", JToken.FromObject(message)));
 
             using(StreamWriter writer = new StreamWriter("reboot.json", false)) {
-                writer.Write(jobject.ToString());
+                writer.Write(jObject.ToString());
             }
         }
 

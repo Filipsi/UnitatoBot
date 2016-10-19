@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnitatoBot.Command;
 using UnitatoBot.Permission;
 using UnitatoBot.Symbol;
@@ -12,14 +12,8 @@ namespace UnitatoBot.Execution.Executors {
 
     internal class FaggotPointsExecutor : IExecutionHandler, IInitializable {
 
-        private static JsonSerializer SERIALIZER;
-
-        static FaggotPointsExecutor() {
-            SERIALIZER = new JsonSerializer();
-            SERIALIZER.Formatting = Formatting.Indented;
-        }
-
         private JObject JsonStatStorage;
+        private UsageManager UsageManager;
 
         // IInitializable
 
@@ -114,8 +108,8 @@ namespace UnitatoBot.Execution.Executors {
                     context.ResponseBuilder.Send();
                     return ExecutionResult.Success;
                 }
-                // Remove all faggotpoints from user
-                // faggot clean [name]
+            // Remove all faggotpoints from user
+            // faggot clean [name]
             } else if(context.Args[0].Equals("clean") && context.Args.Length == 2 && Permissions.Can(context, Permissions.FaggotClean)) {
                 string name = context.Args[1].ToLower();
                 JProperty property = JsonStatStorage.Property(name);
@@ -137,23 +131,48 @@ namespace UnitatoBot.Execution.Executors {
             // Add faggotpoint to user
             // faggot [name]
             else {
-                string name = context.Args[0].ToLower();
-                JProperty property = JsonStatStorage.Property(name);
+                UsageManager.Usage usage = UsageManager.Get(context.ServiceMessage.Sender);
 
-                if(property == null) {
-                    JsonStatStorage.Add(name, new JValue(0));
-                    property = JsonStatStorage.Property(name);
+                if(usage.CanBeUsed) {
+                    string name = context.Args[0].ToLower();
+                    JProperty property = JsonStatStorage.Property(name);
+
+                    if(property == null) {
+                        JsonStatStorage.Add(name, new JValue(0));
+                        property = JsonStatStorage.Property(name);
+                    }
+
+                    usage.UseOnce();
+                    property.Value = new JValue(property.Value.ToObject<int>() + 1);
+                    Save();
+
+                    context.ResponseBuilder
+                        .Username()
+                        .Text("marked")
+                        .Block(name)
+                        .Text("as faggot. You have");
+
+                    if(usage.Count > 0) {
+                        context.ResponseBuilder
+                            .Block(usage.Count)
+                            .Text("out of")
+                            .Block(usage.Max);
+                    } else {
+                        context.ResponseBuilder
+                            .Text("no");
+                    }
+
+                    context.ResponseBuilder
+                        .Text("faggot points left to give.")
+                        .Send();
+
+                } else {
+                    context.ResponseBuilder
+                        .Username()
+                        .Text("you are out of faggots to give. Counter will reset after")
+                        .Block(new DateTime(usage.TimeUntilReset.Ticks).ToString(TimerExecutor.DatePattenTime))
+                        .Send();
                 }
-
-                property.Value = new JValue(property.Value.ToObject<int>() + 1);
-                Save();
-
-                context.ResponseBuilder
-                    .Username()
-                    .Text("marked")
-                    .Block(name)
-                    .Text("as faggot")
-                    .Send();
 
                 return ExecutionResult.Success;
             }
@@ -165,19 +184,29 @@ namespace UnitatoBot.Execution.Executors {
 
         private void LoadFrom(FileInfo file) {
             if(file.Exists) {
+                JObject jObject;
                 using(StreamReader storageFileReader = file.OpenText()) {
-                    JsonStatStorage = JObject.Parse(storageFileReader.ReadToEnd());
+                    jObject = JObject.Parse(storageFileReader.ReadToEnd());
                 }
+
+                JsonStatStorage = (JObject) jObject.GetValue("Stats");
+                UsageManager = jObject.GetValue("Usage").ToObject<UsageManager>();
+
             } else {
                 JsonStatStorage = JObject.Parse("{}");
+                UsageManager = new UsageManager(3, TimeSpan.FromDays(1));
             }
 
             Logger.Info("Loaded {0} faggot entr{1}", JsonStatStorage.Count, JsonStatStorage.Count == 1 ? "y" : "ies");
         }
 
         private void Save() {
-            using(StreamWriter fileWriter = File.CreateText("faggotpoints.json")) {
-                SERIALIZER.Serialize(fileWriter, JsonStatStorage);
+            JObject jObject = new JObject();
+            jObject.Add(new JProperty("Stats", JsonStatStorage));
+            jObject.Add(new JProperty("Usage", JToken.FromObject(UsageManager)));
+
+            using(StreamWriter writer = new StreamWriter("faggotpoints.json", false)) {
+                writer.Write(jObject.ToString());
             }
         }
 
