@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnitatoBot.Command;
-using UnitatoBot.Component.Common;
+﻿using BotCore.Component;
 
-namespace UnitatoBot.Component.Checklist {
+namespace Unitato.Component.Checklist {
 
     internal partial class Checklist : SavableMessageContainer {
 

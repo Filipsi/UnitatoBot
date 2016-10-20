@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnitatoBot.Component.Countdown {
+namespace Unitato.Component.Countdown {
 
     public partial class Countdown {
 

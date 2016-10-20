@@ -2,9 +2,9 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using static UnitatoBot.Util.UsageManager.UsageManager;
+using static Unitato.Util.UsageManager.UsageManager;
 
-namespace UnitatoBot.Util.UsageManager {
+namespace Unitato.Util.UsageManager {
 
     internal class UsageStorageJsonConverter : JsonConverter {
 

@@ -1,8 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using BotCore.Util;
+using Newtonsoft.Json;
 using System.IO;
-using UnitatoBot.Util;
+using Unitato.Util;
 
-namespace UnitatoBot.Configuration {
+namespace Unitato.Configuration {
 
     public static partial class Configuration {
 

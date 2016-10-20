@@ -9,8 +9,24 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UnitatoBot</RootNamespace>
     <AssemblyName>UnitatoBot</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,14 +48,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Discord.Net, Version=0.9.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Discord.Net.0.9.5\lib\net45\Discord.Net.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Discord.Net.Audio, Version=0.9.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Discord.Net.Audio.0.9.4\lib\net45\Discord.Net.Audio.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="NAudio, Version=1.7.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NAudio.1.7.3\lib\net35\NAudio.dll</HintPath>
       <Private>True</Private>
@@ -61,8 +69,9 @@
     <Reference Include="Nito.AsyncEx.Enlightenment">
       <HintPath>..\packages\Nito.AsyncEx.3.0.1\lib\net45\Nito.AsyncEx.Enlightenment.dll</HintPath>
     </Reference>
-    <Reference Include="RestSharp">
-      <HintPath>..\packages\RestSharp.105.2.3\lib\net45\RestSharp.dll</HintPath>
+    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.105.2.3\lib\net452\RestSharp.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -71,60 +80,39 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="VerbalExpressions">
-      <HintPath>..\packages\VerbalExpressions-official.0.1.0\lib\net40\VerbalExpressions.dll</HintPath>
-    </Reference>
     <Reference Include="WebSocket4Net">
       <HintPath>..\packages\WebSocket4Net.0.14.1\lib\net45\WebSocket4Net.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Command\Command.cs" />
-    <Compile Include="Command\CommandContext.cs" />
-    <Compile Include="Command\CommandManager.cs" />
-    <Compile Include="Component\Common\SavableMessageContainer.cs" />
-    <Compile Include="Execution\Executors\CalcExecutor.cs" />
-    <Compile Include="Execution\Executors\ChecklistExecutor.cs" />
-    <Compile Include="Execution\Executors\CoinFlipExecutor.cs" />
-    <Compile Include="Execution\Executors\EmoticonExecutor.cs" />
-    <Compile Include="Execution\Executors\InviteExecutor.cs" />
-    <Compile Include="Execution\Executors\PermissionExecutor.cs" />
-    <Compile Include="Execution\Executors\RebootExecutor.cs" />
-    <Compile Include="Execution\Executors\RussianRouletteExecutor.cs" />
-    <Compile Include="Execution\Executors\SoundExecutor.cs" />
-    <Compile Include="Execution\Executors\TimerExecutor.cs" />
-    <Compile Include="Execution\Executors\UptimeExecutor.cs" />
-    <Compile Include="Execution\IInitializable.cs" />
-    <Compile Include="Command\ResponseBuilder.cs" />
+    <Compile Include="Execution\CalcExecutor.cs" />
+    <Compile Include="Execution\ChecklistExecutor.cs" />
+    <Compile Include="Execution\CoinFlipExecutor.cs" />
+    <Compile Include="Execution\EmoticonExecutor.cs" />
+    <Compile Include="Execution\InviteExecutor.cs" />
+    <Compile Include="Execution\PermissionExecutor.cs" />
+    <Compile Include="Execution\RebootExecutor.cs" />
+    <Compile Include="Execution\RussianRouletteExecutor.cs" />
+    <Compile Include="Execution\SoundExecutor.cs" />
+    <Compile Include="Execution\TimerExecutor.cs" />
+    <Compile Include="Execution\UptimeExecutor.cs" />
     <Compile Include="Component\Audio\Sound.cs" />
     <Compile Include="Component\Checklist\Checklist.cs" />
     <Compile Include="Component\Checklist\Checklist.Entry.cs" />
     <Compile Include="Component\Countdown\Countdown.cs" />
     <Compile Include="Component\Countdown\Countdown.StateChangedEventArgs.cs" />
     <Compile Include="Configuration\Configuration.cs" />
-    <Compile Include="Bridge\ServiceMessage.cs" />
-    <Compile Include="Bridge\Services\DiscordService.cs" />
-    <Compile Include="Execution\ExecutionResult.cs" />
-    <Compile Include="Execution\Executors\DiceExecutor.cs" />
-    <Compile Include="Execution\Executors\FaggotPointsExecutor.cs" />
-    <Compile Include="Execution\Executors\HelpExecutor.cs" />
-    <Compile Include="Execution\Executors\InfoExecutor.cs" />
-    <Compile Include="Execution\Executors\LexiconExecutor.cs" />
-    <Compile Include="Execution\Executors\PraiseExecutor.cs" />
-    <Compile Include="Bridge\IAudioCapability.cs" />
-    <Compile Include="Util\Logger.cs" />
-    <Compile Include="Permission\Permissions.cs" />
-    <Compile Include="Permission\PermissionGroup.cs" />
-    <Compile Include="SymbolFactory.cs" />
-    <Compile Include="Util\Expressions.cs" />
-    <Compile Include="Bridge\IService.cs" />
-    <Compile Include="Execution\IExecutionHandler.cs" />
+    <Compile Include="Execution\DiceExecutor.cs" />
+    <Compile Include="Execution\FaggotPointsExecutor.cs" />
+    <Compile Include="Execution\HelpExecutor.cs" />
+    <Compile Include="Execution\InfoExecutor.cs" />
+    <Compile Include="Execution\LexiconExecutor.cs" />
+    <Compile Include="Execution\PraiseExecutor.cs" />
     <Compile Include="Unitato.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\UsageManager\UsageManager.cs" />
     <Compile Include="Util\UsageManager\UsageManager.Usage.cs" />
     <Compile Include="Util\UsageManager\UsageStorageJsonConverter.cs" />
-    <Compile Include="Util\WrappedEnumerable.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -135,7 +123,24 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\BotCore.csproj">
+      <Project>{3652a8b8-d87d-4ca7-bb9a-fd112bb77534}</Project>
+      <Name>BotCore</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

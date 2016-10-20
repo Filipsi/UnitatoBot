@@ -1,15 +1,12 @@
 ﻿using System;
-using UnitatoBot.Bridge.Services;
-using UnitatoBot.Configuration;
-using UnitatoBot.Command;
-using UnitatoBot.Bridge;
-using UnitatoBot.Execution.Executors;
-using UnitatoBot.Permission;
-using UnitatoBot.Util;
-using Newtonsoft.Json;
-using System.IO;
+using Unitato.Execution;
+using BotCore.Util;
+using BotCore.Permission;
+using BotCore.Bridge;
+using BotCore.Command;
+using BotCore.Bridge.Services;
 
-namespace UnitatoBot {
+namespace Unitato {
 
     public class Unitato {
 

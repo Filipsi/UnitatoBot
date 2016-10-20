@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace UnitatoBot.Util.UsageManager {
+namespace Unitato.Util.UsageManager {
 
     internal partial class UsageManager {
 

@@ -1,14 +1,15 @@
-﻿using Newtonsoft.Json;
+﻿using BotCore.Bridge;
+using BotCore.Command;
+using BotCore.Component;
+using BotCore.Execution;
+using BotCore.Util;
+using BotCore.Util.Symbol;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using UnitatoBot.Command;
-using UnitatoBot.Bridge;
-using UnitatoBot.Symbol;
-using UnitatoBot.Util;
-using UnitatoBot.Component.Common;
 
-namespace UnitatoBot.Component.Checklist {
+namespace Unitato.Component.Checklist {
 
     internal partial class Checklist : SavableMessageContainer {
 

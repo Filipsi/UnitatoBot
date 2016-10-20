@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace UnitatoBot.Configuration {
+namespace Unitato.Configuration {
 
     public static partial class Configuration {
 

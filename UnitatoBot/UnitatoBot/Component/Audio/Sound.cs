@@ -1,13 +1,13 @@
-﻿using NAudio.Wave;
+﻿using BotCore.Bridge;
+using BotCore.Execution;
+using BotCore.Util.Symbol;
+using NAudio.Wave;
 using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Timers;
-using UnitatoBot.Command;
-using UnitatoBot.Bridge;
-using UnitatoBot.Symbol;
 
-namespace UnitatoBot.Component.Audio {
+namespace Unitato.Component.Audio {
 
     [JsonObject(MemberSerialization.OptIn)]
     internal class Sound {
