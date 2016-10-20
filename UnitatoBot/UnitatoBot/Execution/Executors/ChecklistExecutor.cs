@@ -89,7 +89,7 @@ namespace UnitatoBot.Execution.Executors {
 
                         if(checklist != null) {
                             context.ServiceMessage.Delete();
-                            checklist.UpdateMessage("Checklist was marked as finished, no further edits can be made.");
+                            checklist.Status = "Checklist was marked as finished, no further edits can be made.";
                             Checklists.Remove(checklist);
                             checklist.Delete();
 
@@ -181,6 +181,25 @@ namespace UnitatoBot.Execution.Executors {
                         return context.Args.Length > 2 && SetEntryState(context.ServiceMessage, checklist, checkState, context.Args.Skip(2).ToArray()) ? ExecutionResult.Success : ExecutionResult.Fail;
                     }
                     break;
+
+                case "rerender":
+                    if(Checklists.Count > 0) {
+
+                        if(context.Args.Length > 1) {
+                            Checklist checklist = Checklists.Find(c => c.Id.Equals(context.Args[1]));
+
+                            if(checklist != null)
+                                checklist.Rerender();
+                            else
+                                return ExecutionResult.Fail;
+
+                        } else
+                            Checklists.Last().Rerender();
+
+                        context.ServiceMessage.Delete();
+                        return ExecutionResult.Success;
+                    }
+                    break;
             }
 
             return ExecutionResult.Fail;
@@ -207,7 +226,7 @@ namespace UnitatoBot.Execution.Executors {
             if(checklist.IsCompleted) {
                 Checklists.Remove(checklist);
                 checklist.Delete();
-                checklist.UpdateMessage("All entries on checklist was checked, no further edits can be made.");
+                checklist.Status = "All entries on checklist was checked, no further edits can be made.";
                 Logger.Info("Checklist {0} was deleted", checklist.Id);
             }
 

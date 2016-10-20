@@ -17,7 +17,8 @@ namespace UnitatoBot.Component.Checklist {
         public string               Id      { private set;  get; }
         public string               Owner   { private set;  get; }
         public string               Title   { private set;  get; }
-        public ServiceMessage    Message { set;          get; }
+        public ServiceMessage       Message { set;          get; }
+        public string               Status  { set;          get; }
 
         public bool IsCompleted {
             get {
@@ -35,11 +36,15 @@ namespace UnitatoBot.Component.Checklist {
             Entries = new List<Entry>();
         }
 
-        public void UpdateMessage(string append = "") {
+        public void UpdateMessage() {
             if(Message == null)
                 return;
 
-            ResponseBuilder builder = new ResponseBuilder(Message)     
+            Message.Edit(BuildMessageContent(new ResponseBuilder(Message)).Build());
+        }
+
+        private ResponseBuilder BuildMessageContent(ResponseBuilder builder) {
+            builder
                 .Text("Use").Block("!checklist check(or uncheck) [index](you can use multiple indexes)").Text("to check/uncheck item from the list (index from 0) (example: '!checklist check 2')")
                 .NewLine()
                     .Text("Use").Block("!checklist finish").Text("after you stop using the checklist to make it not editable")
@@ -62,10 +67,10 @@ namespace UnitatoBot.Component.Checklist {
                     builder.Text("(Checked by {0})", entry.CheckedBy);
             }
 
-            if(append != null || append != string.Empty || append != "")
-                builder.NewLine().Text(append);
+            if(Status != null)
+                builder.NewLine().Text(Status);
 
-            Message.Edit(builder.Build());
+            return builder;
         }
 
         public void Add(string text, bool update = true) {
@@ -94,6 +99,12 @@ namespace UnitatoBot.Component.Checklist {
             }
 
             return false;
+        }
+
+        public void Rerender() {
+            ServiceMessage msg = BuildMessageContent(new ResponseBuilder(Message)).Send();
+            Message.Delete();
+            Message = msg;
         }
 
         public static Checklist LoadFrom(CommandManager manager, FileInfo file) {
