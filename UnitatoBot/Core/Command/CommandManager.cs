@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using BotCore.Bridge;
@@ -7,7 +8,7 @@ using BotCore.Util;
 
 namespace BotCore.Command {
 
-    public class CommandManager {
+    public class CommandManager : IEnumerable<Command> {
 
         public bool IsReady { private set; get; }
 
@@ -27,21 +28,37 @@ namespace BotCore.Command {
             Logger.SectionStart();
         }
 
-        private void OnMessageReceived(object sender, ServiceMessageEventArgs e) {
-            if(!IsReady) return;
+        // IEnumerable
 
-            bool isCommand = Expressions.CommandParser.Test(e.Message.Text);
-            Logger.Log("Received {0} from {1}, IsCommand: {2}", e.Message.Text, e.Message.Sender, isCommand);
-            if(!isCommand) return;
+        public IEnumerator<Command> GetEnumerator() {
+            return Commands.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() {
+            return GetEnumerator();
+        }
+
+        // Logic
+
+        private void OnMessageReceived(object sender, ServiceMessageEventArgs e) {
+            if(!IsReady)
+                return;
+
+            if(!Expressions.CommandParser.Test(e.Message.Text))
+                return;
 
             string commandName = Expressions.CommandParser.Capture(e.Message.Text, "command");
             Command command = Commands.Find(x => x.Name == commandName || x.IsAlias(commandName));
 
-            if(command != null) command.Execute(this, e.Message); else Logger.Log("Command {0} not found", commandName);
+            if(command != null)
+                command.Execute(this, e.Message);
+            else
+                Logger.Log("Command {0} not found", commandName);
         }
 
         public void Begin() {
-            if(IsReady) return;
+            if(IsReady)
+                return;
 
             Logger.SectionEnd();
             Logger.Log("Registred {0} command{1}", Commands.Count, Commands.Count > 1 ? "s" : string.Empty);
@@ -56,10 +73,8 @@ namespace BotCore.Command {
                         Logger.SectionStart();
                             ((IInitializable)enumerator.Current).Initialize(this);
                         Logger.SectionEnd();
-                        
-                    } else {
+                    } else
                         Logger.Log("{0} executor is ready", enumerator.Current.GetType().Name);
-                    }
                 }
             }
 
@@ -86,9 +101,8 @@ namespace BotCore.Command {
             Commands.Add(new Command(name, handlers));
             Logger.Log("Registered {0} with executor{1}:", name, handlers.Count() > 1 ? "s" : string.Empty);
             Logger.SectionStart();
-            foreach(IExecutionHandler executor in handlers) {
+            foreach(IExecutionHandler executor in handlers)
                 Logger.Info(executor.GetType().ToString());
-            }
             Logger.SectionEnd();
 
             return this;
@@ -125,10 +139,6 @@ namespace BotCore.Command {
 
             Commands.Last().AddAlias(alias);
             return this;
-        }
-
-        public List<Command>.Enumerator GetEnumerator() {
-            return Commands.GetEnumerator();
         }
 
         public Command FindCommand(string name) {

@@ -8,10 +8,6 @@ namespace BotCore.Permission {
 
     public static class Permissions {
 
-        private static LinkedList<PermissionGroup> GroupList = new LinkedList<PermissionGroup>();
-
-        public static WrappedEnumerable<PermissionGroup> Groups { private set; get; } = new WrappedEnumerable<PermissionGroup>(GroupList);
-
         public static string All                { private set; get; } = "*";
         public static string Reboot             { private set; get; } = "reboot";
         public static string PermissionCreate   { private set; get; } = "perm.create";
@@ -23,6 +19,14 @@ namespace BotCore.Permission {
         public static string PermissionReload   { private set; get; } = "perm.reload";
         public static string FaggotPurify       { private set; get; } = "faggot.purify";
         public static string FaggotClean        { private set; get; } = "faggot.clean";
+
+        public static WrappedEnumerable<PermissionGroup> Groups { private set; get; } = new WrappedEnumerable<PermissionGroup>(GroupList);
+
+        private static LinkedList<PermissionGroup> GroupList = new LinkedList<PermissionGroup>();
+
+        static Permissions() {
+            Load();
+        }
 
         public static void Load() {
             Logger.Log("Loading Permission... ");

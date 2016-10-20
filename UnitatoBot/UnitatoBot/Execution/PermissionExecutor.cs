@@ -4,10 +4,18 @@ using BotCore.Permission;
 using BotCore.Util.Symbol;
 using System.Collections;
 using System.Linq;
+using System;
+using System.Runtime.CompilerServices;
 
 namespace Unitato.Execution {
 
-    internal class PermissionExecutor : IExecutionHandler {
+    internal class PermissionExecutor : IInitializable, IExecutionHandler {
+
+        // IInitializable
+
+        public void Initialize(CommandManager manager) {
+            RuntimeHelpers.RunClassConstructor(typeof(Permissions).TypeHandle);
+        }
 
         // IExecutionHandler
 

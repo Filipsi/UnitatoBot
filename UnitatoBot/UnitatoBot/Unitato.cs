@@ -11,8 +11,6 @@ namespace Unitato {
     public class Unitato {
 
         static void Main(string[] args) {
-            Permissions.Load();
-
             Logger.Log("Initializing connectors");
             Logger.SectionStart();
             IService discordService = new DiscordService(Configuration.Configuration.Settings.Token);
