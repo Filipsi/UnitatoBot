@@ -20,13 +20,13 @@ namespace UnitatoBot.Execution.Executors {
             if(!Directory.Exists("checklist"))
                 Directory.CreateDirectory("checklist");
 
-            Checklists = LoadSaved(manager);
+            Checklists = Load(manager);
         }
 
         // IExecutionHandler
 
         public string GetDescription() {
-            return "Create checklist with items that you can check out. To create a checklist use with argument 'create' [checklist-id] [title]. To add item to checklist use with argument 'add' [checklist-id](optional) [text]. To check or uncheck the item use with argument 'check' or 'uncheck' [checklist-id](optional) [item-index](from 0), you can use multiple indexes (ex: 'check 1 2 3'). To destroy checklist use with argument 'destroy' [checklist-id]. To remove item from checklist use use with argument 'remove' [checklist-id](optional) [item-index](from 0). To add multiple items to checklist use with argument 'import' [checklist-id](optional) [separator](string that splits entries) [text] (example: '/checklist import - -item1 -item2 -item3'). When checklist is no longer needed to be editable use with argument 'finish! [checklist-id](optional).";
+            return "Create checklist with items that you can check out. To create a checklist use with argument 'create' [checklist-id] [title]. To add item to checklist use with argument 'add' [checklist-id](optional) [text]. To check or uncheck the item use with argument 'check' or 'uncheck' [checklist-id](optional) [item-index](from 0), you can use multiple indexes (ex: 'check 1 2 3'). To destroy checklist use with argument 'destroy' [checklist-id]. To remove item from checklist use use with argument 'remove' [checklist-id](optional) [item-index](from 0). To add multiple items to checklist use with argument 'import' [checklist-id](optional) [separator](string that splits entries) [text] (example: '/checklist import - -item1 -item2 -item3'). When checklist is no longer needed to be editable use with argument 'finish [checklist-id](optional). In order to rerender chaklist as new message use argument 'rerender'.";
         }
 
         public ExecutionResult CanExecute(CommandContext context) {
@@ -55,7 +55,7 @@ namespace UnitatoBot.Execution.Executors {
                         checklist.Message = msg;
                         Checklists.Add(checklist);
 
-                        checklist.ToFile();
+                        checklist.Save();
 
                         return ExecutionResult.Success;
                     }
@@ -189,12 +189,12 @@ namespace UnitatoBot.Execution.Executors {
                             Checklist checklist = Checklists.Find(c => c.Id.Equals(context.Args[1]));
 
                             if(checklist != null)
-                                checklist.Rerender();
+                                checklist.RerenderMessage();
                             else
                                 return ExecutionResult.Fail;
 
                         } else
-                            Checklists.Last().Rerender();
+                            Checklists.Last().RerenderMessage();
 
                         context.ServiceMessage.Delete();
                         return ExecutionResult.Success;
@@ -233,14 +233,14 @@ namespace UnitatoBot.Execution.Executors {
             return anySucess;
         }
 
-        private List<Checklist> LoadSaved(CommandManager manager) {
+        private List<Checklist> Load(CommandManager manager) {
             Logger.SectionStart();
 
             List<Checklist> list = new List<Checklist>();
             foreach(FileInfo file in new DirectoryInfo("checklist").GetFiles("*.json", SearchOption.TopDirectoryOnly)) {
                 Logger.Info("Loading file {0} ...", file);
 
-                Checklist checklist = Checklist.LoadFrom(manager, file);
+                Checklist checklist = Checklist.Load(file, manager);
 
                 if(checklist != null)
                     list.Add(checklist);

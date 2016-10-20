@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnitatoBot.Command;
+using UnitatoBot.Component.Common;
 
 namespace UnitatoBot.Component.Checklist {
 
-    internal partial class Checklist {
+    internal partial class Checklist : SavableMessageContainer {
 
         private class Entry {
 

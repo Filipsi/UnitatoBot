@@ -12,13 +12,6 @@ namespace UnitatoBot.Component.Audio {
     [JsonObject(MemberSerialization.OptIn)]
     internal class Sound {
 
-        private static JsonSerializer SERIALIZER;
-
-        static Sound() {
-            SERIALIZER = new JsonSerializer();
-            SERIALIZER.Formatting = Formatting.Indented;
-        }
-
         public string   Name    { private set; get; }
         public string   Source  { private set; get; }
         public TimeSpan Length  { private set; get; }
@@ -79,7 +72,7 @@ namespace UnitatoBot.Component.Audio {
 
         public void Save() {
             using(StreamWriter writer = GetMetadataFile(Source).CreateText()) {
-                SERIALIZER.Serialize(writer, this);
+                writer.Write(JsonConvert.SerializeObject(this, Formatting.Indented));
             }
         }
 

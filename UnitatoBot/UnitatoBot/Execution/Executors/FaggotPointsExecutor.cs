@@ -8,6 +8,7 @@ using UnitatoBot.Command;
 using UnitatoBot.Permission;
 using UnitatoBot.Symbol;
 using UnitatoBot.Util;
+using UnitatoBot.Util.UsageManager;
 
 namespace UnitatoBot.Execution.Executors {
 

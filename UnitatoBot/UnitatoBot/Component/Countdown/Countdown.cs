@@ -9,10 +9,10 @@ namespace UnitatoBot.Component.Countdown {
 
     public partial class Countdown {
 
-        private Timer Timer;
-        private TimeSpan Length;
-        private double ElapsedSeconds;
-        private double LastStage;
+        private Timer       Timer;
+        private TimeSpan    Length;
+        private double      ElapsedSeconds;
+        private double      LastStage;
 
         public double Stage {
             get {

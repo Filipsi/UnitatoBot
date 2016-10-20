@@ -82,6 +82,7 @@
     <Compile Include="Command\Command.cs" />
     <Compile Include="Command\CommandContext.cs" />
     <Compile Include="Command\CommandManager.cs" />
+    <Compile Include="Component\Common\SavableMessageContainer.cs" />
     <Compile Include="Execution\Executors\CalcExecutor.cs" />
     <Compile Include="Execution\Executors\ChecklistExecutor.cs" />
     <Compile Include="Execution\Executors\CoinFlipExecutor.cs" />
@@ -97,9 +98,9 @@
     <Compile Include="Command\ResponseBuilder.cs" />
     <Compile Include="Component\Audio\Sound.cs" />
     <Compile Include="Component\Checklist\Checklist.cs" />
-    <Compile Include="Component\Checklist\Entry.cs" />
+    <Compile Include="Component\Checklist\Checklist.Entry.cs" />
     <Compile Include="Component\Countdown\Countdown.cs" />
-    <Compile Include="Component\Countdown\StateChangedEventArgs.cs" />
+    <Compile Include="Component\Countdown\Countdown.StateChangedEventArgs.cs" />
     <Compile Include="Configuration\Configuration.cs" />
     <Compile Include="Bridge\ServiceMessage.cs" />
     <Compile Include="Bridge\Services\DiscordService.cs" />
@@ -120,9 +121,9 @@
     <Compile Include="Execution\IExecutionHandler.cs" />
     <Compile Include="Unitato.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Util\UsageManager.cs" />
-    <Compile Include="Util\UsageManager.Usage.cs" />
-    <Compile Include="Util\UsageStorage.JsonConverter.cs" />
+    <Compile Include="Util\UsageManager\UsageManager.cs" />
+    <Compile Include="Util\UsageManager\UsageManager.Usage.cs" />
+    <Compile Include="Util\UsageManager\UsageStorageJsonConverter.cs" />
     <Compile Include="Util\WrappedEnumerable.cs" />
   </ItemGroup>
   <ItemGroup>

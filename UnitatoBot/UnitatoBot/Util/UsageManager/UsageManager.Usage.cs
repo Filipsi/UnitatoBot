@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace UnitatoBot.Util {
+namespace UnitatoBot.Util.UsageManager {
 
     internal partial class UsageManager {
 

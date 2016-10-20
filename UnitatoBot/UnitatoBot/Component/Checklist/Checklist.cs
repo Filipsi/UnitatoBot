@@ -1,24 +1,18 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnitatoBot.Command;
 using UnitatoBot.Bridge;
 using UnitatoBot.Symbol;
 using UnitatoBot.Util;
+using UnitatoBot.Component.Common;
 
 namespace UnitatoBot.Component.Checklist {
 
-    internal partial class Checklist {
+    internal partial class Checklist : SavableMessageContainer {
 
-        public string               Id      { private set;  get; }
-        public string               Owner   { private set;  get; }
-        public string               Title   { private set;  get; }
-        public ServiceMessage       Message { set;          get; }
-        public string               Status  { set;          get; }
+        public string Status { set; get; }
 
         public bool IsCompleted {
             get {
@@ -29,33 +23,26 @@ namespace UnitatoBot.Component.Checklist {
         [JsonProperty]
         private List<Entry> Entries;
 
-        public Checklist(string id, string owner, string title) {
-            Id = id;
-            Owner = owner;
-            Title = title;
+        public Checklist(string id, string owner, string title) : base(id, owner, title) {
+            SavePath = "checklist";
             Entries = new List<Entry>();
         }
 
-        public void UpdateMessage() {
-            if(Message == null)
-                return;
+        // Base
 
-            Message.Edit(BuildMessageContent(new ResponseBuilder(Message)).Build());
-        }
-
-        private ResponseBuilder BuildMessageContent(ResponseBuilder builder) {
+        protected override void BuildMessageContent(ResponseBuilder builder) {
             builder
-                .Text("Use").Block("!checklist check(or uncheck) [index](you can use multiple indexes)").Text("to check/uncheck item from the list (index from 0) (example: '!checklist check 2')")
-                .NewLine()
-                    .Text("Use").Block("!checklist finish").Text("after you stop using the checklist to make it not editable")
-                .NewLine()
-                .NewLine()
-                    .Text(Emoji.Checklist)
-                    .Text("{0} (Checklist", Title)
-                    .Block(Id)
-                    .Text("by")
-                    .Block(Owner)
-                    .Text(")");
+               .Text("Use").Block("!checklist check(or uncheck) [index](you can use multiple indexes)").Text("to check/uncheck item from the list (index from 0) (example: '!checklist check 2')")
+               .NewLine()
+                   .Text("Use").Block("!checklist finish").Text("after you stop using the checklist to make it not editable")
+               .NewLine()
+               .NewLine()
+                   .Text(Emoji.Checklist)
+                   .Text("{0} (Checklist", Title)
+                   .Block(Id)
+                   .Text("by")
+                   .Block(Owner)
+                   .Text(")");
 
             foreach(Entry entry in Entries) {
                 builder
@@ -69,56 +56,10 @@ namespace UnitatoBot.Component.Checklist {
 
             if(Status != null)
                 builder.NewLine().Text(Status);
-
-            return builder;
         }
 
-        public void Add(string text, bool update = true) {
-            Entries.Add(new Entry(text));
-
-            if(update)
-                UpdateMessage();
-
-            ToFile();
-        }
-
-        public void Remove(byte index, bool update = true) {
-            Entries.RemoveAt(index);
-
-            if(update)
-                UpdateMessage();
-
-            ToFile();
-        }
-
-        public bool SetEntryState(byte index, bool state, string owner) {
-            if(index < Entries.Count) {
-                Entries[index].SetState(state, owner);
-                ToFile();
-                return true;
-            }
-
-            return false;
-        }
-
-        public void Rerender() {
-            ServiceMessage msg = BuildMessageContent(new ResponseBuilder(Message)).Send();
-            Message.Delete();
-            Message = msg;
-        }
-
-        public static Checklist LoadFrom(CommandManager manager, FileInfo file) {
-            if(!file.Exists) {
-                Logger.Warn("Unable to load checklist {0}, file not found", file.Name);
-                return null;
-            }
-
-            string data = "{}";
-            using(StreamReader reader = file.OpenText()) {
-                data = reader.ReadToEnd();
-            }
-            
-            Checklist checklist = JsonConvert.DeserializeObject<Checklist>(data);
+        public static Checklist Load(FileInfo file, CommandManager manager) {
+            Checklist checklist = JsonConvert.DeserializeObject<Checklist>(LoadFileContent(file));
 
             // This is dummy message created by deserialization (contains service, origin and id)
             ServiceMessage container = checklist.Message;
@@ -141,17 +82,34 @@ namespace UnitatoBot.Component.Checklist {
             return null;
         }
 
-        public void ToFile() {
-            using(StreamWriter writer = File.CreateText(Path.Combine("checklist", Id + ".json"))) {
-                writer.Write(JsonConvert.SerializeObject(this, Formatting.Indented));
-            }
+        // Entires
+
+        public void Add(string text, bool update = true) {
+            Entries.Add(new Entry(text));
+
+            if(update)
+                UpdateMessage();
+
+            Save();
         }
 
-        public void Delete() {
-            string path = Path.Combine("checklist", Id + ".json");
+        public void Remove(byte index, bool update = true) {
+            Entries.RemoveAt(index);
 
-            if(File.Exists(path))
-                File.Delete(path);
+            if(update)
+                UpdateMessage();
+
+            Save();
+        }
+
+        public bool SetEntryState(byte index, bool state, string owner) {
+            if(index < Entries.Count) {
+                Entries[index].SetState(state, owner);
+                Save();
+                return true;
+            }
+
+            return false;
         }
 
     }
