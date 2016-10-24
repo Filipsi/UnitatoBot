@@ -12,6 +12,7 @@ namespace Unitato.Component.Checklist {
             [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
             public bool IsChecked { private set; get; } = false;
 
+            [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
             public string CheckedBy { private set; get; }
 
             public Entry(string text) {
