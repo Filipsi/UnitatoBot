@@ -47,7 +47,7 @@ namespace Unitato {
 
             cmdManager.Begin();
             Logger.Log("Ready to go.");
-            
+
             Console.ReadKey();
         }
 

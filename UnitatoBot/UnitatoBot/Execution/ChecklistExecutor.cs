@@ -219,16 +219,16 @@ namespace Unitato.Execution {
                 }
             }
 
-            if(anySucess) {
-                checklist.UpdateMessage();
-                commandMsg.Delete();
-            }
-
             if(checklist.IsCompleted) {
                 Checklists.Remove(checklist);
                 checklist.Delete();
                 checklist.Status = "All entries on checklist was checked, no further edits can be made.";
                 Logger.Info("Checklist {0} was deleted", checklist.Id);
+            }
+
+            if(anySucess) {
+                checklist.UpdateMessage();
+                commandMsg.Delete();
             }
 
             return anySucess;
