@@ -26,7 +26,7 @@ namespace Unitato.Execution {
         // IExecutionHandler
 
         public string GetDescription() {
-            return "Use with name as argument to mark someone as a faggot and add one faggot point. Use with argument 'list' to see statistics of all faggots. Use with argument 'stats' and name of the user as a second argument to see statistics of that faggot. Use with argument 'purify' and name of the user to remove one faggot point (restricted). Use with argument 'clean' and name of the user to remove all faggot points (restricted)";
+            return "Use with name as argument to mark someone as a faggot and add one faggot point. Use with argument 'list' to see statistics of all faggots. Use with argument 'stats' [name] to see statistics of given faggot. Use with argument 'purify' [name] [count](optional) to remove n faggot points from user (restricted). Use with argument 'clean' [name] to remove all faggot points (restricted)";
         }
 
         public ExecutionResult CanExecute(CommandContext context) {

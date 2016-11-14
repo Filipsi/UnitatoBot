@@ -50,10 +50,10 @@ namespace BotCore.Bridge.Services {
 
             // Retrives audio service from client
             Audio = Client.GetService<AudioService>();
-
+            
             // Initializes event handlers 
             InitEventHandlers();
-            Logger.Log("{0} event handlers inicilized.", this.GetType().Name);
+            Logger.Log("{0} event handlers inicilized.", GetType().Name);
         }
 
         private void InitEventHandlers() {
@@ -135,6 +135,10 @@ namespace BotCore.Bridge.Services {
 
         public string GetServiceType() {
             return "Discord";
+        }
+
+        public string GetServiceId() {
+            return Client.CurrentUser.Id.ToString();
         }
 
         public event EventHandler<ServiceMessageEventArgs> OnMessageReceived;

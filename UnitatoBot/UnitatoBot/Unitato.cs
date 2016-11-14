@@ -11,11 +11,11 @@ namespace Unitato {
     public class Unitato {
 
         static void Main(string[] args) {
-            Logger.Log("Initializing connectors");
+            Logger.Log("Initializing services");
             Logger.SectionStart();
             IService discordService = new DiscordService(Configuration.Configuration.Settings.Token);
             Logger.SectionEnd();
-            Logger.Log("Connectors initialized");
+            Logger.Log("Services initialized");
 
             CommandManager cmdManager = new CommandManager(discordService)
                 .RegisterCommand("unitato", new InfoExecutor())

@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Threading.Tasks;
 
 namespace BotCore.Bridge {
 
     public interface IService {
 
         string GetServiceType();
+
+        string GetServiceId();
 
         event EventHandler<ServiceMessageEventArgs> OnMessageReceived;
 
