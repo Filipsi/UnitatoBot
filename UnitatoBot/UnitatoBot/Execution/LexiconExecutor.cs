@@ -1,26 +1,25 @@
-﻿using BotCore.Command;
-using BotCore.Execution;
-using Newtonsoft.Json;
-using RestSharp;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using BotCore.Execution;
+using Newtonsoft.Json;
+using RestSharp;
 
-namespace Unitato.Execution {
+namespace UnitatoBot.Execution {
 
-    internal class LexiconExecutor : IInitializable, IExecutionHandler{
+    internal class LexiconExecutor : IInitializable, IConditionalExecutonHandler {
 
-        private RestClient LexiconClient;
-        private RestRequest RequestGetMenu;
-        private RestRequest RequestGetArticle;
+        private RestClient  _lexiconClient;
+        private RestRequest _requestGetMenu;
+        private RestRequest _requestGetArticle;
 
         // IInitializable
 
-        public void Initialize(CommandManager manager) {
-            LexiconClient = new RestClient("http://lexicon.filipsi.net/php");
-            RequestGetMenu = new RestRequest("menu/processor.php", Method.GET);
-            RequestGetArticle = new RestRequest("articles/processor.php", Method.GET);
+        public void Initialize(ExecutionManager manager) {
+            _lexiconClient = new RestClient("http://lexicon.filipsi.net/php");
+            _requestGetMenu = new RestRequest("menu/processor.php", Method.GET);
+            _requestGetArticle = new RestRequest("articles/processor.php", Method.GET);
         }
 
         // IExecutionHandler
@@ -29,13 +28,13 @@ namespace Unitato.Execution {
             return "Retrives entry form http://lexicon.filipsi.net/ using it's name as a argument or prints out articles from lexicon using 'list' as a argument";
         }
 
-        public bool CanExecute(CommandContext context) {
+        public bool CanExecute(ExecutionContext context) {
             return context.HasArguments;
         }
 
-        public bool Execute(CommandContext context) {
+        public bool Execute(ExecutionContext context) {
             if(context.Args[0] == "list") {
-                LexiconClient.ExecuteAsync(RequestGetMenu, response => {
+                _lexiconClient.ExecuteAsync(_requestGetMenu, response => {
                     // Parse data from server into list of ArticleEntries
                     List<MenuEntry> menuEntries = JsonConvert.DeserializeObject<List<MenuEntry>>(response.Content);
 
@@ -49,11 +48,11 @@ namespace Unitato.Execution {
 
                 return true;
             } else {
-                // Strips the /command from the arguments, this is here in order to enable reqests for articles with spaces in title
+                // Strips the /ExecutionDispacher from the arguments, this is here in order to enable reqests for articles with spaces in title
                 string strippedArgument = context.Message.Text.Substring(1 + context.CommandName.Length + 1);
 
-                RequestGetArticle.AddParameter("title", strippedArgument);
-                LexiconClient.ExecuteAsync(RequestGetArticle, response => {
+                _requestGetArticle.AddParameter("title", strippedArgument);
+                _lexiconClient.ExecuteAsync(_requestGetArticle, response => {
 
                     // Check if there are data in the responce (should work, mostly ¯\_(ツ)_/¯)
                     if(response.Content.Equals(string.Empty) || response.Content.Equals("") || response.Content.Equals("[]")) return;
@@ -87,9 +86,6 @@ namespace Unitato.Execution {
                 return true;
             }
         }
-
-        // Logic
-
 
         // JsonObjects
         // Used to parse data from server

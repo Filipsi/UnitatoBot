@@ -101,7 +101,7 @@
     <Compile Include="Component\Checklist\Checklist.Entry.cs" />
     <Compile Include="Component\Countdown\Countdown.cs" />
     <Compile Include="Component\Countdown\Countdown.StateChangedEventArgs.cs" />
-    <Compile Include="Configuration\Configuration.cs" />
+    <Compile Include="Configuration\Config.cs" />
     <Compile Include="Execution\DiceExecutor.cs" />
     <Compile Include="Execution\FaggotPointsExecutor.cs" />
     <Compile Include="Execution\HelpExecutor.cs" />
@@ -118,7 +118,7 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <Compile Include="Configuration\Configuration.Entries.cs" />
+    <Compile Include="Configuration\Configuration.Storage.cs" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

@@ -7,7 +7,7 @@ namespace BotCore.Util {
         public static VerbalExpressions CommandParser = new VerbalExpressions()
             .StartOfLine()
             .Then("!")
-            .BeginCapture("command")
+            .BeginCapture("ExecutionDispacher")
             .SomethingBut(" ")
             .EndCapture()
             .Anything()

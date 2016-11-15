@@ -1,23 +1,22 @@
-﻿using BotCore.Command;
+﻿using System;
 using BotCore.Execution;
 using BotCore.Util;
 using BotCore.Util.Symbol;
 using NCalc;
-using System;
 
-namespace Unitato.Execution {
+namespace UnitatoBot.Execution {
 
-    internal class CalcExecutor : IExecutionHandler {
+    internal class CalcExecutor : IConditionalExecutonHandler {
 
         public string GetDescription() {
             return "Calculate mathematical expressions. Operators: ||, &&, =, ==, !=, <>, <, <=, >, >=, +, -, *, /, %, & (bitwise and), | (bitwise or), ^(bitwise xor), << (left shift), >>(right shift), !, not, -, ~ (bitwise not); Functions: <http://ncalc.codeplex.com/wikipage?title=functions&referringTitle=values>";
         }
 
-        public bool CanExecute(CommandContext context) {
+        public bool CanExecute(ExecutionContext context) {
             return context.HasArguments;
         }
 
-        public bool Execute(CommandContext context) {
+        public bool Execute(ExecutionContext context) {
 
             object result;
             try {

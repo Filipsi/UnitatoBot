@@ -85,11 +85,12 @@
     <Compile Include="Bridge\IService.cs" />
     <Compile Include="Bridge\ServiceMessage.cs" />
     <Compile Include="Bridge\Services\DiscordService.cs" />
-    <Compile Include="Command\Command.cs" />
-    <Compile Include="Command\CommandContext.cs" />
-    <Compile Include="Command\CommandManager.cs" />
+    <Compile Include="Execution\ExecutionDispacher.cs" />
+    <Compile Include="Execution\ExecutionContext.cs" />
+    <Compile Include="Execution\ExecutionManager.cs" />
     <Compile Include="Component\SavableMessageContainer.cs" />
     <Compile Include="Bridge\ResponseBuilder.cs" />
+    <Compile Include="Execution\IConditionalExecutonHandler.cs" />
     <Compile Include="Execution\IExecutionHandler.cs" />
     <Compile Include="Execution\IInitializable.cs" />
     <Compile Include="Permission\PermissionGroup.cs" />

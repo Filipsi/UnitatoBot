@@ -1,10 +1,9 @@
-﻿using BotCore.Command;
-using BotCore.Execution;
+﻿using BotCore.Execution;
 using BotCore.Util.Symbol;
 
-namespace Unitato.Execution {
+namespace UnitatoBot.Execution {
 
-    internal class InviteExecutor : IExecutionHandler {
+    internal class InviteExecutor : IConditionalExecutonHandler {
 
         // IExecutionHandler
 
@@ -12,11 +11,11 @@ namespace Unitato.Execution {
             return "Prints out invitation for this bot to join given server based on service";
         }
 
-        public bool CanExecute(CommandContext context) {
+        public bool CanExecute(ExecutionContext context) {
             return context.Message.ServiceType == "Discord";
         }
 
-        public bool Execute(CommandContext context) {
+        public bool Execute(ExecutionContext context) {
             context.ResponseBuilder
                 .Text("Here you go")
                 .Username()

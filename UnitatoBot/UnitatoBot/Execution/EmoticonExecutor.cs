@@ -1,13 +1,12 @@
-﻿using BotCore.Bridge;
-using BotCore.Command;
+﻿using System;
+using System.Linq;
+using BotCore.Bridge;
 using BotCore.Execution;
 using BotCore.Util.Symbol;
-using System;
-using System.Linq;
 
-namespace Unitato.Execution {
+namespace UnitatoBot.Execution {
 
-    internal class EmoticonExecutor : IExecutionHandler {
+    internal class EmoticonExecutor : IConditionalExecutonHandler {
 
         // IExecutionHandler
 
@@ -15,11 +14,11 @@ namespace Unitato.Execution {
             return "Prints out emoticon specified as argument. To get list of emoticons, use 'list' as a argument";
         }
 
-        public bool CanExecute(CommandContext context) {
+        public bool CanExecute(ExecutionContext context) {
             return context.HasArguments && context.Args.Count() == 1 && (context.Args[0] == "list" || SymbolFactory.FromName(context.Args[0]) != null);
         }
 
-        public bool Execute(CommandContext context) {
+        public bool Execute(ExecutionContext context) {
             if(context.Args[0] == "list") {
                 int count = Enum.GetValues(typeof(Emoticon)).Length;
 

@@ -1,23 +1,26 @@
 ﻿using System;
-using Unitato.Execution;
-using BotCore.Util;
-using BotCore.Permission;
 using BotCore.Bridge;
-using BotCore.Command;
 using BotCore.Bridge.Services;
+using BotCore.Execution;
+using BotCore.Util;
+using Unitato.Execution;
+using UnitatoBot.Configuration;
+using UnitatoBot.Execution;
 
-namespace Unitato {
+namespace UnitatoBot {
 
     public class Unitato {
 
         static void Main(string[] args) {
+            Config.Load();
+
             Logger.Log("Initializing services");
             Logger.SectionStart();
-            IService discordService = new DiscordService(Configuration.Configuration.Settings.Token);
+            IService discordService = new DiscordService(Config.Settings.Token);
             Logger.SectionEnd();
             Logger.Log("Services initialized");
 
-            CommandManager cmdManager = new CommandManager(discordService)
+            ExecutionManager cmdManager = new ExecutionManager(discordService)
                 .RegisterCommand("unitato", new InfoExecutor())
                 .RegisterCommand("help", new HelpExecutor())
                 .RegisterCommand("invite", new InviteExecutor())

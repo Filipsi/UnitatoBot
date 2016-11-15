@@ -1,33 +1,31 @@
-﻿using BotCore.Bridge;
-using BotCore.Command;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using BotCore.Bridge;
 using BotCore.Component;
 using BotCore.Execution;
 using BotCore.Util;
 using BotCore.Util.Symbol;
 using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
-namespace Unitato.Component.Checklist {
+namespace UnitatoBot.Component.Checklist {
 
     internal partial class Checklist : SavableMessageContainer {
 
-        public string Status    { set;          get; }
-        public string Title     { private set;  get; }
+        public string Status    { set; get; }
+        public string Title     { get;      }
 
         public bool IsCompleted {
             get {
-                return Entries.Count > 0 && Entries.Count(e => e.IsChecked) == Entries.Count;
+                return _entries.Count > 0 && _entries.Count(e => e.IsChecked) == _entries.Count;
             }
         }
 
         [JsonProperty]
-        private List<Entry> Entries;
+        private readonly List<Entry> _entries;
 
-        public Checklist(string id, string owner, string title) : base(id, owner) {
-            SavePath = "checklist";
-            Entries = new List<Entry>();
+        public Checklist(string id, string owner, string title) : base(id, owner, "checklist") {
+            _entries = new List<Entry>();
             Title = title;
         }
 
@@ -47,7 +45,7 @@ namespace Unitato.Component.Checklist {
                    .Block(Owner)
                    .Text(")");
 
-            foreach(Entry entry in Entries) {
+            foreach(Entry entry in _entries) {
                 builder
                     .NewLine()
                     .Text(entry.IsChecked ? Emoji.BoxChecked : Emoji.BoxUnchecked)
@@ -61,7 +59,7 @@ namespace Unitato.Component.Checklist {
                 builder.NewLine().Text(Status);
         }
 
-        public static Checklist Load(FileInfo file, CommandManager manager) {
+        public static Checklist Load(FileInfo file, ExecutionManager manager) {
             Checklist checklist = JsonConvert.DeserializeObject<Checklist>(LoadFileContent(file));
 
             // This is dummy message created by deserialization (contains service, origin and id)
@@ -88,7 +86,7 @@ namespace Unitato.Component.Checklist {
         // Entires
 
         public void Add(string text, bool update = true) {
-            Entries.Add(new Entry(text));
+            _entries.Add(new Entry(text));
 
             if(update)
                 UpdateMessage();
@@ -97,7 +95,7 @@ namespace Unitato.Component.Checklist {
         }
 
         public void Remove(byte index, bool update = true) {
-            Entries.RemoveAt(index);
+            _entries.RemoveAt(index);
 
             if(update)
                 UpdateMessage();
@@ -106,8 +104,8 @@ namespace Unitato.Component.Checklist {
         }
 
         public bool SetEntryState(byte index, bool state, string owner) {
-            if(index < Entries.Count) {
-                Entries[index].SetState(state, owner);
+            if(index < _entries.Count) {
+                _entries[index].SetState(state, owner);
                 Save();
                 return true;
             }

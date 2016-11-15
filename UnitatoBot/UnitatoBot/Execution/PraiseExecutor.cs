@@ -1,9 +1,8 @@
-﻿using BotCore.Command;
+﻿using System;
 using BotCore.Execution;
 using BotCore.Util.Symbol;
-using System;
 
-namespace Unitato.Execution {
+namespace UnitatoBot.Execution {
 
     internal class PraiseExecutor : IExecutionHandler, IInitializable {
 
@@ -13,7 +12,7 @@ namespace Unitato.Execution {
 
         // IInitializable
 
-        public void Initialize(CommandManager manager) {
+        public void Initialize(ExecutionManager manager) {
             Rng = new Random();
         }
 
@@ -23,11 +22,7 @@ namespace Unitato.Execution {
             return "Will praise anything specified as an argument. Even Dan, because we were praising Dan all along, even when it was prohibited.";
         }
 
-        public bool CanExecute(CommandContext context) {
-            return true;
-        }
-
-        public bool Execute(CommandContext context) {
+        public bool Execute(ExecutionContext context) {
             context.ResponseBuilder
                 .Username()
                 .Text("is praising!")
@@ -44,12 +39,12 @@ namespace Unitato.Execution {
         // Helpers
 
         private string GenerateDan() {
-            char[] dan = new char[] { 'd', 'a', 'n' };
+            char[] dan = { 'd', 'a', 'n' };
             for(byte i = 0; i < dan.Length; i++) {
                 if(Rng.Next(2) == 1) dan[i] = char.ToUpper(dan[i]);
             }
 
-            return new String(dan);
+            return new string(dan);
         }
 
     }

@@ -1,19 +1,17 @@
-﻿using BotCore.Command;
+﻿using System.Collections;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using BotCore.Execution;
 using BotCore.Permission;
 using BotCore.Util.Symbol;
-using System.Collections;
-using System.Linq;
-using System;
-using System.Runtime.CompilerServices;
 
-namespace Unitato.Execution {
+namespace UnitatoBot.Execution {
 
-    internal class PermissionExecutor : IInitializable, IExecutionHandler {
+    internal class PermissionExecutor : IInitializable, IConditionalExecutonHandler {
 
         // IInitializable
 
-        public void Initialize(CommandManager manager) {
+        public void Initialize(ExecutionManager manager) {
             RuntimeHelpers.RunClassConstructor(typeof(Permissions).TypeHandle);
         }
 
@@ -23,11 +21,11 @@ namespace Unitato.Execution {
             return "Permission management. Use with argument 'users' to print out list of users in given groups, use with 'list' to get list of groups and what they can do. Create group: 'create [group] [permission...](multiple allowed)'; Destory group: 'destory [group]'; Add permission to group: 'allow [group] [permission...](multiple allowed)'; Remove permission from group: 'deny [group] [permission...](multiple allowed)'; Add user to group: 'put [user] [group]'; Remove user from group: 'take [user] [group]'; Realod from reload: 'reload'";
         }
 
-        public bool CanExecute(CommandContext context) {
+        public bool CanExecute(ExecutionContext context) {
             return context.HasArguments;
         }
 
-        public bool Execute(CommandContext context) {
+        public bool Execute(ExecutionContext context) {
             switch(context.Args[0]) {
                 case "users":
                     context.ResponseBuilder
@@ -197,7 +195,7 @@ namespace Unitato.Execution {
 
         // Util
 
-        private void AddGroupData(CommandContext context, PermissionGroup group, IEnumerable enumerable) {
+        private void AddGroupData(ExecutionContext context, PermissionGroup group, IEnumerable enumerable) {
             if(group.MembersCount > 0) {
                 bool tableStart = false;
                 foreach(string user in enumerable) {

@@ -1,5 +1,4 @@
-﻿using BotCore.Command;
-using BotCore.Execution;
+﻿using BotCore.Execution;
 using System;
 
 namespace Unitato.Execution {
@@ -14,11 +13,7 @@ namespace Unitato.Execution {
             return "Prints out uptime of the bot";
         }
 
-        public bool CanExecute(CommandContext context) {
-            return true;
-        }
-
-        public bool Execute(CommandContext context) {
+        public bool Execute(ExecutionContext context) {
             context.ResponseBuilder
                 .Username()
                 .Text("I am here for")

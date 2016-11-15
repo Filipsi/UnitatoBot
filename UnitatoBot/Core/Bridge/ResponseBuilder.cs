@@ -17,9 +17,7 @@ namespace BotCore.Bridge {
             private set; get;
         }
 
-        public int Length {
-            get { return Builder.Length; }
-        }
+        public int Length => Builder.Length;
 
         public ResponseBuilder(ServiceMessage message, bool removeOriginalMessage = true) {
             ShouldDeleteMessage = removeOriginalMessage;

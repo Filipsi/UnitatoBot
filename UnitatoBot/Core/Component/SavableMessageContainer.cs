@@ -2,22 +2,21 @@
 using System.IO;
 using BotCore.Bridge;
 using BotCore.Util;
-using BotCore.Execution;
 
 namespace BotCore.Component {
 
     public abstract class SavableMessageContainer {
 
-        public string           Id      { private set;  get; }
-        public string           Owner   { private set;  get; }
-       
-        public ServiceMessage   Message { set;          get; }
+        public string           Id      { get;      }
+        public string           Owner   { get;      }
+        public ServiceMessage   Message { set; get; }
 
-        protected string        SavePath = string.Empty;
+        private readonly FileInfo _file;
 
-        public SavableMessageContainer(string id, string owner) {
+        protected SavableMessageContainer(string id, string owner, string savePath = "") {
             Id = id;
             Owner = owner;
+            _file = new FileInfo(Path.Combine(savePath, Id + ".json"));
         }
 
         // Abstracts
@@ -38,18 +37,17 @@ namespace BotCore.Component {
         public void RerenderMessage() {
             ResponseBuilder builder = new ResponseBuilder(Message);
             BuildMessageContent(builder);
-            ServiceMessage msg = builder.Send();
+
             Message.Delete();
-            Message = msg;
+            Message = builder.Send();
             Save();
         }
 
         // File
 
         public void Save() {
-            using(StreamWriter writer = File.CreateText(Path.Combine(SavePath, Id + ".json"))) {
+            using(StreamWriter writer = _file.CreateText())
                 writer.Write(JsonConvert.SerializeObject(this, Formatting.Indented));
-            }
         }
 
         protected static string LoadFileContent(FileInfo file) {
@@ -58,17 +56,13 @@ namespace BotCore.Component {
                 return null;
             }
 
-            string data;
-            using(StreamReader reader = file.OpenText()) {
-                data = reader.ReadToEnd();
-            }
-
-            return data;
+            using(StreamReader reader = file.OpenText())
+                return reader.ReadToEnd();
         }
 
         public void Delete() {
-            FileInfo file = new FileInfo(Path.Combine(SavePath, Id + ".json"));
-            if(file.Exists) file.Delete();
+            if(_file.Exists)
+                _file.Delete();
         }
 
     }

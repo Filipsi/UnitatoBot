@@ -1,38 +1,34 @@
-﻿using System.Diagnostics;
-using System;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
-using Newtonsoft.Json.Linq;
+using BotCore.Bridge;
 using BotCore.Execution;
 using BotCore.Permission;
-using BotCore.Bridge;
-using BotCore.Command;
+using Newtonsoft.Json.Linq;
 
-namespace Unitato.Execution {
+namespace UnitatoBot.Execution {
 
-    internal class RebootExecutor : IExecutionHandler, IInitializable {
+    internal class RebootExecutor : IConditionalExecutonHandler, IInitializable {
 
         // IInitializable
 
-        public void Initialize(CommandManager manager) {
+        public void Initialize(ExecutionManager manager) {
             FileInfo fReboot = new FileInfo("reboot.json");
 
-            if(fReboot.Exists) {
-                string data = string.Empty;
+            if(fReboot.Exists)  {
+                JObject jObject;
                 using(StreamReader reader = fReboot.OpenText()) {
-                    data = reader.ReadToEnd();
+                    jObject = JObject.Parse(reader.ReadToEnd());
                 }
-
-                JObject jObject = JObject.Parse(data);
 
                 ServiceMessage msg = jObject.GetValue("Message").ToObject<ServiceMessage>();
                 msg = manager.FindServiceType(msg.ServiceType)[0].FindMessage(msg.Origin, msg.Id);
 
-                if(msg != null)
-                    msg.Edit(new ResponseBuilder()
-                        .Text("Reboot requested by user")
-                        .Block(jObject.GetValue("Issuer").ToObject<string>())
-                        .Text("was completed!")
-                        .Build());
+                msg?.Edit(new ResponseBuilder()
+                    .Text("Reboot requested by user")
+                    .Block(jObject.GetValue("Issuer").ToObject<string>())
+                    .Text("was completed!")
+                    .Build());
 
                 fReboot.Delete();
             }
@@ -44,11 +40,11 @@ namespace Unitato.Execution {
             return "(Restricted only to Admin permission group) Restart the bot";
         }
 
-        public bool CanExecute(CommandContext context) {
+        public bool CanExecute(ExecutionContext context) {
             return Permissions.Can(context, Permissions.Reboot);
         }
 
-        public bool Execute(CommandContext context) {
+        public bool Execute(ExecutionContext context) {
             ServiceMessage msg = context.ResponseBuilder
                 .Username()
                 .Text("requested reboot. Restart in progress...")
@@ -64,9 +60,10 @@ namespace Unitato.Execution {
         // Util
 
         private void SaveRebootFile(ServiceMessage message, string issuer) {
-            JObject jObject = new JObject();
-            jObject.Add(new JProperty("Issuer", issuer));
-            jObject.Add(new JProperty("Message", JToken.FromObject(message)));
+            JObject jObject = new JObject {
+                new JProperty("Issuer", issuer),
+                new JProperty("Message", JToken.FromObject(message))
+            };
 
             using(StreamWriter writer = new StreamWriter("reboot.json", false)) {
                 writer.Write(jObject.ToString());

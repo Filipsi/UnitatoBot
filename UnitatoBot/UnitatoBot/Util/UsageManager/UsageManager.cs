@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
-namespace Unitato.Util.UsageManager {
+namespace UnitatoBot.Util.UsageManager {
 
     internal partial class UsageManager {
 

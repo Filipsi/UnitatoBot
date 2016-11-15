@@ -18,10 +18,10 @@ namespace BotCore.Permission {
         public WrappedEnumerable<string>    Members         { private set; get; }
 
         [JsonProperty(PropertyName ="Permissions")]
-        private LinkedList<string>  PermissionList;
+        private readonly LinkedList<string>  PermissionList;
 
         [JsonProperty(PropertyName ="Members")]
-        private List<string>        MemberList;
+        private readonly List<string>        MemberList;
 
         public PermissionGroup() {
             // NO-OP

@@ -1,26 +1,26 @@
-﻿using BotCore.Bridge;
-using BotCore.Command;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using BotCore.Bridge;
 using BotCore.Execution;
 using BotCore.Permission;
 using BotCore.Util;
 using BotCore.Util.Symbol;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Unitato.Util.UsageManager;
+using Unitato.Execution;
+using UnitatoBot.Util.UsageManager;
 
-namespace Unitato.Execution {
+namespace UnitatoBot.Execution {
 
     internal class FaggotPointsExecutor : IExecutionHandler, IInitializable {
 
-        private JObject JsonStatStorage;
-        private UsageManager UsageManager;
+        private JObject _statStorage;
+        private UsageManager _usageManager;
 
         // IInitializable
 
-        public void Initialize(CommandManager manager) {
+        public void Initialize(ExecutionManager manager) {
             LoadFrom(new FileInfo("faggotpoints.json"));
         }
 
@@ -30,11 +30,11 @@ namespace Unitato.Execution {
             return "Use with name as argument to mark someone as a faggot and add one faggot point. Use with argument 'list' to see statistics of all faggots. Use with argument 'stats' [name] to see statistics of given faggot. Use with argument 'purify' [name] [count](optional) to remove n faggot points from user (restricted). Use with argument 'clean' [name] to remove all faggot points (restricted)";
         }
 
-        public bool CanExecute(CommandContext context) {
+        public bool CanExecute(ExecutionContext context) {
             return context.HasArguments;
         }
 
-        public bool Execute(CommandContext context) {
+        public bool Execute(ExecutionContext context) {
             // Print out all statistics
             // faggot list
             if(context.Args[0].Equals("list") && context.Args.Length == 1) {
@@ -42,7 +42,7 @@ namespace Unitato.Execution {
                     .Username()
                     .Text("wants to know how much of a faggots you people are.");
 
-                if(!JsonStatStorage.HasValues) {
+                if(!_statStorage.HasValues) {
                     builder
                         .NewLine()
                         .Space(8)
@@ -54,7 +54,7 @@ namespace Unitato.Execution {
 
                 builder.TableStart(20, "Name", "Points");
 
-                var sorted = new List<JProperty>(JsonStatStorage.Properties());
+                var sorted = new List<JProperty>(_statStorage.Properties());
                 sorted.Sort((x, y) => y.Value.ToObject<int>().CompareTo(x.Value.ToObject<int>()));
                 foreach(JProperty property in sorted) {
                     builder.TableRow(property.Name, property.Value.ToString());
@@ -68,7 +68,7 @@ namespace Unitato.Execution {
             // faggot stats [name]
             else if(context.Args[0].Equals("stats") && context.Args.Length == 2) {
                 string name = context.Args[1].ToLower();
-                JProperty property = JsonStatStorage.Property(name);
+                JProperty property = _statStorage.Property(name);
 
                 if(property != null) {
                     int points = property.Value.ToObject<int>();
@@ -87,7 +87,7 @@ namespace Unitato.Execution {
             // faggot purify [name]
             } else if(context.Args[0].Equals("purify") && context.Args.Length > 1 && Permissions.Can(context, Permissions.FaggotPurify)) {
                 string name = context.Args[1].ToLower();
-                JProperty property = JsonStatStorage.Property(name);
+                JProperty property = _statStorage.Property(name);
                 short modifier = 1;
 
                 if(property != null && (context.Args.Length == 2 || (context.Args.Length == 3 && short.TryParse(context.Args[2], out modifier)))) {
@@ -122,7 +122,7 @@ namespace Unitato.Execution {
                 List<string> success = new List<string>();
 
                 foreach(string name in context.Args.Skip(1)) {
-                    JProperty property = JsonStatStorage.Property(name.ToLower());
+                    JProperty property = _statStorage.Property(name.ToLower());
                     if(property != null) {
                         success.Add(name.ToLower());
                         property.Remove();
@@ -154,15 +154,15 @@ namespace Unitato.Execution {
             // Add faggotpoint to user
             // faggot [name]
             else {
-                UsageManager.Usage usage = UsageManager.Get(context.Message.Sender);
+                UsageManager.Usage usage = _usageManager.Get(context.Message.Sender);
 
                 if(usage.CanBeUsed) {
                     string name = context.Args[0].ToLower();
-                    JProperty property = JsonStatStorage.Property(name);
+                    JProperty property = _statStorage.Property(name);
 
                     if(property == null) {
-                        JsonStatStorage.Add(name, new JValue(0));
-                        property = JsonStatStorage.Property(name);
+                        _statStorage.Add(name, new JValue(0));
+                        property = _statStorage.Property(name);
                     }
 
                     usage.UseOnce();
@@ -212,21 +212,21 @@ namespace Unitato.Execution {
                     jObject = JObject.Parse(storageFileReader.ReadToEnd());
                 }
 
-                JsonStatStorage = (JObject) jObject.GetValue("Stats");
-                UsageManager = jObject.GetValue("Usage").ToObject<UsageManager>();
+                _statStorage = (JObject) jObject.GetValue("Stats");
+                _usageManager = jObject.GetValue("Usage").ToObject<UsageManager>();
 
             } else {
-                JsonStatStorage = JObject.Parse("{}");
-                UsageManager = new UsageManager(3, TimeSpan.FromDays(1));
+                _statStorage = JObject.Parse("{}");
+                _usageManager = new UsageManager(3, TimeSpan.FromDays(1));
             }
 
-            Logger.Info("Loaded {0} faggot entr{1}", JsonStatStorage.Count, JsonStatStorage.Count == 1 ? "y" : "ies");
+            Logger.Info("Loaded {0} faggot entr{1}", _statStorage.Count, _statStorage.Count == 1 ? "y" : "ies");
         }
 
         private void Save() {
             JObject jObject = new JObject();
-            jObject.Add(new JProperty("Stats", JsonStatStorage));
-            jObject.Add(new JProperty("Usage", JToken.FromObject(UsageManager)));
+            jObject.Add(new JProperty("Stats", _statStorage));
+            jObject.Add(new JProperty("Usage", JToken.FromObject(_usageManager)));
 
             using(StreamWriter writer = new StreamWriter("faggotpoints.json", false)) {
                 writer.Write(jObject.ToString());

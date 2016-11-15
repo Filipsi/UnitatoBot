@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using Newtonsoft.Json;
 
-namespace Unitato.Util.UsageManager {
+namespace UnitatoBot.Util.UsageManager {
 
     internal partial class UsageManager {
 
@@ -61,12 +61,11 @@ namespace Unitato.Util.UsageManager {
                 if(ShouldReset)
                     Reset();
 
-                if(CanBeUsed) {
-                    Count--;
-                    return true;
-                }
+                if (!CanBeUsed)
+                    return false;
 
-                return false;
+                Count--;
+                return true;
             }
 
         }

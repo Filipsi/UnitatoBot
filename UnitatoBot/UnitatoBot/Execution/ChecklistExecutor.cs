@@ -1,27 +1,26 @@
-﻿using BotCore.Bridge;
-using BotCore.Command;
-using BotCore.Execution;
-using BotCore.Util;
-using BotCore.Util.Symbol;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Unitato.Component.Checklist;
+using BotCore.Bridge;
+using BotCore.Execution;
+using BotCore.Util;
+using BotCore.Util.Symbol;
+using UnitatoBot.Component.Checklist;
 
-namespace Unitato.Execution {
+namespace UnitatoBot.Execution {
 
-    internal class ChecklistExecutor : IInitializable, IExecutionHandler {
+    internal class ChecklistExecutor : IInitializable, IConditionalExecutonHandler {
 
-        private List<Checklist> Checklists;
+        private List<Checklist> _checklists;
 
         // IInitializable
 
-        public void Initialize(CommandManager manager) {
+        public void Initialize(ExecutionManager manager) {
             if(!Directory.Exists("checklist"))
                 Directory.CreateDirectory("checklist");
 
-            Checklists = Load(manager);
+            _checklists = Load(manager);
         }
 
         // IExecutionHandler
@@ -30,14 +29,14 @@ namespace Unitato.Execution {
             return "Create checklist with items that you can check out. To create a checklist use with argument 'create' [checklist-id] [title]. To add item to checklist use with argument 'add' [checklist-id](optional) [text]. To check or uncheck the item use with argument 'check' or 'uncheck' [checklist-id](optional) [item-index](from 0), you can use multiple indexes (ex: 'check 1 2 3'). To destroy checklist use with argument 'destroy' [checklist-id]. To remove item from checklist use use with argument 'remove' [checklist-id](optional) [item-index](from 0). To add multiple items to checklist use with argument 'import' [checklist-id](optional) [separator](string that splits entries) [text] (example: '/checklist import - -item1 -item2 -item3'). When checklist is no longer needed to be editable use with argument 'finish [checklist-id](optional). In order to rerender chaklist as new message use argument 'rerender'.";
         }
 
-        public bool CanExecute(CommandContext context) {
+        public bool CanExecute(ExecutionContext context) {
             return context.HasArguments;
         }
 
-        public bool Execute(CommandContext context) {
+        public bool Execute(ExecutionContext context) {
             switch(context.Args[0]) {
                 case "create":
-                    if(context.Args.Length > 2 && !Checklists.Exists(c => c.Id.Equals(context.Args[1]))) {
+                    if(context.Args.Length > 2 && !_checklists.Exists(c => c.Id.Equals(context.Args[1]))) {
                         Checklist checklist = new Checklist(context.Args[1], context.Message.Sender, context.RawArguments.Substring(context.RawArguments.IndexOf(context.Args[1]) + context.Args[1].Length + 1));
 
                         ServiceMessage msg = context.ResponseBuilder
@@ -54,7 +53,7 @@ namespace Unitato.Execution {
                             .Send();
 
                         checklist.Message = msg;
-                        Checklists.Add(checklist);
+                        _checklists.Add(checklist);
 
                         checklist.Save();
 
@@ -63,12 +62,12 @@ namespace Unitato.Execution {
                     break;
 
                 case "destroy":
-                    if(Checklists.Count > 0 && context.Args.Length == 2) {
-                        Checklist checklist = Checklists.Find(c => c.Id.Equals(context.Args[1]));
+                    if(_checklists.Count > 0 && context.Args.Length == 2) {
+                        Checklist checklist = _checklists.Find(c => c.Id.Equals(context.Args[1]));
 
                         if(checklist != null) {
                             context.Message.Delete();
-                            Checklists.Remove(checklist);
+                            _checklists.Remove(checklist);
                             checklist.Message.Delete();
                             checklist.Delete();
 
@@ -79,19 +78,19 @@ namespace Unitato.Execution {
                     break;
 
                 case "finish":
-                    if(Checklists.Count > 0) {
+                    if(_checklists.Count > 0) {
 
                         Checklist checklist = null;
                         if(context.Args.Length == 1) {
-                            checklist = Checklists.Last();
+                            checklist = _checklists.Last();
                         } else if(context.Args.Length > 1) {
-                            checklist = Checklists.Find(c => c.Id.Equals(context.Args[1]));   
+                            checklist = _checklists.Find(c => c.Id.Equals(context.Args[1]));   
                         }
 
                         if(checklist != null) {
                             context.Message.Delete();
                             checklist.Status = "Checklist was marked as finished, no further edits can be made.";
-                            Checklists.Remove(checklist);
+                            _checklists.Remove(checklist);
                             checklist.Delete();
 
                             Logger.Info("Checklist {0} was marked as finished and deleted", checklist.Id);
@@ -102,11 +101,11 @@ namespace Unitato.Execution {
                     break;
 
                 case "add":
-                    if(Checklists.Count > 0 && context.Args.Length > 1) {
-                        Checklist checklist = Checklists.Find(c => c.Id.Equals(context.Args[1]));
+                    if(_checklists.Count > 0 && context.Args.Length > 1) {
+                        Checklist checklist = _checklists.Find(c => c.Id.Equals(context.Args[1]));
 
                         if(checklist == null) {
-                            Checklists.Last().Add(context.RawArguments.Substring(context.RawArguments.IndexOf(context.Args[0]) + context.Args[0].Length + 1));
+                            _checklists.Last().Add(context.RawArguments.Substring(context.RawArguments.IndexOf(context.Args[0]) + context.Args[0].Length + 1));
                             context.Message.Delete();
                             return true;
 
@@ -121,12 +120,12 @@ namespace Unitato.Execution {
                     break;
 
                 case "remove":
-                    if(Checklists.Count > 0 && context.Args.Length > 1) {
-                        Checklist checklist = Checklists.Find(c => c.Id.Equals(context.Args[1]));
+                    if(_checklists.Count > 0 && context.Args.Length > 1) {
+                        Checklist checklist = _checklists.Find(c => c.Id.Equals(context.Args[1]));
 
                         bool hasId = true;
                         if(checklist == null) {
-                            checklist = Checklists.Last();
+                            checklist = _checklists.Last();
                             hasId = false;
                         }
 
@@ -144,12 +143,12 @@ namespace Unitato.Execution {
                     break;
 
                 case "import":
-                    if(Checklists.Count > 0 && context.Args.Length > 2) {
-                        Checklist checklist = Checklists.Find(c => c.Id.Equals(context.Args[1]));
+                    if(_checklists.Count > 0 && context.Args.Length > 2) {
+                        Checklist checklist = _checklists.Find(c => c.Id.Equals(context.Args[1]));
 
                         bool hasId = true;
                         if(checklist == null) {
-                            checklist = Checklists.Last();
+                            checklist = _checklists.Last();
                             hasId = false;
                         }
 
@@ -172,22 +171,22 @@ namespace Unitato.Execution {
 
                 case "check":
                 case "uncheck":
-                    if(Checklists.Count > 0 && context.Args.Length > 1) {
-                        Checklist checklist = Checklists.Find(c => c.Id.Equals(context.Args[1]));
+                    if(_checklists.Count > 0 && context.Args.Length > 1) {
+                        Checklist checklist = _checklists.Find(c => c.Id.Equals(context.Args[1]));
                         bool checkState = context.Args[0] == "check";
 
                         if(checklist == null)
-                            return SetEntryState(context.Message, Checklists.Last(), checkState, context.Args.Skip(1).ToArray());
+                            return SetEntryState(context.Message, _checklists.Last(), checkState, context.Args.Skip(1).ToArray());
 
                         return context.Args.Length > 2 && SetEntryState(context.Message, checklist, checkState, context.Args.Skip(2).ToArray());
                     }
                     break;
 
                 case "rerender":
-                    if(Checklists.Count > 0) {
+                    if(_checklists.Count > 0) {
 
                         if(context.Args.Length > 1) {
-                            Checklist checklist = Checklists.Find(c => c.Id.Equals(context.Args[1]));
+                            Checklist checklist = _checklists.Find(c => c.Id.Equals(context.Args[1]));
 
                             if(checklist != null)
                                 checklist.RerenderMessage();
@@ -195,7 +194,7 @@ namespace Unitato.Execution {
                                 return false;
 
                         } else
-                            Checklists.Last().RerenderMessage();
+                            _checklists.Last().RerenderMessage();
 
                         context.Message.Delete();
                         return true;
@@ -209,18 +208,16 @@ namespace Unitato.Execution {
         // Utilities
 
         private bool SetEntryState(ServiceMessage commandMsg, Checklist checklist, bool state, params string[] indexes) {
-            bool anySucess = false; byte i;
+            bool anySucess = false;
+            byte i;
 
-            foreach(string index in indexes) {
-                if(byte.TryParse(index, out i)) {
-                    if(checklist.SetEntryState(i, state, commandMsg.Sender) && anySucess == false) {
+            foreach(string index in indexes)
+                if(byte.TryParse(index, out i))
+                    if(checklist.SetEntryState(i, state, commandMsg.Sender))
                         anySucess = true;
-                    }
-                }
-            }
 
             if(checklist.IsCompleted) {
-                Checklists.Remove(checklist);
+                _checklists.Remove(checklist);
                 checklist.Delete();
                 checklist.Status = "All entries on checklist was checked, no further edits can be made.";
                 Logger.Info("Checklist {0} was deleted", checklist.Id);
@@ -234,21 +231,25 @@ namespace Unitato.Execution {
             return anySucess;
         }
 
-        private List<Checklist> Load(CommandManager manager) {
+        private List<Checklist> Load(ExecutionManager manager) {
+            Logger.Log("Loading saved entries ...");
             Logger.SectionStart();
 
             List<Checklist> list = new List<Checklist>();
             foreach(FileInfo file in new DirectoryInfo("checklist").GetFiles("*.json", SearchOption.TopDirectoryOnly)) {
                 Logger.Info("Loading file {0} ...", file);
 
+                Logger.SectionStart();
                 Checklist checklist = Checklist.Load(file, manager);
+                Logger.SectionEnd();
 
                 if(checklist != null)
                     list.Add(checklist);
             }
 
-            Logger.SectionEnd();
             Logger.Info("Loaded {0} entr{1}", list.Count, list.Count == 1 ? "y" : "ies");
+            Logger.SectionEnd();
+            Logger.Log("Loading finished");
 
             return list;
         }

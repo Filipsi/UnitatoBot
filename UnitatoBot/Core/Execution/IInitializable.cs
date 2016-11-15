@@ -1,10 +1,8 @@
-﻿using BotCore.Command;
-
-namespace BotCore.Execution {
+﻿namespace BotCore.Execution {
 
     public interface IInitializable {
 
-        void Initialize(CommandManager manager);
+        void Initialize(ExecutionManager manager);
 
     }
 

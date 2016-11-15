@@ -1,33 +1,28 @@
-﻿using BotCore.Bridge;
-using BotCore.Command;
+﻿using System.Linq;
+using BotCore.Bridge;
 using BotCore.Execution;
 using BotCore.Util.Symbol;
-using System.Collections.Generic;
 
-namespace Unitato.Execution {
+namespace UnitatoBot.Execution {
 
     internal class HelpExecutor : IExecutionHandler {
 
         // IExecutionHandler
 
         public string GetDescription() {
-            return "Shows help, obviously.Use command name or alias as argument to show help only for specified command.";
+            return "Shows help, obviously.Use ExecutionDispacher name or alias as argument to show help only for specified ExecutionDispacher.";
         }
 
-        public bool CanExecute(CommandContext context) {
-            return true;
-        }
-
-        public bool Execute(CommandContext context) {
+        public bool Execute(ExecutionContext context) {
             if(!context.HasArguments) {
                 PrintHelpInfo(context);
                 return true;
 
             } else if(context.Args.Length == 1) {
-                Command command = context.CommandManager.FindCommand(context.Args[0].ToLower());
+                ExecutionDispacher executionDispacher = context.ExecutionManager.FindCommand(context.Args[0].ToLower());
 
-                if(command != null) {
-                    PrintHelpFor(context, command);
+                if(executionDispacher != null) {
+                    PrintHelpFor(context, executionDispacher);
                     return true;
                 }
             }
@@ -37,22 +32,22 @@ namespace Unitato.Execution {
 
         // Logic
 
-        private void PrintHelpFor(CommandContext context, Command command) {
+        private void PrintHelpFor(ExecutionContext context, ExecutionDispacher executionDispacher) {
             ResponseBuilder builder = context.ResponseBuilder
                 .Username()
-                .Text("here is help for command")
-                .Block(command.Name)
+                .Text("here is help for ExecutionDispacher")
+                .Block(executionDispacher.Name)
                 .Text(Emoticon.Magic)
                 .NewLine()
                 .NewLine();
 
-            BuildCommandInfo(builder, command);
+            BuildCommandInfo(builder, executionDispacher);
 
             if(builder.Length > 0)
                 builder.Send();
         }
 
-        private void PrintHelpInfo(CommandContext context) {
+        private void PrintHelpInfo(ExecutionContext context) {
             ResponseBuilder builder = context.ResponseBuilder
                 .Username()
                 .Text("here is a list of stuff I can do: ")
@@ -60,7 +55,7 @@ namespace Unitato.Execution {
                 .NewLine()
                 .NewLine();
 
-            foreach(Command entry in context.CommandManager) {
+            foreach(ExecutionDispacher entry in context.ExecutionManager) {
                 BuildCommandInfo(builder, entry);
             }
 
@@ -68,8 +63,8 @@ namespace Unitato.Execution {
                 builder.Send();
         }
 
-        private void BuildCommandInfo(ResponseBuilder builder, Command command) {
-            foreach(IExecutionHandler executor in command) {
+        private void BuildCommandInfo(ResponseBuilder builder, ExecutionDispacher executionDispacher) {
+            foreach(IExecutionHandler executor in executionDispacher) {
                 // Split responce into multiple messages if responce length is greater then maximal responce length
                 if(builder.Length + executor.GetDescription().Length + 50 >= 2000) {
                     builder.Send();
@@ -77,9 +72,9 @@ namespace Unitato.Execution {
                 }
 
                 builder
-                    .Block("!{0}", command.Name)
+                    .Block("!{0}", executionDispacher.Name)
                     .Text("{0}: {1}",
-                        command.Aliases.Count > 0 ? "(alias: " + string.Join(", ", command.Aliases) + ")" : string.Empty,
+                        executionDispacher.Alias.Any() ? "(alias: " + string.Join(", ", executionDispacher.Alias) + ")" : string.Empty,
                         executor.GetDescription())
                     .NewLine();
             }

@@ -29,8 +29,8 @@ namespace BotCore.Bridge {
         [JsonProperty]
         public string Id { private set; get; }
 
-        private Func<string, object> EditHandler;
-        private Func<object>         DeleteHandler;
+        private readonly Func<string, object> EditHandler;
+        private readonly Func<object>         DeleteHandler;
 
         public ServiceMessage() {
             // NO-OP

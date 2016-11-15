@@ -1,53 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Timers;
 
-namespace Unitato.Component.Countdown {
+namespace UnitatoBot.Component.Countdown {
 
     public partial class Countdown {
 
-        private Timer       Timer;
-        private TimeSpan    Length;
-        private double      ElapsedSeconds;
-        private double      LastStage;
+        private readonly Timer  _timer;
+        private TimeSpan        _length;
+        private double          _elapsedSeconds;
+        private double          _lastStage;
 
-        public double Stage {
-            get {
-                return Math.Round(12 / 100F * (ElapsedSeconds / Length.TotalSeconds * 100F));
-            }
-        }
-
-        public TimeSpan Remining  {
-            get {
-                return TimeSpan.FromSeconds(Length.TotalSeconds - ElapsedSeconds);
-            }
-        }
+        public double Stage => Math.Round(12 / 100F * (_elapsedSeconds / _length.TotalSeconds * 100F));
+        public TimeSpan Remining => TimeSpan.FromSeconds(_length.TotalSeconds - _elapsedSeconds);
 
         public event EventHandler<StateChangedEventArgs> OnStateChanged;
 
         public Countdown(TimeSpan length) {
-            ElapsedSeconds = 0;
-            Length = length;
-            Timer = new Timer(1000);
-            Timer.Elapsed += OnTimerElapsed;
-            Timer.Start();
+            _elapsedSeconds = 0;
+            _length = length;
+            _timer = new Timer(1000);
+            _timer.Elapsed += OnTimerElapsed;
+            _timer.Start();
         }
 
         private void OnTimerElapsed(object sender, ElapsedEventArgs e) {
-            if(ElapsedSeconds < Length.TotalSeconds) {
-                ElapsedSeconds++;
+            if(_elapsedSeconds < _length.TotalSeconds) {
+                _elapsedSeconds++;
 
                 double stage = Stage;
-                if(stage != LastStage) {
-                    LastStage = stage;
+                if(Math.Abs(stage - _lastStage) > 1) {
+                    _lastStage = stage;
                     OnStateChanged(this, new StateChangedEventArgs(this));
                 }
             } else {
-                Timer.Stop();
-                Timer.Dispose();
+                _timer.Stop();
+                _timer.Dispose();
                 OnStateChanged(this, new StateChangedEventArgs(this));
             }
         }

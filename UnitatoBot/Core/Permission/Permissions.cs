@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BotCore.Command;
+using BotCore.Execution;
 using BotCore.Util;
 
 namespace BotCore.Permission {
@@ -20,11 +20,13 @@ namespace BotCore.Permission {
         public static string FaggotPurify       { private set; get; } = "faggot.purify";
         public static string FaggotClean        { private set; get; } = "faggot.clean";
 
-        public static WrappedEnumerable<PermissionGroup> Groups { private set; get; } = new WrappedEnumerable<PermissionGroup>(GroupList);
-
-        private static LinkedList<PermissionGroup> GroupList = new LinkedList<PermissionGroup>();
+        private static readonly LinkedList<PermissionGroup> GroupList;
+  
+        public static WrappedEnumerable<PermissionGroup> Groups { private set; get; } 
 
         static Permissions() {
+            GroupList = new LinkedList<PermissionGroup>();
+            Groups = new WrappedEnumerable<PermissionGroup>(GroupList);
             Load();
         }
 
@@ -60,15 +62,10 @@ namespace BotCore.Permission {
         }
 
         public static bool Can(string user, string permission) {
-            foreach(PermissionGroup group in GroupList) {
-                if(group.IsPermited(user, permission))
-                    return true;
-            }
-
-            return false;
+            return GroupList.Any(group => group.IsPermited(user, permission));
         }
 
-        public static bool Can(CommandContext context, string permission) {
+        public static bool Can(ExecutionContext context, string permission) {
             return Can(context.Message.Sender, permission);
         }
 

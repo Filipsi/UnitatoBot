@@ -1,12 +1,11 @@
-﻿using BotCore.Command;
+﻿using System;
 using BotCore.Execution;
-using System;
 
-namespace Unitato.Execution {
+namespace UnitatoBot.Execution {
 
     internal class CoinFlipExecutor : IExecutionHandler {
 
-        private static readonly Random RNG = new Random();
+        private static readonly Random _rng = new Random();
 
         // IExecutionHandler
 
@@ -14,15 +13,11 @@ namespace Unitato.Execution {
             return "Throws coin into the air, it lands on either heads or tails.";
         }
 
-        public bool CanExecute(CommandContext context) {
-            return true;
-        }
-
-        public bool Execute(CommandContext context) {
+        public bool Execute(ExecutionContext context) {
             context.ResponseBuilder
                 .Username()
                 .Text("throws coin into the air. It lands on")
-                .Block(RNG.Next(0, 2) == 0 ? "heads" : "tails")
+                .Block(_rng.Next(0, 2) == 0 ? "heads" : "tails")
                 .BuildAndSend();
 
             return true;

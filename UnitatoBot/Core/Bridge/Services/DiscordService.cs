@@ -11,21 +11,20 @@ namespace BotCore.Bridge.Services {
 
     public class DiscordService : IService, IAudioCapability {
 
-        private DiscordClient   Client;
-        private AudioService    Audio;
-        private bool            IsPlayingAudio;
-
-        private readonly object AudioLock = new object();
+        private readonly DiscordClient  _client;
+        private readonly AudioService   _audio;
+        private bool                    _isPlayingAudio;
+        private readonly object         _audioLock = new object();
 
         public DiscordService(string token) {  
-            Client = new DiscordClient();
-            IsPlayingAudio = false;
+            _client = new DiscordClient();
+            _isPlayingAudio = false;
 
             // Create a task that will trigger after Client fires Ready event
             TaskCompletionSource<bool> taskClientReady = new TaskCompletionSource<bool>();
 
             // Bind trigger for the task to Ready event
-            Client.Ready += (sender, args) => {
+            _client.Ready += (sender, args) => {
                 Logger.Log("{0} client is ready.", this.GetType().Name);
                 taskClientReady.SetResult(true);
             };
@@ -33,7 +32,7 @@ namespace BotCore.Bridge.Services {
             // Try to connect, handle errors if any
             try {
                 Logger.Log("Atempting to log in ...");
-                Client.Connect(token, TokenType.Bot);
+                _client.Connect(token, TokenType.Bot);
             } catch(Exception e) {
                 Logger.Error("Something went wrong during {0} connection attempt!\n" + e.Message, this.GetType().Name);
             }
@@ -42,14 +41,14 @@ namespace BotCore.Bridge.Services {
             while(!taskClientReady.Task.IsCompleted) { /* NO-OP */ }
 
             // Audio service setup
-            Client.AddService(new AudioService(new AudioServiceConfigBuilder() {
+            _client.AddService(new AudioService(new AudioServiceConfigBuilder() {
                 Mode = AudioMode.Outgoing,
                 EnableEncryption = false,
                 Bitrate = 128
             }));
 
             // Retrives audio service from client
-            Audio = Client.GetService<AudioService>();
+            _audio = _client.GetService<AudioService>();
             
             // Initializes event handlers 
             InitEventHandlers();
@@ -57,9 +56,9 @@ namespace BotCore.Bridge.Services {
         }
 
         private void InitEventHandlers() {
-            Client.MessageReceived += (sender, args) => {
-                if(!args.User.Id.Equals(Client.CurrentUser.Id))
-                    OnMessageReceived(this, new ServiceMessageEventArgs(new ServiceMessage(this, args.Message)));
+            _client.MessageReceived += (sender, args) => {
+                if(!args.User.Id.Equals(_client.CurrentUser.Id))
+                    OnMessageReceived?.Invoke(this, new ServiceMessageEventArgs(new ServiceMessage(this, args.Message)));
             };
         }
 
@@ -99,13 +98,13 @@ namespace BotCore.Bridge.Services {
             // Discord.Net Audio requires opus.dll in order to work properly 
             // https://github.com/RogueException/Discord.Net/blob/master/src/Discord.Net.Audio/opus.dll
 
-            IAudioClient ac = await Audio.Join(channel);
+            IAudioClient ac = await _audio.Join(channel);
 
-            lock(AudioLock) {
-                IsPlayingAudio = true;
+            lock(_audioLock) {
+                _isPlayingAudio = true;
                 System.Threading.Thread.Sleep(250);
 
-                var OutFormat = new WaveFormat(48000, 16, Audio.Config.Channels);
+                var OutFormat = new WaveFormat(48000, 16, _audio.Config.Channels);
                 using(var MP3Reader = new Mp3FileReader(file))
                 using(var resampler = new MediaFoundationResampler(MP3Reader, OutFormat)) {
                     resampler.ResamplerQuality = 60;
@@ -124,7 +123,7 @@ namespace BotCore.Bridge.Services {
                 }
 
                 System.Threading.Thread.Sleep(1000);
-                IsPlayingAudio = false;
+                _isPlayingAudio = false;
             }
 
             await ac.Disconnect();
@@ -138,13 +137,13 @@ namespace BotCore.Bridge.Services {
         }
 
         public string GetServiceId() {
-            return Client.CurrentUser.Id.ToString();
+            return _client.CurrentUser.Id.ToString();
         }
 
         public event EventHandler<ServiceMessageEventArgs> OnMessageReceived;
 
         public ServiceMessage SendMessage(string destination, string text) {
-            Channel channel = Client.GetChannel(ulong.Parse(destination));
+            Channel channel = _client.GetChannel(ulong.Parse(destination));
 
             if(channel == null) {
                 Logger.Warn("Text channel {0} not found while sending message!", destination);
@@ -163,7 +162,7 @@ namespace BotCore.Bridge.Services {
         }
 
         public ServiceMessage FindMessage(string destination, string id) {
-            Channel channel = Client.GetChannel(ulong.Parse(destination));
+            Channel channel = _client.GetChannel(ulong.Parse(destination));
 
             if(channel == null) {
                 Logger.Warn("Text channel {0} not found while searching for message {1}", destination, id);
@@ -179,7 +178,7 @@ namespace BotCore.Bridge.Services {
         // IAudioCapability
 
         public string[] GetAudioChannels(string origin) {
-            Channel channel = Client.GetChannel(ulong.Parse(origin));
+            Channel channel = _client.GetChannel(ulong.Parse(origin));
             if(channel == null) {
                 Logger.Warn("Origin channel {0} not found!", origin);
                 return null;
@@ -189,7 +188,7 @@ namespace BotCore.Bridge.Services {
         }
 
         public string GetUserAudioChannel(string origin, string user) {
-            Channel channel = Client.GetChannel(ulong.Parse(origin));
+            Channel channel = _client.GetChannel(ulong.Parse(origin));
             if(channel == null) {
                 Logger.Warn("Origin channel {0} not found!", origin);
                 return null;
@@ -205,10 +204,10 @@ namespace BotCore.Bridge.Services {
         }
 
         public bool PlayAudio(string origin, string channel, string file) {
-            if(IsPlayingAudio)
+            if(_isPlayingAudio)
                 return false;
 
-            Channel c = Client.GetChannel(ulong.Parse(origin));
+            Channel c = _client.GetChannel(ulong.Parse(origin));
             if(c == null) {
                 Logger.Warn("Origin channel {0} not found!", origin);
                 return false;

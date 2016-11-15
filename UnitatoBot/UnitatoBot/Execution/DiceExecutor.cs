@@ -1,12 +1,11 @@
-﻿using BotCore.Command;
+﻿using System;
+using System.Linq;
 using BotCore.Execution;
 using BotCore.Util.Symbol;
-using System;
-using System.Linq;
 
-namespace Unitato.Execution {
+namespace UnitatoBot.Execution {
 
-    internal class DiceExecutor : IExecutionHandler {
+    internal class DiceExecutor : IConditionalExecutonHandler {
 
         private static readonly Random RNG = new Random();
 
@@ -16,11 +15,11 @@ namespace Unitato.Execution {
             return "d[number of sides] Rolls a 'n' sided dice. Example: 'roll d20'";
         }
 
-        public bool CanExecute(CommandContext context) {
+        public bool CanExecute(ExecutionContext context) {
             return context.HasArguments && context.Args[0].ElementAt(0) == 'd';
         }
 
-        public bool Execute(CommandContext context) {
+        public bool Execute(ExecutionContext context) {
             int sides;
             if(!int.TryParse(context.Args[0].Remove(0, 1), out sides))
                 return false;

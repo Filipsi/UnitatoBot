@@ -1,13 +1,13 @@
 ﻿using System;
-using Unitato.Component.Countdown;
-using BotCore.Execution;
-using BotCore.Command;
 using BotCore.Bridge;
+using BotCore.Execution;
 using BotCore.Util.Symbol;
+using Unitato.Execution;
+using UnitatoBot.Component.Countdown;
 
-namespace Unitato.Execution {
+namespace UnitatoBot.Execution {
 
-    internal class TimerExecutor : IExecutionHandler {
+    internal class TimerExecutor : IConditionalExecutonHandler {
 
         public static readonly string DatePattenFull = @"d/M/yyyy HH:mm:ss";
         public static readonly string DatePattenTime = @"HH:mm:ss";
@@ -18,11 +18,11 @@ namespace Unitato.Execution {
             return "Create a timer that will count down from given time to zero in seconds. You can use multiple arguments and characters like 's' for seconds, 'm' as minutes and 'h' for hours. (ex: '/timer 5m 42s')";
         }
 
-        public bool CanExecute(CommandContext context) {
+        public bool CanExecute(ExecutionContext context) {
             return context.HasArguments;
         }
 
-        public bool Execute(CommandContext context) {
+        public bool Execute(ExecutionContext context) {
             int sec = 0;
             foreach(string argument in context.Args) {
                 int res = GetSecondsFromInput(argument);
