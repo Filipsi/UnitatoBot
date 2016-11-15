@@ -69,11 +69,9 @@ namespace Unitato.Execution {
         }
 
         private void BuildCommandInfo(ResponseBuilder builder, Command command) {
-            LinkedList<IExecutionHandler>.Enumerator enumerator = command.GetExecutorsEnumerator();
-            while(enumerator.MoveNext()) {
-
+            foreach(IExecutionHandler executor in command) {
                 // Split responce into multiple messages if responce length is greater then maximal responce length
-                if(builder.Length + enumerator.Current.GetDescription().Length + 50 >= 2000) {
+                if(builder.Length + executor.GetDescription().Length + 50 >= 2000) {
                     builder.Send();
                     builder.Clear().KeepSourceMessage();
                 }
@@ -82,7 +80,7 @@ namespace Unitato.Execution {
                     .Block("!{0}", command.Name)
                     .Text("{0}: {1}",
                         command.Aliases.Count > 0 ? "(alias: " + string.Join(", ", command.Aliases) + ")" : string.Empty,
-                        enumerator.Current.GetDescription())
+                        executor.GetDescription())
                     .NewLine();
             }
         }

@@ -48,10 +48,10 @@ namespace BotCore.Command {
                 return;
 
             string commandName = Expressions.CommandParser.Capture(e.Message.Text, "command");
-            Command command = Commands.Find(x => x.Name == commandName || x.IsAlias(commandName));
+            Command command = Commands.Find(x => x.Name == commandName || x.IsValidAlias(commandName));
 
             if(command != null)
-                command.Execute(this, e.Message);
+                command.Run(this, e.Message);
             else
                 Logger.Log("Command {0} not found", commandName);
         }
@@ -66,16 +66,15 @@ namespace BotCore.Command {
             Logger.SectionStart();
 
             // Inicialize every executor
-            foreach(var enumerator in Commands.Select(x => x.GetExecutorsEnumerator()).AsEnumerable()) {
-                while(enumerator.MoveNext()) {
-                    if(enumerator.Current is IInitializable) {
-                        Logger.Log("{0} executor inicialization", enumerator.Current.GetType().Name);
+            foreach(Command command in Commands) {
+                foreach(IExecutionHandler executor in command)
+                    if(executor is IInitializable) {
+                        Logger.Log("{0} executor inicialization", executor.GetType().Name);
                         Logger.SectionStart();
-                            ((IInitializable)enumerator.Current).Initialize(this);
+                        ((IInitializable)executor).Initialize(this);
                         Logger.SectionEnd();
                     } else
-                        Logger.Log("{0} executor is ready", enumerator.Current.GetType().Name);
-                }
+                        Logger.Log("{0} executor is ready", executor.GetType().Name);
             }
 
             Logger.SectionEnd();
@@ -92,7 +91,7 @@ namespace BotCore.Command {
                 return this;
             }
 
-            if(name.Equals(string.Empty) || handlers.Count() == 0 || Commands.Exists(x => x.Name == name || x.IsAlias(name))) {
+            if(name.Equals(string.Empty) || handlers.Count() == 0 || Commands.Exists(x => x.Name == name || x.IsValidAlias(name))) {
                 Logger.Error("Failed to register command {0}!", name);
                 return this;
             }
@@ -109,13 +108,13 @@ namespace BotCore.Command {
         }
 
         public CommandManager RegisterAlias(string name, string alias) {
-            if(Commands.Exists(x => x.Name == alias || x.IsAlias(alias))) {
+            if(Commands.Exists(x => x.Name == alias || x.IsValidAlias(alias))) {
                 Logger.Error("Can't register alias {0}, it is allready used!", alias);
                 return this;
             }
 
             // Try to find command with given name or alias (you can add aliases using alias :P ... Wait, wat?)
-            Command command = Commands.Find(x => x.Name == alias || x.IsAlias(alias));
+            Command command = Commands.Find(x => x.Name == alias || x.IsValidAlias(alias));
 
             if(command == null) {
                 Logger.Error("Can't register alias {0}, no command named {1} was found!", alias, name);
@@ -132,7 +131,7 @@ namespace BotCore.Command {
                 return this;
             }
 
-            if(Commands.Exists(x => x.Name == alias || x.IsAlias(alias))) {
+            if(Commands.Exists(x => x.Name == alias || x.IsValidAlias(alias))) {
                 Logger.Error("Can't register alias {0}, it is allready used!", alias);
                 return this;
             }
@@ -142,7 +141,7 @@ namespace BotCore.Command {
         }
 
         public Command FindCommand(string name) {
-            return Commands.Find(x => x.Name == name || x.IsAlias(name));
+            return Commands.Find(x => x.Name == name || x.IsValidAlias(name));
         }
 
         public IService[] FindServiceType(string serviceType) {
