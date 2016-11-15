@@ -18,15 +18,17 @@ namespace Unitato.Execution {
             return "Create a timer that will count down from given time to zero in seconds. You can use multiple arguments and characters like 's' for seconds, 'm' as minutes and 'h' for hours. (ex: '/timer 5m 42s')";
         }
 
-        public ExecutionResult CanExecute(CommandContext context) {
-            return context.HasArguments ? ExecutionResult.Success : ExecutionResult.Fail;
+        public bool CanExecute(CommandContext context) {
+            return context.HasArguments;
         }
 
-        public ExecutionResult Execute(CommandContext context) {
+        public bool Execute(CommandContext context) {
             int sec = 0;
             foreach(string argument in context.Args) {
                 int res = GetSecondsFromInput(argument);
-                if(res == -1) return ExecutionResult.Fail;
+
+                if(res == -1)
+                    return false;
 
                 sec += res;
             }
@@ -80,7 +82,7 @@ namespace Unitato.Execution {
                 responce.Edit(context.ResponseBuilder.Build());
             };
 
-            return ExecutionResult.Success;
+            return true;
         }
 
         // Utilities

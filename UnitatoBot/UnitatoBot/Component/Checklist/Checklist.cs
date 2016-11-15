@@ -13,7 +13,8 @@ namespace Unitato.Component.Checklist {
 
     internal partial class Checklist : SavableMessageContainer {
 
-        public string Status { set; get; }
+        public string Status    { set;          get; }
+        public string Title     { private set;  get; }
 
         public bool IsCompleted {
             get {
@@ -24,9 +25,10 @@ namespace Unitato.Component.Checklist {
         [JsonProperty]
         private List<Entry> Entries;
 
-        public Checklist(string id, string owner, string title) : base(id, owner, title) {
+        public Checklist(string id, string owner, string title) : base(id, owner) {
             SavePath = "checklist";
             Entries = new List<Entry>();
+            Title = title;
         }
 
         // Base

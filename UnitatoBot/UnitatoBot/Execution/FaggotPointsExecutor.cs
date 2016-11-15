@@ -1,4 +1,5 @@
-﻿using BotCore.Command;
+﻿using BotCore.Bridge;
+using BotCore.Command;
 using BotCore.Execution;
 using BotCore.Permission;
 using BotCore.Util;
@@ -29,11 +30,11 @@ namespace Unitato.Execution {
             return "Use with name as argument to mark someone as a faggot and add one faggot point. Use with argument 'list' to see statistics of all faggots. Use with argument 'stats' [name] to see statistics of given faggot. Use with argument 'purify' [name] [count](optional) to remove n faggot points from user (restricted). Use with argument 'clean' [name] to remove all faggot points (restricted)";
         }
 
-        public ExecutionResult CanExecute(CommandContext context) {
-            return context.HasArguments ? ExecutionResult.Success : ExecutionResult.Denied;
+        public bool CanExecute(CommandContext context) {
+            return context.HasArguments;
         }
 
-        public ExecutionResult Execute(CommandContext context) {
+        public bool Execute(CommandContext context) {
             // Print out all statistics
             // faggot list
             if(context.Args[0].Equals("list") && context.Args.Length == 1) {
@@ -48,7 +49,7 @@ namespace Unitato.Execution {
                         .Text(Emoticon.But)
                         .Text("There are no faggots.")
                         .BuildAndSend();
-                    return ExecutionResult.Success;
+                    return true;
                 }
 
                 builder.TableStart(20, "Name", "Points");
@@ -61,7 +62,7 @@ namespace Unitato.Execution {
 
                 builder.TableEnd()
                     .Send();
-                return ExecutionResult.Success;
+                return true;
             }
             // Print out single statistic
             // faggot stats [name]
@@ -80,7 +81,7 @@ namespace Unitato.Execution {
                         .Block(points)
                         .Text("point{0}", points > 1 ? "s." : ".")
                         .Send();
-                    return ExecutionResult.Success;
+                    return true;
                 }
             // Remove one faggotpoint from user
             // faggot purify [name]
@@ -113,7 +114,7 @@ namespace Unitato.Execution {
                     Save();
 
                     context.ResponseBuilder.Send();
-                    return ExecutionResult.Success;
+                    return true;
                 }
             // Remove all faggotpoints from user
             // faggot clean [name]
@@ -144,16 +145,16 @@ namespace Unitato.Execution {
                     context.ResponseBuilder
                         .Send();
 
-                    return ExecutionResult.Success;
+                    return true;
                 }
 
-                return ExecutionResult.Fail;
+                return false;
 
             }
             // Add faggotpoint to user
             // faggot [name]
             else {
-                UsageManager.Usage usage = UsageManager.Get(context.ServiceMessage.Sender);
+                UsageManager.Usage usage = UsageManager.Get(context.Message.Sender);
 
                 if(usage.CanBeUsed) {
                     string name = context.Args[0].ToLower();
@@ -196,10 +197,10 @@ namespace Unitato.Execution {
                         .Send();
                 }
 
-                return ExecutionResult.Success;
+                return true;
             }
 
-            return ExecutionResult.Fail;
+            return false;
         }
 
         // Helpers

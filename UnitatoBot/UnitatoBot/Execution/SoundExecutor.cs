@@ -28,11 +28,11 @@ namespace Unitato.Execution {
             return "Play sound effect in #general voice chat. Use with 'list' as first argument to get list of available sounds. Use with name of the sound as first argument to play it. You can specifiy channel name as second argument (this is optional).";
         }
 
-        public ExecutionResult CanExecute(CommandContext context) {
-            return context.ServiceMessage.Service is IAudioCapability && context.HasArguments && (context.Args[0].Equals("list") || HasSound(context.Args[0])) ? ExecutionResult.Success : ExecutionResult.Denied;
+        public bool CanExecute(CommandContext context) {
+            return context.Message.Service is IAudioCapability && context.HasArguments && (context.Args[0].Equals("list") || HasSound(context.Args[0]));
         }
 
-        public ExecutionResult Execute(CommandContext context) {
+        public bool Execute(CommandContext context) {
             if(context.Args[0].Equals("list")) {
                 ResponseBuilder builder = context.ResponseBuilder
                     .Username()
@@ -56,17 +56,17 @@ namespace Unitato.Execution {
                     .Send();
 
             } else {
-                return PlaySound((IAudioCapability)context.ServiceMessage.Service, context, context.Args[0]) ? ExecutionResult.Success : ExecutionResult.Denied;
+                return PlaySound((IAudioCapability)context.Message.Service, context, context.Args[0]);
             }
 
-            return ExecutionResult.Success;
+            return true;
         }
 
         // Logic
 
         private bool PlaySound(IAudioCapability player, CommandContext context, string soundName) {
-            string channel = context.Args.Length == 2 ? context.Args[1] : player.GetUserAudioChannel(context.ServiceMessage.Origin, context.ServiceMessage.Sender);
-            return Sounds.Find(s => s.Name.Equals(soundName) || s.Alias.Contains(soundName)).Play(player, context.ServiceMessage, channel);
+            string channel = context.Args.Length == 2 ? context.Args[1] : player.GetUserAudioChannel(context.Message.Origin, context.Message.Sender);
+            return Sounds.Find(s => s.Name.Equals(soundName) || s.Alias.Contains(soundName)).Play(player, context.Message, channel);
         }
 
         private bool HasSound(string name) {

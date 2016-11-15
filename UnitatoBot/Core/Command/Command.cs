@@ -36,25 +36,23 @@ namespace BotCore.Command {
         }
 
         public void Execute(CommandManager manager, ServiceMessage message) {
+            if(ExecutorList.Count < 1)
+                Logger.Error("No executors found while trying to execute {0} command. ", Name);
+
             // Create a execution context for this command
             CommandContext context = new CommandContext(this, manager, message);
-
-            if(ExecutorList.Count < 1) {
-                Logger.Error("No executors found while trying to execute {0} command. ", Name);
-            }
 
             // Try to execute the command using all of its executors
             foreach(IExecutionHandler executor in ExecutorList) {
                 // Check if command context is valid in order to be executied
-                ExecutionResult result = executor.CanExecute(context);
+                bool result = executor.CanExecute(context);
 
                 // If command is valid, execute it, if not show error message
-                if(result == ExecutionResult.Success) {
+                if(result) {
                     result = executor.Execute(context);
-                    Logger.Log("Execution using {0} of {1} ended with result {2}", executor.GetType().Name, context.ExecutionName, result);
-                } else {
-                    Logger.Log("Execution using {0} of {1} failed the execution test with result {2}", executor.GetType().Name, context.ExecutionName, result);
-                }
+                    Logger.Log("Execution using {0} of {1} ended with result {2}", executor.GetType().Name, context.CommandName, result);
+                } else
+                    Logger.Log("Execution using {0} of {1} failed the execution test with result {2}", executor.GetType().Name, context.CommandName, result);
             }
 
         }

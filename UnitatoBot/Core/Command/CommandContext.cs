@@ -10,27 +10,27 @@ namespace BotCore.Command {
         private ResponseBuilder _response;
         public ResponseBuilder ResponseBuilder {
             get {
-                if(_response == null) _response = new ResponseBuilder(ServiceMessage);
+                if(_response == null) _response = new ResponseBuilder(Message);
                 return _response;
             }
         }
 
-        public ServiceMessage    ServiceMessage   { private set; get; }
+        public ServiceMessage    Message         { private set; get; }
         public CommandManager    CommandManager  { private set; get; }
-        public Command           ExecutedCommand { private set; get; }
-        public string            ExecutionName   { private set; get; }
+        public Command           Command         { private set; get; }
+        public string            CommandName     { private set; get; }
         public bool              HasArguments    { private set; get; }
         public string[]          Args            { private set; get; }
         public string            RawArguments    { private set; get; }
 
         public CommandContext(Command command, CommandManager manager, ServiceMessage message) {
-            ExecutedCommand = command;
+            Command = command;
             CommandManager = manager;
-            ServiceMessage = message;
-            ExecutionName = Expressions.CommandParser.Capture(ServiceMessage.Text, "command");
-            HasArguments = Expressions.CommandArgumentParser.Test(ServiceMessage.Text);
+            Message = message;
+            CommandName = Expressions.CommandParser.Capture(Message.Text, "command");
+            HasArguments = Expressions.CommandArgumentParser.Test(Message.Text);
 
-            RawArguments = Expressions.CommandArgumentParser.Capture(ServiceMessage.Text, "args");
+            RawArguments = Expressions.CommandArgumentParser.Capture(Message.Text, "args");
             if(RawArguments != null && RawArguments != string.Empty)
                 RawArguments = Regex.Replace(RawArguments, @"\r\n?|\n", string.Empty);
 

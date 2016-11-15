@@ -30,15 +30,15 @@ namespace Unitato.Execution {
             return "Create checklist with items that you can check out. To create a checklist use with argument 'create' [checklist-id] [title]. To add item to checklist use with argument 'add' [checklist-id](optional) [text]. To check or uncheck the item use with argument 'check' or 'uncheck' [checklist-id](optional) [item-index](from 0), you can use multiple indexes (ex: 'check 1 2 3'). To destroy checklist use with argument 'destroy' [checklist-id]. To remove item from checklist use use with argument 'remove' [checklist-id](optional) [item-index](from 0). To add multiple items to checklist use with argument 'import' [checklist-id](optional) [separator](string that splits entries) [text] (example: '/checklist import - -item1 -item2 -item3'). When checklist is no longer needed to be editable use with argument 'finish [checklist-id](optional). In order to rerender chaklist as new message use argument 'rerender'.";
         }
 
-        public ExecutionResult CanExecute(CommandContext context) {
-            return context.HasArguments ? ExecutionResult.Success : ExecutionResult.Fail;
+        public bool CanExecute(CommandContext context) {
+            return context.HasArguments;
         }
 
-        public ExecutionResult Execute(CommandContext context) {
+        public bool Execute(CommandContext context) {
             switch(context.Args[0]) {
                 case "create":
                     if(context.Args.Length > 2 && !Checklists.Exists(c => c.Id.Equals(context.Args[1]))) {
-                        Checklist checklist = new Checklist(context.Args[1], context.ServiceMessage.Sender, context.RawArguments.Substring(context.RawArguments.IndexOf(context.Args[1]) + context.Args[1].Length + 1));
+                        Checklist checklist = new Checklist(context.Args[1], context.Message.Sender, context.RawArguments.Substring(context.RawArguments.IndexOf(context.Args[1]) + context.Args[1].Length + 1));
 
                         ServiceMessage msg = context.ResponseBuilder
                             .Text(Emoji.Checklist)
@@ -58,7 +58,7 @@ namespace Unitato.Execution {
 
                         checklist.Save();
 
-                        return ExecutionResult.Success;
+                        return true;
                     }
                     break;
 
@@ -67,13 +67,13 @@ namespace Unitato.Execution {
                         Checklist checklist = Checklists.Find(c => c.Id.Equals(context.Args[1]));
 
                         if(checklist != null) {
-                            context.ServiceMessage.Delete();
+                            context.Message.Delete();
                             Checklists.Remove(checklist);
                             checklist.Message.Delete();
                             checklist.Delete();
 
                             Logger.Info("Checklist {0} was deleted", checklist.Id);
-                            return ExecutionResult.Success;
+                            return true;
                         }
                     }
                     break;
@@ -89,13 +89,13 @@ namespace Unitato.Execution {
                         }
 
                         if(checklist != null) {
-                            context.ServiceMessage.Delete();
+                            context.Message.Delete();
                             checklist.Status = "Checklist was marked as finished, no further edits can be made.";
                             Checklists.Remove(checklist);
                             checklist.Delete();
 
                             Logger.Info("Checklist {0} was marked as finished and deleted", checklist.Id);
-                            return ExecutionResult.Success;
+                            return true;
                         }
 
                     }
@@ -107,13 +107,13 @@ namespace Unitato.Execution {
 
                         if(checklist == null) {
                             Checklists.Last().Add(context.RawArguments.Substring(context.RawArguments.IndexOf(context.Args[0]) + context.Args[0].Length + 1));
-                            context.ServiceMessage.Delete();
-                            return ExecutionResult.Success;
+                            context.Message.Delete();
+                            return true;
 
                         } else if(context.Args.Length > 2) {
                             checklist.Add(context.RawArguments.Substring(context.RawArguments.IndexOf(context.Args[1]) + context.Args[1].Length + 1));
-                            context.ServiceMessage.Delete();
-                            return ExecutionResult.Success;
+                            context.Message.Delete();
+                            return true;
 
                         }
 
@@ -134,9 +134,9 @@ namespace Unitato.Execution {
 
                             byte index;
                             if(byte.TryParse(context.Args[hasId ? 2 : 1], out index)) {
-                                context.ServiceMessage.Delete();
+                                context.Message.Delete();
                                 checklist.Remove(index);
-                                return ExecutionResult.Success;
+                                return true;
                             }
 
                         }
@@ -162,9 +162,9 @@ namespace Unitato.Execution {
                                 checklist.Add(entry, false);
                             }
 
-                            context.ServiceMessage.Delete();
+                            context.Message.Delete();
                             checklist.UpdateMessage();
-                            return ExecutionResult.Success;
+                            return true;
 
                         }
                     }
@@ -177,9 +177,9 @@ namespace Unitato.Execution {
                         bool checkState = context.Args[0] == "check";
 
                         if(checklist == null)
-                            return SetEntryState(context.ServiceMessage, Checklists.Last(), checkState, context.Args.Skip(1).ToArray()) ? ExecutionResult.Success : ExecutionResult.Fail;
+                            return SetEntryState(context.Message, Checklists.Last(), checkState, context.Args.Skip(1).ToArray());
 
-                        return context.Args.Length > 2 && SetEntryState(context.ServiceMessage, checklist, checkState, context.Args.Skip(2).ToArray()) ? ExecutionResult.Success : ExecutionResult.Fail;
+                        return context.Args.Length > 2 && SetEntryState(context.Message, checklist, checkState, context.Args.Skip(2).ToArray());
                     }
                     break;
 
@@ -192,18 +192,18 @@ namespace Unitato.Execution {
                             if(checklist != null)
                                 checklist.RerenderMessage();
                             else
-                                return ExecutionResult.Fail;
+                                return false;
 
                         } else
                             Checklists.Last().RerenderMessage();
 
-                        context.ServiceMessage.Delete();
-                        return ExecutionResult.Success;
+                        context.Message.Delete();
+                        return true;
                     }
                     break;
             }
 
-            return ExecutionResult.Fail;
+            return false;;
         }
 
         // Utilities

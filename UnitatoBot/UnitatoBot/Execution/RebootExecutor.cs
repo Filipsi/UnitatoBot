@@ -44,21 +44,21 @@ namespace Unitato.Execution {
             return "(Restricted only to Admin permission group) Restart the bot";
         }
 
-        public ExecutionResult CanExecute(CommandContext context) {
-            return Permissions.Can(context, Permissions.Reboot) ? ExecutionResult.Success : ExecutionResult.Denied;
+        public bool CanExecute(CommandContext context) {
+            return Permissions.Can(context, Permissions.Reboot);
         }
 
-        public ExecutionResult Execute(CommandContext context) {
+        public bool Execute(CommandContext context) {
             ServiceMessage msg = context.ResponseBuilder
                 .Username()
                 .Text("requested reboot. Restart in progress...")
                 .Send();
 
-            SaveRebootFile(msg, context.ServiceMessage.Sender);
+            SaveRebootFile(msg, context.Message.Sender);
 
             Process.Start(Process.GetCurrentProcess().MainModule.FileName.Replace(".vshost", string.Empty));
             Environment.Exit(0);
-            return ExecutionResult.Success;
+            return true;
         }
 
         // Util

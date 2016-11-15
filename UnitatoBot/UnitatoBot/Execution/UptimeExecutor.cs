@@ -14,18 +14,18 @@ namespace Unitato.Execution {
             return "Prints out uptime of the bot";
         }
 
-        public ExecutionResult CanExecute(CommandContext context) {
-            return ExecutionResult.Success;
+        public bool CanExecute(CommandContext context) {
+            return true;
         }
 
-        public ExecutionResult Execute(CommandContext context) {
-            string uptime = GetUptime();
+        public bool Execute(CommandContext context) {
             context.ResponseBuilder
                 .Username()
                 .Text("I am here for")
                 .Block(GetUptime())
                 .BuildAndSend();
-            return ExecutionResult.Success;
+
+            return true;
         }
 
         // Helpers

@@ -89,8 +89,7 @@
     <Compile Include="Command\CommandContext.cs" />
     <Compile Include="Command\CommandManager.cs" />
     <Compile Include="Component\SavableMessageContainer.cs" />
-    <Compile Include="Execution\ResponseBuilder.cs" />
-    <Compile Include="Execution\ExecutionResult.cs" />
+    <Compile Include="Bridge\ResponseBuilder.cs" />
     <Compile Include="Execution\IExecutionHandler.cs" />
     <Compile Include="Execution\IInitializable.cs" />
     <Compile Include="Permission\PermissionGroup.cs" />

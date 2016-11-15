@@ -23,11 +23,11 @@ namespace Unitato.Execution {
             return "Will praise anything specified as an argument. Even Dan, because we were praising Dan all along, even when it was prohibited.";
         }
 
-        public ExecutionResult CanExecute(CommandContext context) {
-            return ExecutionResult.Success;
+        public bool CanExecute(CommandContext context) {
+            return true;
         }
 
-        public ExecutionResult Execute(CommandContext context) {
+        public bool Execute(CommandContext context) {
             context.ResponseBuilder
                 .Username()
                 .Text("is praising!")
@@ -37,7 +37,8 @@ namespace Unitato.Execution {
                 .Bold(context.HasArguments ? context.RawArguments : GenerateDan())
                 .Text(Emoticon.Praise)
                 .BuildAndSend();
-            return ExecutionResult.Success;
+
+            return true;
         }
 
         // Helpers

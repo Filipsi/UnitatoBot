@@ -14,18 +14,18 @@ namespace Unitato.Execution {
             return "Throws coin into the air, it lands on either heads or tails.";
         }
 
-        public ExecutionResult CanExecute(CommandContext context) {
-            return ExecutionResult.Success;
+        public bool CanExecute(CommandContext context) {
+            return true;
         }
 
-        public ExecutionResult Execute(CommandContext context) {
+        public bool Execute(CommandContext context) {
             context.ResponseBuilder
                 .Username()
                 .Text("throws coin into the air. It lands on")
                 .Block(RNG.Next(0, 2) == 0 ? "heads" : "tails")
                 .BuildAndSend();
 
-            return ExecutionResult.Success;
+            return true;
         }
 
     }

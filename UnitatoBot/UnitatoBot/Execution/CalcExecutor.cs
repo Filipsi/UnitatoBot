@@ -13,18 +13,18 @@ namespace Unitato.Execution {
             return "Calculate mathematical expressions. Operators: ||, &&, =, ==, !=, <>, <, <=, >, >=, +, -, *, /, %, & (bitwise and), | (bitwise or), ^(bitwise xor), << (left shift), >>(right shift), !, not, -, ~ (bitwise not); Functions: <http://ncalc.codeplex.com/wikipage?title=functions&referringTitle=values>";
         }
 
-        public ExecutionResult CanExecute(CommandContext context) {
-            return context.HasArguments ? ExecutionResult.Success : ExecutionResult.Denied;
+        public bool CanExecute(CommandContext context) {
+            return context.HasArguments;
         }
 
-        public ExecutionResult Execute(CommandContext context) {
+        public bool Execute(CommandContext context) {
 
             object result;
             try {
                 result = new Expression(context.RawArguments).Evaluate();
             } catch(Exception e) {
                 Logger.Info("Error cathced while Evaluateing expression from CalcExecutor: {0}", e.Message);
-                return ExecutionResult.Fail;
+                return false;
             }
 
             context.ResponseBuilder
@@ -35,7 +35,7 @@ namespace Unitato.Execution {
                 .Block(result)
                 .Send();
 
-            return ExecutionResult.Success;
+            return true;
         }
 
     }

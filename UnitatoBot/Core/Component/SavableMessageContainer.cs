@@ -10,15 +10,14 @@ namespace BotCore.Component {
 
         public string           Id      { private set;  get; }
         public string           Owner   { private set;  get; }
-        public string           Title   { private set;  get; }
+       
         public ServiceMessage   Message { set;          get; }
 
         protected string        SavePath = string.Empty;
 
-        public SavableMessageContainer(string id, string owner, string title) {
+        public SavableMessageContainer(string id, string owner) {
             Id = id;
             Owner = owner;
-            Title = title;
         }
 
         // Abstracts

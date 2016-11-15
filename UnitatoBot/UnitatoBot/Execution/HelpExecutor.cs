@@ -1,4 +1,5 @@
-﻿using BotCore.Command;
+﻿using BotCore.Bridge;
+using BotCore.Command;
 using BotCore.Execution;
 using BotCore.Util.Symbol;
 using System.Collections.Generic;
@@ -13,25 +14,25 @@ namespace Unitato.Execution {
             return "Shows help, obviously.Use command name or alias as argument to show help only for specified command.";
         }
 
-        public ExecutionResult CanExecute(CommandContext context) {
-            return ExecutionResult.Success;
+        public bool CanExecute(CommandContext context) {
+            return true;
         }
 
-        public ExecutionResult Execute(CommandContext context) {
+        public bool Execute(CommandContext context) {
             if(!context.HasArguments) {
                 PrintHelpInfo(context);
-                return ExecutionResult.Success;
+                return true;
 
             } else if(context.Args.Length == 1) {
                 Command command = context.CommandManager.FindCommand(context.Args[0].ToLower());
 
                 if(command != null) {
                     PrintHelpFor(context, command);
-                    return ExecutionResult.Success;
+                    return true;
                 }
             }
 
-            return ExecutionResult.Fail;
+            return false;
         }
 
         // Logic

@@ -69,7 +69,7 @@ namespace BotCore.Permission {
         }
 
         public static bool Can(CommandContext context, string permission) {
-            return Can(context.ServiceMessage.Sender, permission);
+            return Can(context.Message.Sender, permission);
         }
 
         public static bool Put(string user, string group) {

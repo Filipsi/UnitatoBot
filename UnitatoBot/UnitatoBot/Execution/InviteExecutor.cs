@@ -12,21 +12,21 @@ namespace Unitato.Execution {
             return "Prints out invitation for this bot to join given server based on service";
         }
 
-        public ExecutionResult CanExecute(CommandContext context) {
-            return context.ServiceMessage.ServiceType == "Discord" ? ExecutionResult.Success : ExecutionResult.Denied;
+        public bool CanExecute(CommandContext context) {
+            return context.Message.ServiceType == "Discord";
         }
 
-        public ExecutionResult Execute(CommandContext context) {
+        public bool Execute(CommandContext context) {
             context.ResponseBuilder
                 .Text("Here you go")
                 .Username()
                 .Text("use this so I can join you on your adventure!")
                 .Text(Emoticon.Pleased)
                 .NewLine()
-                    .Space().Text("https://discordapp.com/oauth2/authorize?client_id={0}&scope=bot&permissions=536345655", context.ServiceMessage.Service.GetServiceId())
+                    .Space().Text("https://discordapp.com/oauth2/authorize?client_id={0}&scope=bot&permissions=536345655", context.Message.Service.GetServiceId())
                 .Send();
 
-            return ExecutionResult.Success;
+            return true;
         }
 
     }

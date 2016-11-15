@@ -23,13 +23,12 @@ namespace Unitato.Execution {
             return "Permission management. Use with argument 'users' to print out list of users in given groups, use with 'list' to get list of groups and what they can do. Create group: 'create [group] [permission...](multiple allowed)'; Destory group: 'destory [group]'; Add permission to group: 'allow [group] [permission...](multiple allowed)'; Remove permission from group: 'deny [group] [permission...](multiple allowed)'; Add user to group: 'put [user] [group]'; Remove user from group: 'take [user] [group]'; Realod from reload: 'reload'";
         }
 
-        public ExecutionResult CanExecute(CommandContext context) {
-            return context.HasArguments ? ExecutionResult.Success : ExecutionResult.Fail;
+        public bool CanExecute(CommandContext context) {
+            return context.HasArguments;
         }
 
-        public ExecutionResult Execute(CommandContext context) {
+        public bool Execute(CommandContext context) {
             switch(context.Args[0]) {
-
                 case "users":
                     context.ResponseBuilder
                         .Text(Emoji.Key)
@@ -44,7 +43,7 @@ namespace Unitato.Execution {
                     context.ResponseBuilder
                         .TableEnd()
                         .Send();
-                    return ExecutionResult.Success;
+                    return true;
 
                 case "list":
                     context.ResponseBuilder
@@ -60,7 +59,7 @@ namespace Unitato.Execution {
                     context.ResponseBuilder
                         .TableEnd()
                         .Send();
-                    return ExecutionResult.Success;
+                    return true;
 
                 case "create":
                     if(context.Args.Length > 1 && Permissions.Can(context, Permissions.PermissionCreate)) {
@@ -80,11 +79,10 @@ namespace Unitato.Execution {
                             }
 
                             context.ResponseBuilder.Send();
-                            return ExecutionResult.Success;
+                            return true;
                         }
                     }
-
-                    return ExecutionResult.Fail;
+                    break;
 
                 case "destroy":
                     if(context.Args.Length == 2 && Permissions.Can(context, Permissions.PermissionDestroy)) {
@@ -96,11 +94,10 @@ namespace Unitato.Execution {
                                 .Block(context.Args[1])
                                 .Send();
 
-                            return ExecutionResult.Success;
+                            return true;
                         }
                     }
-
-                    return ExecutionResult.Fail;
+                    break;
 
                 case "allow":
                     if(context.Args.Length > 2 && Permissions.Can(context, Permissions.PermissionAllow)) {
@@ -119,10 +116,10 @@ namespace Unitato.Execution {
                                 .Text("to group")
                                 .Block(context.Args[1])
                                 .Send();
-                            return ExecutionResult.Success;
+                            return true;
                         }
                     }
-                    return ExecutionResult.Fail;
+                    break;
 
                 case "deny":
                     if(context.Args.Length > 2 && Permissions.Can(context, Permissions.PermissionDeny)) {
@@ -141,10 +138,10 @@ namespace Unitato.Execution {
                                 .Text("from group")
                                 .Block(context.Args[1])
                                 .Send();
-                            return ExecutionResult.Success;
+                            return true;
                         }
                     }
-                    return ExecutionResult.Fail;
+                    break;
 
                 case "put":
                     if(context.Args.Length == 3 && Permissions.Can(context, Permissions.PermissionPut)) {
@@ -158,10 +155,10 @@ namespace Unitato.Execution {
                                 .Block(context.Args[2])
                                 .Send();
 
-                            return ExecutionResult.Success;
+                            return true;
                         }
                     }
-                    return ExecutionResult.Fail;
+                    break;
 
                 case "take":
                     if(context.Args.Length == 3 && Permissions.Can(context, Permissions.PermissionTake)) {
@@ -175,10 +172,10 @@ namespace Unitato.Execution {
                                 .Block(context.Args[2])
                                 .Send();
 
-                            return ExecutionResult.Success;
+                            return true;
                         }
                     }
-                    return ExecutionResult.Fail;
+                    break;
 
                 case "reload":
                     if(context.Args.Length == 1 && Permissions.Can(context, Permissions.PermissionReload)) {
@@ -190,14 +187,12 @@ namespace Unitato.Execution {
                             .Text("reloaded permissions from files")
                             .Send();
 
-                        return ExecutionResult.Success;
-                        
+                        return true;
                     }
-                    return ExecutionResult.Fail;
-
+                    break;
             }
 
-            return ExecutionResult.Fail;
+            return false;
         }
 
         // Util

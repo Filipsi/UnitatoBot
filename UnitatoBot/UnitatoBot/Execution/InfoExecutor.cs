@@ -12,11 +12,11 @@ namespace Unitato.Execution {
             return "Unitato will greet you and introduce itself.";
         }
 
-        public ExecutionResult CanExecute(CommandContext context) {
-            return ExecutionResult.Success;
+        public bool CanExecute(CommandContext context) {
+            return true;
         }
 
-        public ExecutionResult Execute(CommandContext context) {
+        public bool Execute(CommandContext context) {
             context.ResponseBuilder
                 .Text("Howdy")
                 .Username()
@@ -28,7 +28,7 @@ namespace Unitato.Execution {
                 .Block("!help")
                 .Text("for more.")
                 .BuildAndSend();
-            return ExecutionResult.Success;
+            return true;
         }
 
     }

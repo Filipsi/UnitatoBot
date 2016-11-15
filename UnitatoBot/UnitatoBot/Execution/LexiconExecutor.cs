@@ -29,11 +29,11 @@ namespace Unitato.Execution {
             return "Retrives entry form http://lexicon.filipsi.net/ using it's name as a argument or prints out articles from lexicon using 'list' as a argument";
         }
 
-        public ExecutionResult CanExecute(CommandContext context) {
-            return context.HasArguments ? ExecutionResult.Success : ExecutionResult.Denied;
+        public bool CanExecute(CommandContext context) {
+            return context.HasArguments;
         }
 
-        public ExecutionResult Execute(CommandContext context) {
+        public bool Execute(CommandContext context) {
             if(context.Args[0] == "list") {
                 LexiconClient.ExecuteAsync(RequestGetMenu, response => {
                     // Parse data from server into list of ArticleEntries
@@ -47,10 +47,10 @@ namespace Unitato.Execution {
                         .BuildAndSend();
                 });
 
-                return ExecutionResult.Success;
+                return true;
             } else {
                 // Strips the /command from the arguments, this is here in order to enable reqests for articles with spaces in title
-                string strippedArgument = context.ServiceMessage.Text.Substring(1 + context.ExecutionName.Length + 1);
+                string strippedArgument = context.Message.Text.Substring(1 + context.CommandName.Length + 1);
 
                 RequestGetArticle.AddParameter("title", strippedArgument);
                 LexiconClient.ExecuteAsync(RequestGetArticle, response => {
@@ -84,7 +84,7 @@ namespace Unitato.Execution {
                         .BuildAndSend();
                 });
 
-                return ExecutionResult.Success;
+                return true;
             }
         }
 

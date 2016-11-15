@@ -13,17 +13,20 @@ namespace Unitato.Execution {
         // IExecutionHandler
 
         public string GetDescription() {
-            return "d[number of sides] Rolls a 'n' sided dice.";
+            return "d[number of sides] Rolls a 'n' sided dice. Example: 'roll d20'";
         }
 
-        public ExecutionResult CanExecute(CommandContext context) {
-            return context.HasArguments && context.Args[0].ElementAt(0) == 'd' ? ExecutionResult.Success : ExecutionResult.Denied;
+        public bool CanExecute(CommandContext context) {
+            return context.HasArguments && context.Args[0].ElementAt(0) == 'd';
         }
 
-        public ExecutionResult Execute(CommandContext context) {
+        public bool Execute(CommandContext context) {
             int sides;
-            if(!int.TryParse(context.Args[0].Remove(0, 1), out sides)) return ExecutionResult.Fail;
-            if(sides < 2) return ExecutionResult.Fail;
+            if(!int.TryParse(context.Args[0].Remove(0, 1), out sides))
+                return false;
+
+            if(sides < 2)
+                return false;
 
             context.ResponseBuilder
                 .Username()
@@ -35,7 +38,7 @@ namespace Unitato.Execution {
                 .Block(RNG.Next(1, sides))
                 .BuildAndSend();
 
-            return ExecutionResult.Success;
+            return true;
         }
 
     }

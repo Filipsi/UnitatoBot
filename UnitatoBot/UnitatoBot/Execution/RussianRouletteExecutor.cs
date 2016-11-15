@@ -17,11 +17,11 @@ namespace Unitato.Execution {
             return "Russian roulette, gun gas cylinder with 6 spaces for bullet. Use wihout argument to fire gun at yourself. Use with argument 'reload' to reaload the gun.";
         }
 
-        public ExecutionResult CanExecute(CommandContext context) {
-            return !context.HasArguments || (context.Args.Length == 1 && context.Args[0].Equals("reload")) ? ExecutionResult.Success : ExecutionResult.Denied;
+        public bool CanExecute(CommandContext context) {
+            return !context.HasArguments || (context.Args.Length == 1 && context.Args[0].Equals("reload"));
         }
 
-        public ExecutionResult Execute(CommandContext context) {
+        public bool Execute(CommandContext context) {
 
             if(context.HasArguments && context.Args[0].Equals("reload")) {
                 Reload();
@@ -33,7 +33,7 @@ namespace Unitato.Execution {
                     .Text("bullet and spun the cilinder.")
                     .Send();
 
-                return ExecutionResult.Success;
+                return true;
             } else {
                 if(IsEmpty()) {
                     context.ResponseBuilder
@@ -64,7 +64,7 @@ namespace Unitato.Execution {
                     .NewLine();
 
                 context.ResponseBuilder.Send();
-                return ExecutionResult.Success;
+                return true;
             }
 
         }

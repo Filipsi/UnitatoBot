@@ -3,16 +3,15 @@ using System.Text;
 using BotCore.Bridge;
 using BotCore.Util.Symbol;
 
-namespace BotCore.Execution {
+namespace BotCore.Bridge {
 
     public class ResponseBuilder {
 
-        private ServiceMessage      Message     = null;
-        private StringBuilder       Builder     = new StringBuilder();
-        private bool                SkipSpace   = false;
-
-        private short               tableCellWidth  = 0;
-        private string[]            tableColumns    = null;
+        private ServiceMessage      Message         = null;
+        private StringBuilder       Builder         = new StringBuilder();
+        private bool                SkipSpace       = false;
+        private short               TableCellWidth  = 0;
+        private string[]            TableColumns    = null;
 
         public bool ShouldDeleteMessage {
             private set; get;
@@ -205,11 +204,11 @@ namespace BotCore.Execution {
         // Table
 
         public ResponseBuilder TableStart(short cellWidth, params string[] columnNames) {
-            tableCellWidth = cellWidth;
-            tableColumns = columnNames;
+            TableCellWidth = cellWidth;
+            TableColumns = columnNames;
 
             MultilineBlock()
-                .TableRow(tableColumns)
+                .TableRow(TableColumns)
                 .TableSpacer();
 
             return this;
@@ -218,16 +217,16 @@ namespace BotCore.Execution {
         public ResponseBuilder TableRow(params string[] column) {
             NewLine();
 
-            for(short columnIndex = 0; columnIndex < tableColumns.Length; columnIndex++) {
+            for(short columnIndex = 0; columnIndex < TableColumns.Length; columnIndex++) {
                 string columnContent = columnIndex < column.Length ? column[columnIndex] : string.Empty;
 
                 Builder.Append(" ");
-                Builder.Append(columnContent.Length > tableCellWidth ? columnContent.Remove(tableCellWidth - 3) + ".." : columnContent);
-                for(int i = columnContent.Length + 1; i < tableCellWidth; i++) {
+                Builder.Append(columnContent.Length > TableCellWidth ? columnContent.Remove(TableCellWidth - 3) + ".." : columnContent);
+                for(int i = columnContent.Length + 1; i < TableCellWidth; i++) {
                     Builder.Append(" ");
                 }
 
-                if(columnIndex < tableColumns.Length - 1)
+                if(columnIndex < TableColumns.Length - 1)
                     Builder.Append("|");
             }
 
@@ -237,15 +236,15 @@ namespace BotCore.Execution {
         public ResponseBuilder TableSpacer() {
             NewLine();
 
-            for(short i = 1; i < tableCellWidth * tableColumns.Length + tableColumns.Length; i++)
-                Builder.Append(i % (tableCellWidth + 1) == 0 && i != 0 ? "|" : "-");
+            for(short i = 1; i < TableCellWidth * TableColumns.Length + TableColumns.Length; i++)
+                Builder.Append(i % (TableCellWidth + 1) == 0 && i != 0 ? "|" : "-");
 
             return this;
         }
 
         public ResponseBuilder TableEnd() {
-            tableCellWidth = 0;
-            tableColumns = null;
+            TableCellWidth = 0;
+            TableColumns = null;
             MultilineBlock();
             return this;
         }

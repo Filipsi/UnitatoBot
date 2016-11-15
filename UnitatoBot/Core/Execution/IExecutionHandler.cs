@@ -6,9 +6,9 @@ namespace BotCore.Execution {
 
         string GetDescription();
 
-        ExecutionResult CanExecute(CommandContext context);
+        bool CanExecute(CommandContext context);
 
-        ExecutionResult Execute(CommandContext context);
+        bool Execute(CommandContext context);
 
     }
 
