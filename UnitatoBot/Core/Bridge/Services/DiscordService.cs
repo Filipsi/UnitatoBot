@@ -3,68 +3,43 @@ using Discord.Audio;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using BotCore.Util;
+using Discord.Rest;
+using Discord.WebSocket;
 
 namespace BotCore.Bridge.Services {
 
-    public class DiscordService : IService, IAudioCapability {
+    public class DiscordService : IService {
 
-        private readonly DiscordClient  _client;
-        private readonly AudioService   _audio;
-        private bool                    _isPlayingAudio;
-        private readonly object         _audioLock = new object();
+        private readonly DiscordSocketClient  _client;
 
-        public DiscordService(string token) {  
-            _client = new DiscordClient();
-            _isPlayingAudio = false;
+        public DiscordService(string token) {
+            _client = new DiscordSocketClient();
 
-            // Create a task that will trigger after Client fires Ready event
-            TaskCompletionSource<bool> taskClientReady = new TaskCompletionSource<bool>();
+            // Run setup task synchronously
+            Setup(token).GetAwaiter().GetResult();
 
-            // Bind trigger for the task to Ready event
-            _client.Ready += (sender, args) => {
-                Logger.Log("{0} client is ready.", this.GetType().Name);
-                taskClientReady.SetResult(true);
-            };
-
-            // Try to connect, handle errors if any
-            try {
-                Logger.Log("Atempting to log in ...");
-                _client.Connect(token, TokenType.Bot);
-            } catch(Exception e) {
-                Logger.Error("Something went wrong during {0} connection attempt!\n" + e.Message, this.GetType().Name);
-            }
-
-            // Wait until Client is ready
-            while(!taskClientReady.Task.IsCompleted) { /* NO-OP */ }
-
-            // Audio service setup
-            _client.AddService(new AudioService(new AudioServiceConfigBuilder() {
-                Mode = AudioMode.Outgoing,
-                EnableEncryption = false,
-                Bitrate = 128
-            }));
-
-            // Retrives audio service from client
-            _audio = _client.GetService<AudioService>();
-            
-            // Initializes event handlers 
-            InitEventHandlers();
-            Logger.Log("{0} event handlers inicilized.", GetType().Name);
+            Logger.Log("{0} service was inicialized with token {1}", GetServiceType(), token);
         }
 
-        private void InitEventHandlers() {
-            _client.MessageReceived += (sender, args) => {
-                if(!args.User.Id.Equals(_client.CurrentUser.Id))
-                    OnMessageReceived?.Invoke(this, new ServiceMessageEventArgs(new ServiceMessage(this, args.Message)));
-            };
+        private async Task Setup(string token) {
+            _client.MessageReceived += HandleReceivedMessage;
+
+            await _client.LoginAsync(TokenType.Bot, token);
+            await _client.ConnectAsync();
+        }
+
+        private Task HandleReceivedMessage(SocketMessage message) {
+            if(!message.Author.Id.Equals(_client.CurrentUser.Id))
+                OnMessageReceived?.Invoke(this, new ServiceMessageEventArgs(new ServiceMessage(this, message as IUserMessage)));
+
+            return Task.CompletedTask;
         }
 
         // Logic
 
-        private async Task<Message> SendText(Channel channel, string text) {
+        private async Task<RestUserMessage> SendPartableMessage(ISocketMessageChannel channel, string text) {
             if(channel == null)
                 return null;
 
@@ -74,7 +49,7 @@ namespace BotCore.Bridge.Services {
                 List<string> parts = new List<string>();
                 do {
                     int msgLength = buffer.Length >= DiscordConfig.MaxMessageSize ? DiscordConfig.MaxMessageSize : buffer.Length;
-                    int lastUsableSpace = buffer.LastIndexOf(" ", msgLength);
+                    int lastUsableSpace = buffer.LastIndexOf(" ", msgLength, StringComparison.Ordinal);
 
                     int cut = lastUsableSpace > 0 ? lastUsableSpace : msgLength;
                     parts.Add(buffer.Substring(0, cut));
@@ -82,55 +57,21 @@ namespace BotCore.Bridge.Services {
 
                 } while(buffer.Length > 0);
 
-                Task<Message> firstSent = null;
+                Task<RestUserMessage> firstSent = null;
                 foreach(string part in parts) {
-                    if(firstSent == null) firstSent = channel.SendMessage(part); else await channel.SendMessage(part);
+                    if(firstSent == null) firstSent = channel.SendMessageAsync(part); else await channel.SendMessageAsync(part);
                 }
 
                 Logger.Info("While sending message, DiscordConfig.MaxMessageSize was exceeded! Message was split to {0} parts.", parts.Count);
                 return await firstSent;
             }
 
-            return await channel.SendMessage(text);
+            return await channel.SendMessageAsync(text);
         }
-
-        private async void PlaySoundFile(Channel channel, string file) {
-            // Discord.Net Audio requires opus.dll in order to work properly 
-            // https://github.com/RogueException/Discord.Net/blob/master/src/Discord.Net.Audio/opus.dll
-
-            IAudioClient ac = await _audio.Join(channel);
-
-            lock(_audioLock) {
-                _isPlayingAudio = true;
-                System.Threading.Thread.Sleep(250);
-
-                var OutFormat = new WaveFormat(48000, 16, _audio.Config.Channels);
-                using(var MP3Reader = new Mp3FileReader(file))
-                using(var resampler = new MediaFoundationResampler(MP3Reader, OutFormat)) {
-                    resampler.ResamplerQuality = 60;
-                    int blockSize = OutFormat.AverageBytesPerSecond / 50;
-                    byte[] buffer = new byte[blockSize];
-                    int byteCount;
-
-                    while((byteCount = resampler.Read(buffer, 0, blockSize)) > 0) {
-                        if(byteCount < blockSize) {
-                            for(int i = byteCount; i < blockSize; i++)
-                                buffer[i] = 0;
-                        }
-
-                        ac.Send(buffer, 0, blockSize);
-                    }
-                }
-
-                System.Threading.Thread.Sleep(1000);
-                _isPlayingAudio = false;
-            }
-
-            await ac.Disconnect();
-            System.Threading.Thread.Sleep(250);
-        }
-
+   
         // IService
+
+        public event EventHandler<ServiceMessageEventArgs> OnMessageReceived;
 
         public string GetServiceType() {
             return "Discord";
@@ -140,89 +81,17 @@ namespace BotCore.Bridge.Services {
             return _client.CurrentUser.Id.ToString();
         }
 
-        public event EventHandler<ServiceMessageEventArgs> OnMessageReceived;
-
         public ServiceMessage SendMessage(string destination, string text) {
-            Channel channel = _client.GetChannel(ulong.Parse(destination));
-
-            if(channel == null) {
-                Logger.Warn("Text channel {0} not found while sending message!", destination);
-                return null;
-            }
-
-            Message msg = SendText(channel, text).Result;
-
-            if(msg == null)
-                return null;
-
-            // Oh god, this is wrong.
-            while(msg.Id == 0) { /* NO-OP */ }
-
-            return new ServiceMessage(this, msg);
+            ISocketMessageChannel channel = _client.GetChannel(ulong.Parse(destination)) as ISocketMessageChannel;
+            return new ServiceMessage(this, SendPartableMessage(channel, text).GetAwaiter().GetResult());
         }
 
         public ServiceMessage FindMessage(string destination, string id) {
-            Channel channel = _client.GetChannel(ulong.Parse(destination));
-
-            if(channel == null) {
-                Logger.Warn("Text channel {0} not found while searching for message {1}", destination, id);
-                return null;
-            }
-
-            // Message has no data (https://github.com/RogueException/Discord.Net/blob/master/src/Discord.Net/Models/Channel.cs#L284)
-            Message msg = channel.GetMessage(Convert.ToUInt64(id));
-
-            return msg == null ? null : new ServiceMessage(this, msg);
+            ITextChannel channel = _client.GetChannel(ulong.Parse(destination)) as ITextChannel;
+            IUserMessage message = channel?.GetMessageAsync(ulong.Parse(id)).GetAwaiter().GetResult() as IUserMessage;
+            return message == null ? null : new ServiceMessage(this, message);
         }
-
-        // IAudioCapability
-
-        public string[] GetAudioChannels(string origin) {
-            Channel channel = _client.GetChannel(ulong.Parse(origin));
-            if(channel == null) {
-                Logger.Warn("Origin channel {0} not found!", origin);
-                return null;
-            }
-
-            return channel.Server.VoiceChannels.Select(x => x.Name).ToArray();
-        }
-
-        public string GetUserAudioChannel(string origin, string user) {
-            Channel channel = _client.GetChannel(ulong.Parse(origin));
-            if(channel == null) {
-                Logger.Warn("Origin channel {0} not found!", origin);
-                return null;
-            }
-
-            User u = channel.Users.Single(x => x.Name.Equals(user));
-            if(u == null) {
-                Logger.Warn("User {0} of channel {1} was not found!", user, origin);
-                return null;
-            }
-
-            return u.VoiceChannel == null ? "General" : u.VoiceChannel.Name;
-        }
-
-        public bool PlayAudio(string origin, string channel, string file) {
-            if(_isPlayingAudio)
-                return false;
-
-            Channel c = _client.GetChannel(ulong.Parse(origin));
-            if(c == null) {
-                Logger.Warn("Origin channel {0} not found!", origin);
-                return false;
-            }
-
-            c = c.Server.VoiceChannels.FirstOrDefault(x => x.Name.Equals(channel));
-            if(c == null) {
-                Logger.Warn("Audio channel {0} not found!", c);
-                return false;
-            }
-
-            PlaySoundFile(c, file);
-            return true;
-        }
-
+       
     }
 
 }

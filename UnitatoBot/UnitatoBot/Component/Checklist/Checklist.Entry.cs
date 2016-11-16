@@ -1,9 +1,8 @@
-﻿using BotCore.Component;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace UnitatoBot.Component.Checklist {
 
-    internal partial class Checklist : SavableMessageContainer {
+    internal partial class Checklist {
 
         private class Entry {
 
