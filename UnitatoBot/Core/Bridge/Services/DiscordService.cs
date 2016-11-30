@@ -1,21 +1,22 @@
-﻿using Discord;
-using Discord.Audio;
-using NAudio.Wave;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BotCore.Util;
+using Discord;
+using Discord.Audio;
 using Discord.Rest;
 using Discord.WebSocket;
 
 namespace BotCore.Bridge.Services {
 
-    public class DiscordService : IService {
+    public partial class DiscordService : IService {
 
-        private readonly DiscordSocketClient  _client;
+        private readonly DiscordSocketClient _client;
 
         public DiscordService(string token) {
-            _client = new DiscordSocketClient();
+            _client = new DiscordSocketClient(new DiscordSocketConfig() {
+                AudioMode = AudioMode.Outgoing
+            });
 
             // Run setup task synchronously
             Setup(token).GetAwaiter().GetResult();
@@ -68,7 +69,7 @@ namespace BotCore.Bridge.Services {
 
             return await channel.SendMessageAsync(text);
         }
-   
+
         // IService
 
         public event EventHandler<ServiceMessageEventArgs> OnMessageReceived;
@@ -91,7 +92,7 @@ namespace BotCore.Bridge.Services {
             IUserMessage message = channel?.GetMessageAsync(ulong.Parse(id)).GetAwaiter().GetResult() as IUserMessage;
             return message == null ? null : new ServiceMessage(this, message);
         }
-       
+
     }
 
 }

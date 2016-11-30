@@ -185,7 +185,7 @@ namespace BotCore.Bridge {
         // Utils
 
         public ResponseBuilder Username() {
-            Block().Text(Message.Sender).Block();
+            Block().Text(Message.AuthorName).Block();
             return this;
         }
 
@@ -219,7 +219,7 @@ namespace BotCore.Bridge {
                 string columnContent = columnIndex < column.Length ? column[columnIndex] : string.Empty;
 
                 Builder.Append(" ");
-                Builder.Append(columnContent.Length > TableCellWidth ? columnContent.Remove(TableCellWidth - 3) + ".." : columnContent);
+                Builder.Append(columnContent.Length > TableCellWidth - 1 ? columnContent.Remove(TableCellWidth - 3) + ".." : columnContent);
                 for(int i = columnContent.Length + 1; i < TableCellWidth; i++) {
                     Builder.Append(" ");
                 }

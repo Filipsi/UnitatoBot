@@ -37,7 +37,7 @@ namespace UnitatoBot.Execution {
             switch(context.Args[0]) {
                 case "create":
                     if(context.Args.Length > 2 && !_checklists.Exists(c => c.Id.Equals(context.Args[1]))) {
-                        Checklist checklist = new Checklist(context.Args[1], context.Message.Sender, context.RawArguments.Substring(context.RawArguments.IndexOf(context.Args[1]) + context.Args[1].Length + 1));
+                        Checklist checklist = new Checklist(context.Args[1], context.Message.AuthorName, context.RawArguments.Substring(context.RawArguments.IndexOf(context.Args[1]) + context.Args[1].Length + 1));
 
                         ServiceMessage msg = context.ResponseBuilder
                             .Text(Emoji.Checklist)
@@ -213,7 +213,7 @@ namespace UnitatoBot.Execution {
 
             foreach(string index in indexes)
                 if(byte.TryParse(index, out i))
-                    if(checklist.SetEntryState(i, state, commandMsg.Sender))
+                    if(checklist.SetEntryState(i, state, commandMsg.AuthorName))
                         anySucess = true;
 
             if(checklist.IsCompleted) {

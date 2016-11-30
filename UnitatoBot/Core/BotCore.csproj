@@ -36,6 +36,7 @@
     <Reference Include="Discord.Net.Audio, Version=0.9.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Discord.Net.Audio.0.9.6\lib\net45\Discord.Net.Audio.dll</HintPath>
       <Private>True</Private>
+      <Aliases>DiscordAudio</Aliases>
     </Reference>
     <Reference Include="Discord.Net.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Discord.Net.Core.1.0.0-beta2-00459\lib\netstandard1.3\Discord.Net.Core.dll</HintPath>
@@ -48,6 +49,10 @@
     <Reference Include="Discord.Net.WebSocket, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Discord.Net.WebSocket.1.0.0-beta2-00459\lib\netstandard1.3\Discord.Net.WebSocket.dll</HintPath>
       <Private>True</Private>
+      <Aliases>global</Aliases>
+    </Reference>
+    <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Microsoft.Win32.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Win32.Primitives.4.0.1\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
@@ -155,6 +160,7 @@
     <Compile Include="Bridge\IAudioCapability.cs" />
     <Compile Include="Bridge\IService.cs" />
     <Compile Include="Bridge\ServiceMessage.cs" />
+    <Compile Include="Bridge\Services\DiscordService.Audio.cs" />
     <Compile Include="Bridge\Services\DiscordService.cs" />
     <Compile Include="Execution\ExecutionDispacher.cs" />
     <Compile Include="Execution\ExecutionContext.cs" />

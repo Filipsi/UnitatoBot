@@ -64,7 +64,7 @@ namespace UnitatoBot.Execution {
         // Logic
 
         private bool PlaySound(IAudioCapability player, ExecutionContext context, string soundName) {
-            string channel = context.Args.Length == 2 ? context.Args[1] : player.GetUserAudioChannel(context.Message.Origin, context.Message.Sender);
+            string channel = context.Args.Length == 2 ? context.Args[1] : player.GetUserAudioChannel(context.Message.Origin, context.Message.AuthorId);
             return _sounds.Find(s => s.Name.Equals(soundName) || s.Alias.Contains(soundName)).Play(player, context.Message, channel);
         }
 

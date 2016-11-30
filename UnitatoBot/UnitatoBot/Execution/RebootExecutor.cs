@@ -50,7 +50,7 @@ namespace UnitatoBot.Execution {
                 .Text("requested reboot. Restart in progress...")
                 .Send();
 
-            SaveRebootFile(msg, context.Message.Sender);
+            SaveRebootFile(msg, context.Message.AuthorName);
 
             Process.Start(Process.GetCurrentProcess().MainModule.FileName.Replace(".vshost", string.Empty));
             Environment.Exit(0);

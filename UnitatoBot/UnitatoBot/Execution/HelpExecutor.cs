@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using BotCore.Bridge;
 using BotCore.Execution;
 using BotCore.Util.Symbol;
+using Discord;
 
 namespace UnitatoBot.Execution {
 

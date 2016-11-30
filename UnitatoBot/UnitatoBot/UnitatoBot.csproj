@@ -48,6 +48,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Discord.Net.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Discord.Net.Core.1.0.0-beta2-00459\lib\netstandard1.3\Discord.Net.Core.dll</HintPath>
+    </Reference>
     <Reference Include="NAudio, Version=1.7.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NAudio.1.7.3\lib\net35\NAudio.dll</HintPath>
       <Private>True</Private>
@@ -110,6 +114,7 @@
     <Compile Include="Execution\PraiseExecutor.cs" />
     <Compile Include="Unitato.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\FilipsiNetApi\FilipsiApi.cs" />
     <Compile Include="Util\UsageManager\UsageManager.cs" />
     <Compile Include="Util\UsageManager\UsageManager.Usage.cs" />
     <Compile Include="Util\UsageManager\UsageStorageJsonConverter.cs" />

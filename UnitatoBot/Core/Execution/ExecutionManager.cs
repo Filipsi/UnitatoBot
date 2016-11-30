@@ -46,7 +46,7 @@ namespace BotCore.Execution {
             if(!Expressions.CommandParser.Test(e.Message.Text))
                 return;
 
-            string commandName = Expressions.CommandParser.Capture(e.Message.Text, "ExecutionDispacher");
+            string commandName = Expressions.CommandParser.Capture(e.Message.Text, "command");
             ExecutionDispacher executionDispacher = _commands.Find(x => x.Name == commandName || x.IsMyAlias(commandName));
 
             if(executionDispacher != null)

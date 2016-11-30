@@ -1,9 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
-using Discord.WebSocket;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Rest;
 
 namespace BotCore.Bridge {
 
@@ -21,11 +19,12 @@ namespace BotCore.Bridge {
     public class ServiceMessage {
 
         public IService     Service     { private set; get; }
-        public string       Sender      { private set; get; }
+        public string       AuthorName  { private set; get; }
+        public string       AuthorId    { private set; get; }
         public string       Text        { private set; get; }
 
         [JsonProperty]
-        public string ServiceType { private set; get; }
+        public string ServiceType => Service.GetServiceType();
 
         [JsonProperty]
         public string Origin { private set; get; }
@@ -42,15 +41,14 @@ namespace BotCore.Bridge {
 
         public ServiceMessage(IService service, IUserMessage message) {
             Service = service;
-            ServiceType = Service.GetServiceType();
-
             Origin = message.Channel.Id.ToString();
             Id = message.Id.ToString();
-
-            if (message.Author != null)
-                Sender = message.Author.Username;
-
             Text = message.Content;
+
+            if (message.Author != null) {
+                AuthorName = message.Author.Username;
+                AuthorId = message.Author.Id.ToString();
+            }
 
             _editHandler = async (content) => { await message.ModifyAsync((c) => { c.Content = content; }); };
             _deleteHandler = async () => { await message.DeleteAsync(); };
