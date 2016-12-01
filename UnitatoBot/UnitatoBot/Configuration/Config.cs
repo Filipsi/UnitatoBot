@@ -29,6 +29,8 @@ namespace UnitatoBot.Configuration {
             // Sanity check
             if(Settings.Token == string.Empty)
                 Logger.Error("{0}#{1} is not set", typeof(Storage).FullName, "Token");
+            if(Settings.ApiKey == string.Empty)
+                Logger.Error("{0}#{1} is not set", typeof(Storage).FullName, "ApiKey");
 
             Logger.SectionEnd();
             Logger.Log("Initial configuration finished.");

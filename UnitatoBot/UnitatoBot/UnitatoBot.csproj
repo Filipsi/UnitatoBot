@@ -114,10 +114,9 @@
     <Compile Include="Execution\PraiseExecutor.cs" />
     <Compile Include="Unitato.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Util\FilipsiNetApi\FilipsiApi.cs" />
+    <Compile Include="Util\WebApi\WebApi.cs" />
     <Compile Include="Util\UsageManager\UsageManager.cs" />
     <Compile Include="Util\UsageManager\UsageManager.Usage.cs" />
-    <Compile Include="Util\UsageManager\UsageStorageJsonConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

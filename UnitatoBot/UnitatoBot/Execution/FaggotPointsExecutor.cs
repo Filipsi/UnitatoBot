@@ -10,16 +10,25 @@ using BotCore.Util.Symbol;
 using Newtonsoft.Json.Linq;
 using Unitato.Execution;
 using UnitatoBot.Util.UsageManager;
-using UnitatoBot.Util.FilipsiNetApi;
+using UnitatoBot.Util.WebApi;
+using Newtonsoft.Json;
 
 namespace UnitatoBot.Execution {
 
-    internal class FaggotPointsExecutor : IExecutionHandler {
+    internal class FaggotPointsExecutor : IInitializable, IExecutionHandler {
+
+        private UsageManager _usageManager;
+
+        // IInitializable
+
+        public void Initialize(ExecutionManager manager) {
+            _usageManager = UsageManager.Load("faggotpoints-usage.json", 3, TimeSpan.FromDays(1));
+        }
 
         // IExecutionHandler
 
         public string GetDescription() {
-            return "Use with name as argument to mark someone as a faggot and add one faggot point. Use with argument 'list' to see statistics of all faggots. Use with argument 'stats' [name] to see statistics of given faggot. Use with argument 'purify' [name] [count](optional) to remove n faggot points from user (restricted). Use with argument 'clean' [name] to remove all faggot points (restricted)";
+            return "Use with name as argument to mark someone as a faggot and add one faggot point. Use with argument 'list' to see statistics of all faggots. Use with argument 'stats' [name] to see statistics of given faggot.";
         }
 
         public bool CanExecute(ExecutionContext context) {
@@ -34,14 +43,14 @@ namespace UnitatoBot.Execution {
                     if(context.Args.Length != 1)
                         return false;
 
-                    FilipsiNetApi.GetFaggotPoints(jobject => {
+                    WebApi.GetFaggotPoints(jobject => {
 
                         if(!jobject.Properties().Any())
                             return;
 
                         context.ResponseBuilder
                             .Username()
-                            .Text("wants to know how much of a faggots you people are.")
+                            .Text("requested list of faggot points.")
                             .TableStart(15, "Name", "Points");
 
                         foreach(JProperty prop in jobject.Properties().OrderByDescending(p => p.Value)) {
@@ -64,11 +73,11 @@ namespace UnitatoBot.Execution {
 
                     string name = context.Args[1].ToLower();
 
-                    FilipsiNetApi.GetFaggotPoints(name, points => {
+                    WebApi.GetFaggotPoints(name, points => {
 
                         context.ResponseBuilder
                             .Username()
-                            .Text("wants to know how much of a faggot")
+                            .Text("wants to know how big faggot")
                             .Block(name)
                             .Text("is. User has")
                             .Block(points)
@@ -76,6 +85,52 @@ namespace UnitatoBot.Execution {
                             .Send();
 
                     });
+
+                    break;
+
+                default:
+                    if(context.Args.Length != 1)
+                        return false;
+
+                    string namef = context.Args[0].ToLower();
+                    UsageManager.Usage usage = _usageManager.Get(context.Message.AuthorName);
+
+                    if(usage.CanBeUsed) {
+
+                        WebApi.SetFaggotPoints(namef, 1, success => {
+
+                            if(!success)
+                                return;
+
+                            usage.UseOnce();
+
+                            context.ResponseBuilder
+                                .Username()
+                                .Text("marked")
+                                .Block(namef)
+                                .Text("as faggot. You have");
+
+                            if(usage.Uses > 0)
+                                context.ResponseBuilder
+                                    .Block(usage.Uses)
+                                    .Text("out of")
+                                    .Block(usage.Manager.MaximumUses);
+                            else
+                                context.ResponseBuilder
+                                    .Text("no");
+
+                            context.ResponseBuilder
+                                .Text("faggot points left to give.")
+                                .Send();
+
+                        });
+
+                    } else
+                        context.ResponseBuilder
+                            .Username()
+                            .Text("you are out of faggots to give. Counter will reset after")
+                            .Block(new DateTime(usage.TimeUntilReset.Ticks).ToString(TimerExecutor.DatePattenTime))
+                            .Send();
 
                     break;
             }

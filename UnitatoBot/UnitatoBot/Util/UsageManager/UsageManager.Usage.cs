@@ -5,55 +5,53 @@ namespace UnitatoBot.Util.UsageManager {
 
     internal partial class UsageManager {
 
+        [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
         public class Usage {
 
-            public int Max { private set; get; }
-            public int Count { private set; get; }
-            public TimeSpan ResetPeriod { private set; get; }
+            [JsonProperty(IsReference = true)]
+            public UsageManager Manager {
+                private set;
+                get;
+            }
 
             [JsonProperty]
-            private DateTime LastReset;
+            public int Uses {
+                private set;
+                get;
+            }
 
-            [JsonIgnore]
+            [JsonProperty]
+            public DateTime LastReset;
+
             public bool ShouldSave {
-               get { return Count != Max && !ShouldReset; }
+               get {
+                    return Uses != Manager.MaximumUses && !ShouldReset;
+               }
             }
 
-            [JsonIgnore]
             public bool ShouldReset {
-                get { return (DateTime.Now - LastReset) >= ResetPeriod; }
-            }
-
-            [JsonIgnore]
-            public bool CanBeUsed {
                 get {
-                    if(ShouldReset) Reset();
-                    return Count > 0;
+                    return (DateTime.Now - LastReset) >= Manager.ResetPeriod;
                 }
             }
 
-            [JsonIgnore]
+            public bool CanBeUsed {
+                get {
+                    if(ShouldReset) Reset();
+                    return Uses > 0;
+                }
+            }
+
             public TimeSpan TimeUntilReset {
-                get { return ResetPeriod - (DateTime.Now - LastReset); }
+                get { return Manager.ResetPeriod - (DateTime.Now - LastReset); }
             }
 
-            [JsonConstructor]
-            private Usage(int max, int count, TimeSpan resetPeriod, DateTime lastReset) {
-                Max = max;
-                Count = count;
-                ResetPeriod = resetPeriod;
-                LastReset = lastReset;
-            }
-
-            public Usage(int max, TimeSpan resetPeriod) {
-                Max = max;
-                Count = max;
-                ResetPeriod = resetPeriod;
-                LastReset = DateTime.Today;
+            public Usage(UsageManager manager) {
+                Manager = manager;
             }
 
             private void Reset() {
-                Count = Max;
+                Uses = Manager.MaximumUses;
                 LastReset = DateTime.Now;
             }
 
@@ -64,7 +62,8 @@ namespace UnitatoBot.Util.UsageManager {
                 if (!CanBeUsed)
                     return false;
 
-                Count--;
+                Uses--;
+                Manager.Save();
                 return true;
             }
 
