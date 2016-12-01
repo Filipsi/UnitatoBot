@@ -24,7 +24,7 @@ namespace BotCore.Bridge {
         public string       Text        { private set; get; }
 
         [JsonProperty]
-        public string ServiceType => Service.GetServiceType();
+        public string ServiceType{ private set; get; }
 
         [JsonProperty]
         public string Origin { private set; get; }
@@ -41,6 +41,7 @@ namespace BotCore.Bridge {
 
         public ServiceMessage(IService service, IUserMessage message) {
             Service = service;
+            ServiceType = Service.GetServiceType();
             Origin = message.Channel.Id.ToString();
             Id = message.Id.ToString();
             Text = message.Content;
