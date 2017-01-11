@@ -1,0 +1,29 @@
+{
+  "name": "unitatobot",
+  "version": "1.0.0",
+  "description": "Private Discord chat bot",
+  "main": "src/unitatobot.js",
+  "scripts": {
+    "start": "node src/unitatobot.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://Filipsi@github.com/Filipsi/UnitatoBot.git"
+  },
+  "keywords": [
+    "discord",
+    "bot"
+  ],
+  "author": "Filipsi",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/Filipsi/UnitatoBot/issues"
+  },
+  "homepage": "https://github.com/Filipsi/UnitatoBot#readme",
+  "dependencies": {
+    "config": "^1.24.0",
+    "discord.js": "^11.0.0",
+    "lodash": "^4.17.4",
+    "node-opus": "^0.2.4"
+  }
+}
