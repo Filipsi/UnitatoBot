@@ -2,14 +2,14 @@ const _ = require('lodash')
 const Path = require('path')
 const Argument = require(Path.resolve(__dirname, './Argument.js'))
 
-module.exports = function (base) {
+module.exports = function (root) {
   // Public Interface
-  this.getBase = () => base
+  this.getRoot = () => root
 
-  this.test = (message) => /!(\w+)\s*(.*)$/g.test(message.content)
+  this.test = (message) => /!(\w+)\s*(.*)$/g.exec(message.content)[1] === this.getRoot()
 
   this.tryExecute = (message) => {
-    // Test for valid command
+    // Test for valid root
     if (this.test(message)) {
       // Try to find a matching mapping
       _.forEach(mappings, (mapping) => {
@@ -25,7 +25,7 @@ module.exports = function (base) {
             message: message
           }
 
-          mapping.executor(context)
+          mapping.execute(context)
 
           // Abort search after first match
           return false
@@ -71,7 +71,7 @@ module.exports = function (base) {
     mappings.push({
       map: mapping,
       args: args,
-      executor: executor
+      execute: executor
     })
 
     return this

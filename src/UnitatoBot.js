@@ -5,7 +5,7 @@ const MappingManager = require(Path.resolve(__dirname, './mapping/MappingManager
 const MappingTree = require(Path.resolve(__dirname, './mapping/MappingTree.js'))
 
 const disocrdService = new DiscordService(Config.get('token'))
-const manager = new MappingManager('!', [disocrdService])
+const manager = new MappingManager([disocrdService])
 
 manager.register(
   new MappingTree('faggot')
