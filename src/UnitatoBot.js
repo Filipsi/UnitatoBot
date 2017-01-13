@@ -10,10 +10,16 @@ const manager = new MappingManager([disocrdService])
 manager.register(
   new MappingTree('faggot')
     .branch('set [name]', (context) => {
-      console.log('executed mapping "set [name]" with arguments ' + JSON.stringify(context.args))
-      context.message.reply(context.args.name + ' was set as faggot!')
+      context.log()
+
+      context.message
+        .reply(context.args.name + ' was set as faggot!')
+        .then((message) => {
+          setTimeout(() => message.edit(context.message.content + ' (edited :tada:)'), 2500)
+        })
     })
     .branch('[arg1] test (op)', (context) => {
-      console.log('executed mapping "[arg1] test (op)" with arguments ' + JSON.stringify(context.args))
+      context.log()
+      context.message.delete()
     })
 )

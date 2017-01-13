@@ -47,23 +47,41 @@ module.exports = function (token) {
     return 'Discord#' + client.user.username
   }
 
-  this.reply = (message, callback) => {
+  this.reply = (message, deleteOriginal) => {
     const discriminator = message.internals.discriminator
-    const promise = mapper.get(discriminator).channel.send(message.content)
+    const discordMsg = mapper.get(discriminator)
 
-    if (callback !== undefined) {
-      promise.then((msg) => { callback(parse(msg)) })
+    if (deleteOriginal === undefined || deleteOriginal === true) {
+      discordMsg.delete()
     }
 
     mapper.dispose(discriminator)
+
+    return new Promise((resolve, reject) => {
+      discordMsg.channel.send(message.content)
+        .then((msg) => resolve(parse(msg)))
+        .catch((err) => reject(err))
+    })
   }
 
-  this.edit = (message, callback) => {
-    const discriminator = message.internals.discriminator
-    const promise = mapper.get(discriminator).edit(message.content)
+  this.edit = (message) => {
+    return new Promise((resolve, reject) => {
+      mapper.get(message.internals.discriminator).edit(message.content)
+        .then((msg) => resolve(message))
+        .catch((err) => reject(err))
+    })
+  }
 
-    if (callback !== undefined) {
-      promise.then((msg) => { callback(message) })
-    }
+  this.delete = (message) => {
+    const discriminator = message.internals.discriminator
+    const discordMsg = mapper.get(discriminator)
+
+    mapper.dispose(discriminator)
+
+    return new Promise((resolve, reject) => {
+      discordMsg.delete()
+        .then((msg) => resolve())
+        .catch((err) => reject(err))
+    })
   }
 }

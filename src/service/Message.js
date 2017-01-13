@@ -8,15 +8,19 @@ const Messsage = function (author, content) {
 
   this.dispose = () => this.internals.service.dispose(this.internals.descriptor)
 
-  this.reply = (content, callback) => {
+  this.reply = (content, deleteOriginal) => {
     const message = new Messsage('self', content)
     message.internals = this.internals
-    this.internals.service.reply(message, callback)
+    return this.internals.service.reply(message, deleteOriginal)
   }
 
-  this.edit = (content, callback) => {
+  this.edit = (content) => {
     this.content = content
-    this.internals.service.edit(this, callback)
+    return this.internals.service.edit(this)
+  }
+
+  this.delete = () => {
+    return this.internals.service.delete(this)
   }
 
   this.toString = () => this.author + ': ' + this.content

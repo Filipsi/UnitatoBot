@@ -20,9 +20,14 @@ module.exports = function (root) {
           let dataholders = _.remove(result, (entry) => _.isArray(entry))
           dataholders = _.fromPairs(dataholders)
 
+          const logger = () => {
+            console.log('Executed mapping "' + mapping.map + '" with values ' + JSON.stringify(context.args))
+          }
+
           const context = {
             args: dataholders,
-            message: message
+            message: message,
+            log: logger
           }
 
           mapping.execute(context)
