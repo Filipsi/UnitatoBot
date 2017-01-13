@@ -4,13 +4,8 @@ const Util = require(Path.resolve(__dirname, '../utilities/Util.js'))
 const Format = require(Path.resolve(__dirname, '../utilities/Formatting.js'))
 
 module.exports = new MappingTree('roll')
-  .branch('[sides]', (context) => {
-    if (isNaN(context.args.sides)) {
-      return
-    }
-
+  .branch('[sides:number]', (context) => {
     context.log()
-
     context.message.reply(
       Format.block(context.message.author) + ' throwed ' +
       Format.bold(context.args.sides) + ' sided :game_die: into the air that landed on number ' +
