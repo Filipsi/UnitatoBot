@@ -2,9 +2,9 @@
   "name": "unitatobot",
   "version": "1.0.0",
   "description": "Private Discord chat bot",
-  "main": "src/unitatobot.js",
+  "main": "src/UnitatoBot.js",
   "scripts": {
-    "start": "node src/unitatobot.js"
+    "start": "node src/UnitatoBot.js"
   },
   "repository": {
     "type": "git",

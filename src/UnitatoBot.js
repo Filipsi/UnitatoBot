@@ -4,7 +4,10 @@ const DiscordService = require(Path.resolve(__dirname, './service/DiscordService
 const MappingManager = require(Path.resolve(__dirname, './mapping/MappingManager.js'))
 const MappingTree = require(Path.resolve(__dirname, './mapping/MappingTree.js'))
 
-const disocrdService = new DiscordService(Config.get('token'))
+// Get token from process.env on heroku, if not defined fallback to config file
+const token = process.env.token === undefined ? Config.get('token') : process.env.token
+
+const disocrdService = new DiscordService(token)
 const manager = new MappingManager([disocrdService])
 
 manager.register(
