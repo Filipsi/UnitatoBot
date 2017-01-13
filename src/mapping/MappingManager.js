@@ -2,29 +2,29 @@ const _ = require('lodash')
 const Path = require('path')
 const EventDispacher = require(Path.resolve(__dirname, '../utilities/EventDispacher.js'))
 
-module.exports = function (commandCharacter, services) {
+module.exports = function (triggerCharacter, services) {
   // Public Interface
   this.onCommandReceived = new EventDispacher()
 
-  this.addCommand = (tree) => commandTrees.push(tree)
+  this.register = (tree) => mappingTrees.push(tree)
 
   // Internals
-  const commandTrees = []
+  const mappingTrees = []
 
   const onMessageReceived = (message) => {
-    if (isCommand(message.content)) {
+    if (isValid(message.content)) {
       this.onCommandReceived.dispach(message)
-      _.forEach(commandTrees, (tree) => tree.tryExecute(message))
+      _.forEach(mappingTrees, (tree) => tree.tryExecute(message))
     }
   }
 
-  const isCommand = (text) => {
-    return text.charAt(0) === commandCharacter
+  const isValid = (text) => {
+    return text.charAt(0) === triggerCharacter
   }
 
   // Init
-  if (commandCharacter === undefined || commandCharacter.length > 1) {
-    console.error('Invalid commandCharacter input for command manager!')
+  if (triggerCharacter === undefined || triggerCharacter.length > 1) {
+    console.error('Invalid triggerCharacter input for command manager!')
     return
   }
 

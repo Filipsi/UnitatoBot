@@ -1,19 +1,19 @@
 const Path = require('path')
 const Config = require('config')
 const DiscordService = require(Path.resolve(__dirname, './service/DiscordService.js'))
-const CommandManager = require(Path.resolve(__dirname, './command/CommandManager.js'))
-const CommandTree = require(Path.resolve(__dirname, './command/CommandTree.js'))
+const MappingManager = require(Path.resolve(__dirname, './mapping/MappingManager.js'))
+const MappingTree = require(Path.resolve(__dirname, './mapping/MappingTree.js'))
 
-const service = new DiscordService(Config.get('token'))
-const manager = new CommandManager('!', [service])
+const disocrdService = new DiscordService(Config.get('token'))
+const manager = new MappingManager('!', [disocrdService])
 
-manager.addCommand(
-  new CommandTree('faggot')
-    .withMapping('set [name]', (context) => {
+manager.register(
+  new MappingTree('faggot')
+    .branch('set [name]', (context) => {
       console.log('executed mapping "set [name]" with arguments ' + JSON.stringify(context.args))
       context.message.reply(context.args.name + ' was set as faggot!')
     })
-    .withMapping('[arg1] test (op)', (context) => {
+    .branch('[arg1] test (op)', (context) => {
       console.log('executed mapping "[arg1] test (op)" with arguments ' + JSON.stringify(context.args))
     })
 )

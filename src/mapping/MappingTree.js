@@ -61,7 +61,7 @@ module.exports = function (base) {
     return failed ? false : results
   }
 
-  this.withMapping = (mapping, executor) => {
+  this.branch = (mapping, executor) => {
     const args = []
 
     _.forEach(mapping.split(' '), (arg) => {
