@@ -19,13 +19,12 @@ module.exports = function (services) {
 
   // Init
   if (!_.isArray(services) || _.isEmpty(services)) {
-    console.error('Invalid services input for command manager!')
-    return
+    throw new Error('Invalid services input')
   }
 
   _.forEach(services, (service) => {
     if (service.onMessageReceived === undefined) {
-      console.error('Invalid service passsed to command manager, onMessageReceived is not defined!')
+      throw new Error('Invalid service, onMessageReceived is not defined!')
     } else {
       service.onMessageReceived.bind(onMessageReceived)
     }

@@ -1,36 +1,32 @@
 const _ = require('lodash')
 const Path = require('path')
 const Argument = require(Path.resolve(__dirname, './Argument.js'))
+const ExecutionContext = require(Path.resolve(__dirname, './ExecutionContext.js'))
 
-module.exports = function (root) {
+module.exports = function (roots) {
   // Public Interface
-  this.getRoot = () => root
+  this.getRoots = () => roots
 
-  this.test = (message) => /!(\w+)\s*(.*)$/g.exec(message.content)[1] === this.getRoot()
+  this.getMessageRoot = (message) => /!(\w+)\s*(.*)$/g.exec(message.content)[1]
+
+  this.test = (message) => _.includes(this.getRoots(), this.getMessageRoot(message))
 
   this.tryExecute = (message) => {
     // Test for valid root
     if (this.test(message)) {
       // Try to find a matching mapping
       _.forEach(mappings, (mapping) => {
-        const result = this.doesMappingMach(message, mapping)
+        const machResult = this.doesMappingMach(message, mapping)
 
-        if (result !== false) {
-          // Remove arguments that are't dataholder
-          let dataholders = _.remove(result, (entry) => _.isArray(entry))
-          dataholders = _.fromPairs(dataholders)
-
-          const logger = () => {
-            console.log('Executed mapping "' + mapping.map + '" with values ' + JSON.stringify(context.args))
-          }
-
-          const context = {
-            args: dataholders,
-            message: message,
-            log: logger
-          }
-
-          mapping.execute(context)
+        if (machResult !== false) {
+          mapping.execute(
+            new ExecutionContext(
+              this.getMessageRoot(message),
+              mapping,
+              machResult,
+              message
+            )
+          )
 
           // Abort search after first match
           return false
@@ -89,4 +85,12 @@ module.exports = function (root) {
 
   // Init
   const mappings = []
+
+  if (!_.isArray(this.getRoots())) {
+    throw new Error('Roots argument has to be an array')
+  }
+
+  if (_.isEmpty(this.getRoots())) {
+    throw new Error('Roots array does not contain any elements')
+  }
 }

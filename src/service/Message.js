@@ -6,12 +6,10 @@ const Messsage = function (author, content) {
 
   this.internals = {}
 
-  this.dispose = () => this.internals.service.dispose(this.internals.descriptor)
+  this.dispose = () => this.internals.service.dispose(this)
 
   this.reply = (content, deleteOriginal) => {
-    const message = new Messsage('self', content)
-    message.internals = this.internals
-    return this.internals.service.reply(message, deleteOriginal)
+    return this.internals.service.reply(this, content, deleteOriginal)
   }
 
   this.edit = (content) => {
