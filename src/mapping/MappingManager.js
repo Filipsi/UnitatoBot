@@ -9,7 +9,10 @@ module.exports = function (services) {
 
   const onMessageReceived = (message) => {
     if (isTrigger(message.content)) {
+      // Iterate over every mapping tree with current message
       _.forEach(mappingTrees, (tree) => tree.tryExecute(message))
+      // At this point message should no longer be needed
+      message.dispose()
     }
   }
 
@@ -25,8 +28,8 @@ module.exports = function (services) {
   _.forEach(services, (service) => {
     if (service.onMessageReceived === undefined) {
       throw new Error('Invalid service, onMessageReceived is not defined!')
-    } else {
-      service.onMessageReceived.bind(onMessageReceived)
     }
+
+    service.onMessageReceived.bind(onMessageReceived)
   })
 }

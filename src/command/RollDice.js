@@ -5,10 +5,12 @@ const Format = require(Path.resolve(__dirname, '../utilities/Formatting.js'))
 
 module.exports = new MappingTree(['roll', 'dice'])
   .branch('[sides:number]', (context) => {
-    context.log()
-    context.message.reply(
-      Format.block(context.message.author) + ' rolled ' +
-      Format.bold(context.args.sides) + ' sided :game_die: that landed on number ' +
-      Format.bold(Util.rand(1, context.args.sides))
-    )
+    if (context.args.sides > 2) {
+      context.log()
+      context.message.reply(
+        Format.block(context.message.author) + ' rolled ' +
+        Format.bold(context.args.sides) + ' sided :game_die: that landed on number ' +
+        Format.bold(Util.rand(1, context.args.sides))
+      )
+    }
   })
