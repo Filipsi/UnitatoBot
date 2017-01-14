@@ -1,7 +1,7 @@
 {
   "name": "unitatobot",
   "version": "1.0.0",
-  "description": "Private Discord chat bot",
+  "description": "Private chat bot with abstraction layer",
   "main": "src/UnitatoBot.js",
   "scripts": {
     "start": "node src/UnitatoBot.js"
