@@ -42,7 +42,8 @@ module.exports = function (token) {
   const format = {
     asBlock: (text) => '`' + text + '`',
     asItalics: (text) => '*' + text + '*',
-    asBold: (text) => '**' + text + '**'
+    asBold: (text) => '**' + text + '**',
+    asMultiline: (text) => '```' + text + '```'
   };
 
   // Public interface

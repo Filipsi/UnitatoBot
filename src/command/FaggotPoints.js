@@ -2,6 +2,7 @@ const Path = require('path');
 const Config = require('config');
 const MappingTree = require(Path.resolve(__dirname, '../mapping/MappingTree.js'));
 const rp = require('request-promise');
+const _ = require('lodash');
 
 const apiKey = process.env.apiKey === undefined ? Config.get('apiKey') : process.env.apiKey;
 
@@ -16,6 +17,22 @@ module.exports = new MappingTree(['faggot'])
         );
       });
   })
+  .branch('list', (context, format) => {
+    list()
+      .then((response) => {
+        let blob = '';
+
+        _.forEach(response, function(points, user) {
+          blob += points + _.repeat(' ', 4 - points.toString().length) + user + '\n';
+        });
+
+        context.message.reply(
+          format.asBlock(context.message.author) +
+          ' looked through our storage and found these records:' +
+          format.asMultiline(blob)
+        );
+      });
+  })
   .branch('mark [user]', (context, format) => {
     update(context.args.user, 1)
       .then((response) => {
@@ -27,9 +44,21 @@ module.exports = new MappingTree(['faggot'])
       });
   });
 
+// API Requests
+
 function get (user) {
   const request = {
     uri: 'http://api.filipsi.net/faggotpoints/' + user,
+    headers: { 'User-Agent': 'Request-Promise' },
+    json: true
+  };
+
+  return rp(request);
+}
+
+function list () {
+  const request = {
+    uri: 'http://api.filipsi.net/faggotpoints',
     headers: { 'User-Agent': 'Request-Promise' },
     json: true
   };
