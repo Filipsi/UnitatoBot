@@ -25,7 +25,8 @@ module.exports = function (roots) {
               mapping,
               machResult,
               message
-            )
+            ),
+            message.format()
           );
 
           // Abort search after first match

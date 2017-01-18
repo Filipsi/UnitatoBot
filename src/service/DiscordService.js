@@ -45,11 +45,23 @@ module.exports = function (token) {
     return value;
   };
 
+  const format = {
+    asBlock: (text) => '`' + text + '`',
+    asItalics: (text) => '*' + text + '*',
+    asBold: (text) => '**' + text + '**'
+  };
+
   // Public interface
 
-  this.onMessageReceived = new EventDispacher();
+  /* Service specific */
 
   this.getName = () => 'Discord#' + client.user.username;
+
+  this.getFormatting = () => format;
+
+  /* Message */
+
+  this.onMessageReceived = new EventDispacher();
 
   this.dispose = (message) => mapper.delete(message);
 

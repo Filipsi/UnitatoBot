@@ -1,10 +1,13 @@
-const Messsage = function (author, content) {
+module.exports = function (author, content) {
   // Public interface
+
+  /* Message */
   this.author = author;
 
   this.content = content;
 
-  this.internals = {};
+  /* Relays to Service */
+  this.format = () => this.internals.service.getFormatting();
 
   this.dispose = () => this.internals.service.dispose(this);
 
@@ -21,7 +24,8 @@ const Messsage = function (author, content) {
     return this.internals.service.delete(this);
   };
 
+  /* Internals */
+  this.internals = {};
+
   this.toString = () => this.author + ': ' + this.content;
 };
-
-module.exports = Messsage;
