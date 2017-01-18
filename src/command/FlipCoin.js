@@ -5,7 +5,7 @@ module.exports = new MappingTree(['flip', 'toss', 'coin'])
   .branch('', (context, format) => {
     context.log();
     context.message.reply(
-      format.asBlock(context.message.author) + ' throwed <:silvercoin:269736398385315841> into the air, it landed on ' +
+      format.asBlock(context.message.author) + ' throwed coin into the air, it landed on ' +
       format.asBold(Math.random() >= 0.5 ? 'heads' : 'tails')
     );
   });

@@ -22,7 +22,7 @@ module.exports = new MappingTree(['faggot'])
       .then((response) => {
         let blob = '';
 
-        _.forEach(response, function(points, user) {
+        _.forEach(response, (points, user) => {
           blob += points + _.repeat(' ', 4 - points.toString().length) + user + '\n';
         });
 
