@@ -39,12 +39,6 @@ module.exports = function (token) {
     return message;
   };
 
-  const getAndDispose = (message) => {
-    const value = mapper.get(message);
-    this.dispose(message);
-    return value;
-  };
-
   const format = {
     asBlock: (text) => '`' + text + '`',
     asItalics: (text) => '*' + text + '*',
@@ -66,7 +60,7 @@ module.exports = function (token) {
   this.dispose = (message) => mapper.delete(message);
 
   this.reply = (originalMessage, replyContent, deleteOriginal) => {
-    const discordMsg = getAndDispose(originalMessage);
+    const discordMsg = mapper.get(originalMessage);
 
     if (deleteOriginal === undefined || deleteOriginal === true) {
       discordMsg.delete();
@@ -88,10 +82,8 @@ module.exports = function (token) {
   };
 
   this.delete = (message) => {
-    const discordMsg = getAndDispose(message);
-
     return new Promise((resolve, reject) => {
-      discordMsg.delete()
+      mapper.get(message).delete()
         .then((msg) => resolve())
         .catch((err) => reject(err));
     });

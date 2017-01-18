@@ -12,7 +12,7 @@ module.exports = function (services) {
       // Iterate over every mapping tree with current message
       _.forEach(mappingTrees, (tree) => tree.tryExecute(message));
       // At this point message should no longer be needed
-      message.dispose();
+      setTimeout(() => message.dispose(), 2000);
     }
   };
 

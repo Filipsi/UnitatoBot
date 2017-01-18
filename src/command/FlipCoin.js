@@ -1,5 +1,6 @@
 const Path = require('path');
 const MappingTree = require(Path.resolve(__dirname, '../mapping/MappingTree.js'));
+
 module.exports = new MappingTree(['flip', 'toss', 'coin'])
   .branch('', (context, format) => {
     context.log();

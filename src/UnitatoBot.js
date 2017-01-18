@@ -15,3 +15,4 @@ const manager = new MappingManager([disocrdService]);
 
 manager.register(requireCommand('FlipCoin'));
 manager.register(requireCommand('RollDice'));
+manager.register(requireCommand('FaggotPoints'));
