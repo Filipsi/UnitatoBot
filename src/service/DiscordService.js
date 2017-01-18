@@ -1,91 +1,87 @@
-const Path = require('path')
-const Discord = require('discord.js')
-const EventDispacher = require(Path.resolve(__dirname, '../utilities/EventDispacher.js'))
-const Message = require(Path.resolve(__dirname, './Message.js'))
+const Path = require('path');
+const Discord = require('discord.js');
+const EventDispacher = require(Path.resolve(__dirname, '../utilities/EventDispacher.js'));
+const Message = require(Path.resolve(__dirname, './Message.js'));
 
 module.exports = function (token) {
-  const mapper = new WeakMap()
-  const client = new Discord.Client()
+  const mapper = new WeakMap();
+  const client = new Discord.Client();
 
   // Init
   client.on('ready', () =>
     console.log(this.getName() + ' service is ready!')
-  )
+  );
 
   client.on('message', (message) => {
     if (message.author.id === client.user.id) {
-      return
+      return;
     }
 
-    this.onMessageReceived.dispach(parse(message))
-  })
+    this.onMessageReceived.dispach(parse(message));
+  });
 
-  client.login(token)
+  client.login(token);
 
   // Internals
   const parse = (source) => {
     const message = new Message(
       source.author.username,
       source.content
-    )
+    );
 
-    mapper.set(message, source)
+    mapper.set(message, source);
 
     message.internals = {
       service: this,
       author: source.author.id
-    }
+    };
 
-    return message
-  }
+    return message;
+  };
 
   const getAndDispose = (message) => {
-    const value = mapper.get(message)
-    this.dispose(message)
-    return value
-  }
+    const value = mapper.get(message);
+    this.dispose(message);
+    return value;
+  };
 
   // Public interface
 
-  this.onMessageReceived = new EventDispacher()
+  this.onMessageReceived = new EventDispacher();
 
-  this.getName = () => {
-    return 'Discord#' + client.user.username
-  }
+  this.getName = () => 'Discord#' + client.user.username;
 
-  this.dispose = (message) => {
-    mapper.delete(message)
-  }
+  this.dispose = (message) => mapper.delete(message);
 
   this.reply = (originalMessage, replyContent, deleteOriginal) => {
-    const discordMsg = getAndDispose(originalMessage)
+    const discordMsg = getAndDispose(originalMessage);
 
     if (deleteOriginal === undefined || deleteOriginal === true) {
-      discordMsg.delete()
+      discordMsg.delete();
     }
 
     return new Promise((resolve, reject) => {
       discordMsg.channel.send(replyContent)
         .then((msg) => resolve(parse(msg)))
-        .catch((err) => reject(err))
-    })
-  }
+        .catch((err) => reject(err));
+    });
+  };
 
   this.edit = (message) => {
     return new Promise((resolve, reject) => {
       mapper.get(message).edit(message.content)
         .then((msg) => resolve(message))
-        .catch((err) => reject(err))
-    })
-  }
+        .catch((err) => reject(err));
+    });
+  };
 
   this.delete = (message) => {
-    const discordMsg = getAndDispose(message)
+    const discordMsg = getAndDispose(message);
 
     return new Promise((resolve, reject) => {
       discordMsg.delete()
         .then((msg) => resolve())
-        .catch((err) => reject(err))
-    })
-  }
-}
+        .catch((err) => reject(err));
+    });
+  };
+};
