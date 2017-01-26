@@ -1,3 +1,4 @@
+const fs = require('fs');
 const Path = require('path');
 const Discord = require('discord.js');
 const EventDispacher = require(Path.resolve(__dirname, '../utilities/EventDispacher.js'));
@@ -23,6 +24,9 @@ module.exports = function (token) {
   client.login(token);
 
   // Internals
+
+  /* Message specific */
+
   const parse = (source) => {
     const message = new Message(
       source.author.username,
@@ -46,6 +50,61 @@ module.exports = function (token) {
     asMultiline: (text) => '```' + text + '```'
   };
 
+  /* Audio specific */
+
+  const getAudioChannel = (name) => {
+    return client.channels.find((channel) => channel.type === 'voice' && channel.name === name);
+  };
+
+  const getFirstAudioChannel = (message) => {
+    return message.guild.channels.find((channel) => channel.type === 'voice');
+  };
+
+  const audioInterface = {
+    path: Path.resolve(__dirname, '../sounds'),
+    play: function (message, filename, channel) {
+      const msg = mapper.get(message);
+      const path = Path.join(this.path, filename + '.mp3');
+
+      if (!fs.existsSync(path)) {
+        return false; // File does not exist
+      }
+
+      if (client.voiceConnections.first() !== undefined) {
+        return false; // Already playing something on this channel
+      }
+
+      // If there is not specified channel, choose one that user is connected to
+      if (channel === undefined) {
+        channel = msg.member.voiceChannel;
+
+        // If user is not connected to any channel, use default
+        if (channel === undefined) {
+          channel = getFirstAudioChannel(msg);
+        }
+
+      // else get VoiceChannel object from it's name
+      } else {
+        channel = getAudioChannel(channel);
+
+        if (channel === null) {
+          return false; // There is no channel like that
+        }
+      }
+
+      channel.join()
+        .then((connection) => {
+          connection
+            .playFile(path)
+            .once('end', (event, listener) => {
+              connection.disconnect(); // We are done
+            });
+        });
+
+      return true;
+    }
+  };
+
   // Public interface
 
   /* Service specific */
@@ -54,7 +113,7 @@ module.exports = function (token) {
 
   this.getFormatting = () => format;
 
-  /* Message */
+  /* Message specific */
 
   this.onMessageReceived = new EventDispacher();
 
@@ -89,4 +148,7 @@ module.exports = function (token) {
         .catch((err) => reject(err));
     });
   };
+
+  /* Audio specific */
+  this.getAudioInterface = () => audioInterface;
 };

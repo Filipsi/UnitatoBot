@@ -85,7 +85,7 @@ module.exports = function (roots) {
   };
 
   // Init
-  const mappings = [];
+  let mappings = [];
 
   if (!_.isArray(this.getRoots())) {
     throw new Error('Roots argument has to be an array');

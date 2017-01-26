@@ -10,7 +10,7 @@ module.exports = function (arg) {
 
   this.mach = (value) => {
     if (value === undefined) {
-      return this.isOptional() ? [this.getName(), ''] : false;
+      return this.isOptional() ? [this.getName(), undefined] : false;
     }
 
     if (this.isDataholder()) {

@@ -27,5 +27,10 @@
     "node-opus": "^0.2.4",
     "request": "^2.79.0",
     "request-promise": "^4.1.1"
-  }
+  },
+  "buildpacks": [
+    {
+      "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git"
+    }
+  ]
 }

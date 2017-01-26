@@ -1,6 +1,7 @@
 const Path = require('path');
 const Config = require('config');
 const MappingTree = require(Path.resolve(__dirname, '../mapping/MappingTree.js'));
+const Util = require(Path.resolve(__dirname, '../utilities/Util.js'));
 const rp = require('request-promise');
 const _ = require('lodash');
 
@@ -23,7 +24,7 @@ module.exports = new MappingTree(['faggot'])
         let blob = '';
 
         _.forEach(response, (points, user) => {
-          blob += points + _.repeat(' ', 4 - points.toString().length) + user + '\n';
+          blob += points + Util.spacer(points, 4) + user + '\n';
         });
 
         context.message.reply(

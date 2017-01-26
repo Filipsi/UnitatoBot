@@ -17,3 +17,4 @@ manager.register(requireCommand('FlipCoin'));
 manager.register(requireCommand('RollDice'));
 manager.register(requireCommand('FaggotPoints'));
 manager.register(requireCommand('RussianRoulette'));
+manager.register(requireCommand('Sound'));
