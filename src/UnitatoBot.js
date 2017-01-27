@@ -1,20 +1,14 @@
 const Path = require('path');
-const Config = require('config');
 const DiscordService = require(Path.resolve(__dirname, './service/DiscordService.js'));
 const MappingManager = require(Path.resolve(__dirname, './mapping/MappingManager.js'));
+const Util = require(Path.resolve(__dirname, './utilities/Util.js'));
 
-function requireCommand (name) {
-  return require(Path.resolve(__dirname, './command/' + name + '.js'));
-}
-
-// Get token from process.env on heroku, if not defined fallback to config file
-const token = process.env.token === undefined ? Config.get('token') : process.env.token;
-
+const token = Util.getDiscordToken();
 const disocrdService = new DiscordService(token);
 const manager = new MappingManager([disocrdService]);
 
-manager.register(requireCommand('FlipCoin'));
-manager.register(requireCommand('RollDice'));
-manager.register(requireCommand('FaggotPoints'));
-manager.register(requireCommand('RussianRoulette'));
-manager.register(requireCommand('Sound'));
+manager.register(Util.requireCommand('FlipCoin'));
+manager.register(Util.requireCommand('RollDice'));
+manager.register(Util.requireCommand('FaggotPoints'));
+manager.register(Util.requireCommand('RussianRoulette'));
+manager.register(Util.requireCommand('Sound'));
