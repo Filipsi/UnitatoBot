@@ -12,6 +12,8 @@ module.exports = new MappingTree(['sound', 's'])
       return;
     }
 
+    context.log();
+
     fs.readdir(audio.path, (err, files) => {
       if (err !== null) {
         return;
@@ -43,6 +45,8 @@ module.exports = new MappingTree(['sound', 's'])
       console.log('Can not perform command on service that has no Audio Interface :(');
       return;
     }
+
+    context.log();
 
     if (audio.play(context.message, context.args.name, context.args.channel)) {
       context.message.reply(
