@@ -94,11 +94,12 @@ module.exports = function (token) {
 
       channel.join()
         .then((connection) => {
+          const dipacher = connection.playFile(path);
+
           function disconnect (event, listener) {
             connection.disconnect(); // We are done
           }
 
-          const dipacher = connection.playFile(path);
           dipacher.once('end', disconnect);
           dipacher.once('error', disconnect);
         });
