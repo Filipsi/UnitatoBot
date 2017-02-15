@@ -4,6 +4,8 @@ module.exports = function (services) {
   // Public Interface
   this.register = (tree) => mappingTrees.push(tree);
 
+  this.getServices = () => services;
+
   // Internals
   const mappingTrees = [];
 

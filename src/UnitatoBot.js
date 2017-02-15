@@ -3,10 +3,11 @@ const DiscordService = require(Path.resolve(__dirname, './service/DiscordService
 const MappingManager = require(Path.resolve(__dirname, './mapping/MappingManager.js'));
 const Util = require(Path.resolve(__dirname, './utilities/Util.js'));
 const Express = require('express');
+const moment = require('moment');
+const start = moment();
 
 /* Bot */
-const token = Util.getDiscordToken();
-const disocrdService = new DiscordService(token);
+const disocrdService = new DiscordService(Util.getConfigVar('token'));
 const manager = new MappingManager([disocrdService]);
 
 // Commands
@@ -18,18 +19,39 @@ manager.register(Util.requireCommand('Sound'));
 
 /* Web */
 const web = Express();
-const port = Util.getWebhostPort();
+const source = Path.join(__dirname, 'web');
+const port = Util.getConfigVar('port');
 
 // Settings
 web.set('port', port);
 web.set('view engine', 'mustache');
-web.set('views', __dirname + '/web');
+web.set('views', source);
+web.use(Express.static(source)); // Serve static files from this location publicly
 
 // Engines
 web.engine('mustache', require('mustache-express')());
 
+// Data
+const stats = {
+  services: manager.getServices(),
+  botinfo: [
+    {
+      name: 'Platform',
+      value: require('is-heroku') ? 'Heroku' : 'Localhost'
+    },
+    {
+      name: 'Revision',
+      value: () => Util.getPackageVar('version')
+    },
+    {
+      name: 'Uptime',
+      value: moment.duration(moment().diff(start)).humanize()
+    }
+  ]
+};
+
 // Routes
-web.get('/', (req, res) => res.render('stats'));
+web.get('/', (req, res) => res.render('stats', stats));
 
 // Listen
-web.listen(port, () => console.log("Webpage is running on port: " + port));
+web.listen(port, () => console.log('Webpage is running on port: ' + port));

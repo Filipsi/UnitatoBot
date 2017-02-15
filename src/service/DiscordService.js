@@ -10,9 +10,13 @@ module.exports = function (token) {
 
   // Internals
   /* Init */
-  client.on('ready', () =>
-    console.log(this.getName() + ' service is ready!')
-  );
+  client.on('ready', () => {
+    if (!this.isReady) {
+      this.isReady = true;
+    }
+
+    console.log(this.getName() + ' service is ready!');
+  });
 
   client.on('message', (message) => {
     if (message.author.id === client.user.id) {
@@ -111,7 +115,11 @@ module.exports = function (token) {
 
   /* Service specific */
 
-  this.getName = () => 'Discord#' + client.user.username;
+  this.isReady = false;
+
+  this.getName = () => 'Discord#' + (this.isReady ? client.user.username : 'unknown');
+
+  this.getChatRooms = () => this.isReady ? client.guilds.map((entry) => entry.toString()) : undefined;
 
   this.getFormatting = () => format;
 

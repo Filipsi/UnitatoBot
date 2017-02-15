@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>UnitatoBot Statistics</title>
+    <link rel="stylesheet" href="style/stats.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="resources/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="resources/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="resources/favicon/favicon-16x16.png">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  </head>
+  <body class="indentation">
+    <div class="header">
+      <div class="image circle unitato"></div>
+      <div class="title">UnitatoBot Statistics</div>
+    </div>
+
+    <div class="list">
+      <div class="entry">
+        <div class="subtitle">Bot</div>
+        <div class="content"> {{> bot}} </div>
+      </div>
+      <div class="entry">
+        <div class="subtitle">Services:</div>
+        <div class="content">
+          {{#services}}
+            <div>
+              <b>
+                {{getName}}
+              </b><br>
+              {{#getChatRooms}}
+                <div>> {{.}} </div>
+              {{/getChatRooms}}
+            </div>
+          {{/services}}
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
