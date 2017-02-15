@@ -8,7 +8,8 @@ module.exports = function (token) {
   const mapper = new WeakMap();
   const client = new Discord.Client();
 
-  // Init
+  // Internals
+  /* Init */
   client.on('ready', () =>
     console.log(this.getName() + ' service is ready!')
   );
@@ -22,8 +23,6 @@ module.exports = function (token) {
   });
 
   client.login(token);
-
-  // Internals
 
   /* Message specific */
 
@@ -97,7 +96,7 @@ module.exports = function (token) {
           const dipacher = connection.playFile(path);
 
           function disconnect (event, listener) {
-            connection.disconnect(); // We are done
+            connection.disconnect();
           }
 
           dipacher.once('end', disconnect);

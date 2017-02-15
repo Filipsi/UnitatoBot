@@ -1,4 +1,5 @@
 {
     "token": "",
-    "apiKey": ""
+    "apiKey": "",
+    "port": 5000
 }
