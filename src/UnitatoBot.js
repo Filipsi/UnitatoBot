@@ -20,7 +20,7 @@ manager.register(Util.requireCommand('Sound'));
 /* Web */
 const web = Express();
 const source = Path.join(__dirname, 'web');
-const port = Util.getConfigVar('port');
+const port = Util.getConfigVar('PORT');
 
 // Settings
 web.set('port', port);
