@@ -3,39 +3,35 @@
   <head>
     <meta charset="utf-8">
     <title>UnitatoBot Statistics</title>
-    <link rel="stylesheet" href="style/stats.css">
+    <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="resources/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="resources/favicon/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="resources/favicon/favicon-16x16.png">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <!-- CSS Reset -->
+    <link rel="stylesheet" href="//cdn.rawgit.com/necolas/normalize.css/master/normalize.css">
+    <!-- Milligram CSS minified -->
+    <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
+    <!-- Specific CSS -->
+    <link rel="stylesheet" href="style/label.css">
+    <link rel="stylesheet" href="style/service.css">
+    <link rel="stylesheet" href="style/stats.css">
   </head>
-  <body class="indentation">
-    <div class="header">
-      <div class="image circle unitato"></div>
-      <div class="title">UnitatoBot Statistics</div>
-    </div>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <div class="image circle unitato"></div>
+      </header>
 
-    <div class="list">
-      <div class="entry">
-        <div class="subtitle">Bot</div>
-        <div class="content"> {{> bot}} </div>
-      </div>
-      <div class="entry">
-        <div class="subtitle">Services:</div>
-        <div class="content">
-          {{#services}}
-            <div>
-              <b>
-                {{getName}}
-              </b><br>
-              {{#getChatRooms}}
-                <div>> {{.}} </div>
-              {{/getChatRooms}}
-            </div>
-          {{/services}}
-        </div>
-      </div>
-    </div>
+      <section class="container">
+        {{> labels}}
+        <div class="spacer"></div>
+        {{> services}}
+      </section>
 
+      <footer></footer>
+
+    </div>
   </body>
 </html>

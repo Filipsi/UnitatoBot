@@ -1,0 +1,18 @@
+.labels > .column > .inter {
+  background: #d1d1d1;
+  border-radius: .4rem;
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  height: 3rem;
+  letter-spacing: .1rem;
+  line-height: 3rem;
+  margin-bottom: 2.5rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.labels > .column > .inter > .name {
+  font-size: 1rem;
+  font-weight: 300;
+}

@@ -3,6 +3,7 @@ const Path = require('path');
 const Discord = require('discord.js');
 const EventDispacher = require(Path.resolve(__dirname, '../utilities/EventDispacher.js'));
 const Message = require(Path.resolve(__dirname, './Message.js'));
+const _ = require('lodash');
 
 module.exports = function (token) {
   const mapper = new WeakMap();
@@ -111,6 +112,24 @@ module.exports = function (token) {
     }
   };
 
+  const composeChatRoomsInfo = () => {
+    const info = [];
+
+    client.guilds.forEach((guild, key, map) => {
+      if (guild == null || !guild.available) {
+        return;
+      }
+
+      info.push({
+        name: guild.toString(),
+        icon: guild.iconURL
+      });
+    });
+
+    console.log(info);
+    return info;
+  };
+
   // Public interface
 
   /* Service specific */
@@ -119,7 +138,7 @@ module.exports = function (token) {
 
   this.getName = () => 'Discord#' + (this.isReady ? client.user.username : 'unknown');
 
-  this.getChatRooms = () => this.isReady ? client.guilds.map((entry) => entry.toString()) : undefined;
+  this.getChatRooms = () => this.isReady ? composeChatRoomsInfo() : undefined;
 
   this.getFormatting = () => format;
 

@@ -1,61 +1,12 @@
-html {
-  padding: 0px;
-  margin: 0px;
-}
-
 body {
   background-color: #ecf0f1;
-  color: #7f8c8d;
-  font-family: 'Open Sans', sans-serif;
-}
-
-.indentation {
-  padding-left: 20%;
-  padding-right: 20%;
 }
 
 .header {
-  margin-top: 128px;
   display: flex;
+  justify-content: center;
   align-items: center;
-}
-
-.header > div {
-  margin-left: 24px;
-}
-
-.title {
-  font-size: 32px;
-  color: #8e44ad;
-}
-
-.subtitle {
-  font-size: 20px;
-  color: #9b59b6;
-}
-
-.list {
-  margin-left: 176px;
-  margin-right: 30%;
-}
-
-.list > .entry {
-  margin-bottom: 24px;
-}
-
-.list > .entry > .content {
-  margin-left: 24px;
-  font-size: 14px;
-  color: #34495e;
-}
-
-.primitive {
-  display: flex;
-  justify-content: space-between;
-}
-
-.primitive > div:nth-child(2) {
-  text-align: right;
+  height: 512px;
 }
 
 .image {
@@ -68,8 +19,30 @@ body {
   border-radius: 50%;
 }
 
+.image.size-32 {
+  width: 32px;
+  height: 32px;
+}
+
 .image.unitato {
   background-image: url('/resources/unitato.png');
-  width: 128px;
-  height: 128px;
+  width: 256px;
+  height: 256px;
+}
+
+.spacer {
+  height: 64px;
+}
+
+.list {
+  display: flex !important;
+  flex-direction: column;
+}
+
+.list > .item {
+  margin-bottom: 8px;s
+}
+
+footer {
+  height: 96px;
 }

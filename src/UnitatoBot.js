@@ -34,17 +34,17 @@ web.engine('mustache', require('mustache-express')());
 // Data
 const stats = {
   services: manager.getServices(),
-  botinfo: [
+  labels: [
     {
-      name: 'Platform',
+      name: 'platform',
       value: require('is-heroku') ? 'Heroku' : 'Localhost'
     },
     {
-      name: 'Revision',
+      name: 'revision',
       value: () => Util.getPackageVar('version')
     },
     {
-      name: 'Uptime',
+      name: 'uptime',
       value: moment.duration(moment().diff(start)).humanize()
     }
   ]

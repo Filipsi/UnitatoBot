@@ -1,0 +1,14 @@
+<h2>Services</h2>
+{{#services}}
+<div class="row service">
+  <div class="column"><h4>{{getName}}</h4></div>
+  <div class="column column-50 column-offset-25 list">
+    {{#getChatRooms}}
+    <div class="item room">
+      <div class="image circle size-32" style="background-image: url('{{icon}}')"></div>
+      <div class="name">{{name}}</div>
+    </div>
+    {{/getChatRooms}}
+  </div>
+</div>
+{{/services}}

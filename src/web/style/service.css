@@ -1,0 +1,13 @@
+.service {
+  margin-bottom: 24px;
+}
+
+.room {
+  display: flex ;
+  flex-direction: row-reverse;
+}
+
+.room > .name {
+  line-height: 32px;
+  margin-right: 16px
+}
