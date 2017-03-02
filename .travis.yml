@@ -16,4 +16,3 @@ install: npm install
 branches:
   only:
   - production
-  - js

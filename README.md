@@ -1,17 +1,9 @@
 # UnitatoBot
 
+[![js-happiness-style](https://img.shields.io/badge/code%20style-happiness-brightgreen.svg?style=flat-square)](https://github.com/JedWatson/happiness)
+[![Heroku](https://img.shields.io/badge/Heroku-deployed-brightgreen.svg?style=flat-square)](https://dashboard.heroku.com/apps/unitatobot)
+[![Travis](https://img.shields.io/travis/Filipsi/UnitatoBot.svg?style=flat-square)](https://travis-ci.org/Filipsi/UnitatoBot)
+[![Libraries.io for GitHub](https://img.shields.io/librariesio/github/Filipsi/UnitatoBot.svg?style=flat-square)]()
+[![License](https://img.shields.io/github/license/Filipsi/UnitatoBot.svg?style=flat-square)](https://github.com/Filipsi/UnitatoBot/blob/production/LICENSE)
+
 > Private chat bot with abstraction layer, currently for [Discord](https://discordapp.com/)
-
-#### [Production](https://github.com/Filipsi/UnitatoBot/tree/production)
-[![js-happiness-style](https://img.shields.io/badge/code%20style-happiness-brightgreen.svg)](https://github.com/JedWatson/happiness) ![TravisCI](https://api.travis-ci.org/Filipsi/UnitatoBot.svg?branch=production) ![Heroku](http://heroku-badge.herokuapp.com/?app=unitatobot&style=flat&svg=1)
-
-Production branch, stable, automatic deploy to Heroku.
-
-#### [Development](https://github.com/Filipsi/UnitatoBot/tree/js)
-![TravisCI](https://api.travis-ci.org/Filipsi/UnitatoBot.svg?branch=js)
-
-Bleeding edge changes. Things might break.
-
-#### [CSharp](https://github.com/Filipsi/UnitatoBot/tree/csharp)
-
-Deprecated C# branch, no longer updated and supported.
