@@ -1,6 +1,6 @@
 {
   "name": "unitatobot",
-  "version": "2.32.0",
+  "version": "2.33.0",
   "description": "Private chat bot with abstraction layer",
   "main": "src/UnitatoBot.js",
   "scripts": {

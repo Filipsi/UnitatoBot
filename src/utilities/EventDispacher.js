@@ -1,24 +1,13 @@
 const _ = require('lodash');
 
 module.exports = function () {
-  this.bind = (listener) => {
-    if (this.listeners === undefined) {
-      this.listeners = [listener];
-      return;
-    }
+  const listeners = [];
 
-    if (!_.includes(this.listeners, listener)) {
-      this.listeners.push(listener);
-    }
+  this.bind = (binding) => {
+    if (!_.includes(listeners, binding)) listeners.push(binding);
   };
 
-  this.unbind = (listener) => {
-    _.pull(this.listeners, listener);
-  };
+  this.unbind = (binding) => _.pull(listeners, binding);
 
-  this.dispach = (args) => {
-    _.forEach(this.listeners, (listener) => {
-      listener(args);
-    });
-  };
+  this.dispach = (args) => _.forEach(listeners, (binding) => binding(args));
 };
