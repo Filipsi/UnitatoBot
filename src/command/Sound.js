@@ -19,15 +19,15 @@ module.exports = new MappingTree(['sound', 's'])
         return;
       }
 
-      let blob = ''; let row = 0;
+      let blob = ''; let column = 0;
       files.forEach((file) => {
         file = file.replace('.mp3', '');
-        if (row < 2) {
+        if (column < 4) {
           blob += file + Util.spacer(file, 15);
-          row++;
+          column++;
         } else {
           blob += file + '\n';
-          row = 0;
+          column = 0;
         }
       });
 
@@ -48,11 +48,14 @@ module.exports = new MappingTree(['sound', 's'])
 
     context.log();
 
-    if (audio.play(context.message, context.args.name, context.args.channel)) {
+    const playinfo = audio.play(context.message, context.args.name, context.args.channel);
+
+    if (playinfo) {
       context.message.reply(
         ':musical_note: ' +
         format.asBlock(context.message.author) + ' is playing ' +
-        format.asBold(context.args.name + '.mp3') + '!'
+        format.asBold(playinfo.filename) + ' on ' +
+        format.asBold(playinfo.channel) + ' channel!'
       );
     }
   });

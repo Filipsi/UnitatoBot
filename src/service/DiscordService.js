@@ -1,4 +1,5 @@
 const fs = require('fs');
+const _ = require('lodash');
 const Path = require('path');
 const Discord = require('discord.js');
 const EventDispacher = require(Path.resolve(__dirname, '../utilities/EventDispacher.js'));
@@ -64,14 +65,27 @@ module.exports = function (token) {
     path: Path.resolve(__dirname, '../sounds'),
     play: function (message, filename, channel) {
       const msg = mapper.get(message);
-      const path = Path.join(this.path, filename + '.mp3');
+      let path = Path.join(this.path, filename + '.mp3');
 
       if (!fs.existsSync(path)) {
-        return false; // File does not exist
+        // File does not exist, maybe the filename is partial
+
+        const mp3s = fs // Buffer this maybe?
+          .readdirSync(this.path)
+          .filter((file) => file.indexOf('.mp3') !== -1);
+
+        const partialCorrected = _.find(mp3s, (mp3) => mp3.substr(0, filename.length) === filename);
+
+        if (!partialCorrected) {
+          return null; // File does not exist
+        }
+
+        filename = partialCorrected.replace('.mp3', '');
+        path = Path.join(this.path, partialCorrected);
       }
 
       if (client.voiceConnections.first() !== undefined) {
-        return false; // Already playing something on this channel
+        return null; // Already playing something on this channel
       }
 
       // If there is not specified channel, choose one that user is connected to
@@ -88,23 +102,23 @@ module.exports = function (token) {
         channel = getAudioChannel(channel);
 
         if (channel === null) {
-          return false; // There is no channel like that
+          return null; // There is no channel like that
         }
       }
 
-      channel.join()
-        .then((connection) => {
-          const dipacher = connection.playFile(path);
+      channel
+        .join()
+        .then((connection) =>
+          connection
+            .playFile(path)
+            .on('end', () => connection.disconnect())
+            .on('error', () => connection.disconnect())
+        );
 
-          function disconnect (event, listener) {
-            connection.disconnect(); // We are done
-          }
-
-          dipacher.once('end', disconnect);
-          dipacher.once('error', disconnect);
-        });
-
-      return true;
+      return {
+        filename: filename,
+        channel: channel
+      };
     }
   };
 
