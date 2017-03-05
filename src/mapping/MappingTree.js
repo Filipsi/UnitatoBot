@@ -7,7 +7,10 @@ module.exports = function (roots) {
   // Public Interface
   this.getRoots = () => roots;
 
-  this.getMessageRoot = (message) => /!(\w+)\s*(.*)$/g.exec(message.content)[1];
+  this.getMessageRoot = (message) => {
+    const result = /!(\w+)\s*(.*)$/g.exec(message.content);
+    return result === null ? null : result[1];
+  };
 
   this.test = (message) => _.includes(this.getRoots(), this.getMessageRoot(message));
 

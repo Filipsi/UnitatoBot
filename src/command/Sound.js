@@ -46,11 +46,11 @@ module.exports = new MappingTree(['sound', 's'])
       return;
     }
 
-    context.log();
-
     const playinfo = audio.play(context.message, context.args.name, context.args.channel);
 
     if (playinfo) {
+      context.log();
+
       context.message.reply(
         ':musical_note: ' +
         format.asBlock(context.message.author) + ' is playing ' +

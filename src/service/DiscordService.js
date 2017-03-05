@@ -67,14 +67,21 @@ module.exports = function (token) {
       const msg = mapper.get(message);
       let path = Path.join(this.path, filename + '.mp3');
 
-      if (!fs.existsSync(path)) {
-        // File does not exist, maybe the filename is partial
+      const search = filename.substr(0, 1) === '*';
 
+      if (search || !fs.existsSync(path)) {
+        // File does not exist, maybe the filename is partial
         const mp3s = fs // Buffer this maybe?
           .readdirSync(this.path)
           .filter((file) => file.indexOf('.mp3') !== -1);
 
-        const partialCorrected = _.find(mp3s, (mp3) => mp3.substr(0, filename.length) === filename);
+        const partialCorrected = _.find(mp3s, (mp3) => {
+          if (search) {
+            return mp3.indexOf(filename.substr(1)) !== -1;
+          }
+
+          return mp3.substr(0, filename.length) === filename;
+        });
 
         if (!partialCorrected) {
           return null; // File does not exist
