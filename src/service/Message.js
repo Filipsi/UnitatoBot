@@ -1,27 +1,55 @@
-module.exports = function (author, content) {
-	// Public interface
+/* Modules */
+const _props = new WeakMap();
 
-	/* Message */
-	this.author = author;
+/* Class */
+class Message {
 
-	this.content = content;
+	constructor (service, author, content) {
+		_props.set(this, {
+			service: service,
+			author: author,
+			content: content
+		});
+	}
 
-	/* Relays to Service */
-	this.format = () => this.internals.service.getFormatting();
+	/* Getters */
 
-	this.dispose = () => this.internals.service.dispose(this);
+	get author () {
+		return _props.get(this).author;
+	}
 
-	this.reply = (content, deleteOriginal) => this.internals.service.reply(this, content, deleteOriginal);
+	get content () {
+		return _props.get(this).content;
+	}
 
-	this.edit = (content) => {
-		this.content = content;
-		return this.internals.service.edit(this);
-	};
+	get service () {
+		return _props.get(this).service;
+	}
 
-	this.delete = () => this.internals.service.delete(this);
+	get formatting () {
+		return this.service.getFormatting();
+	}
 
-	/* Internals */
-	this.internals = {};
+	/* Logic */
 
-	this.toString = () => this.author + ': ' + this.content;
-};
+	reply (content, deleteOriginal) {
+		this.service.reply(this, content, deleteOriginal);
+	}
+
+	edit (content) {
+		_props.get(this).content = content;
+		return this.service.edit(this);
+	}
+
+	delete () {
+		this.service.delete(this);
+	}
+
+	dispose () {
+		this.service.dispose(this);
+	}
+
+}
+
+/* Exports */
+module.exports = Message;

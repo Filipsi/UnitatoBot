@@ -1,14 +1,13 @@
-const fs = require('fs');
-const _ = require('lodash');
-const path = require('path');
 const chalk = require('chalk');
 const Discord = require('discord.js');
 const EventDispacher = require('utilities/EventDispacher');
+const DiscordAudio = require('service/DiscordAudio');
 const Message = require('service/Message');
 
 module.exports = function (token) {
 	const mapper = new WeakMap();
 	const client = new Discord.Client();
+	const audio = new DiscordAudio(client, mapper);
 
 	// Init
 	client.on('ready', () => {
@@ -30,17 +29,12 @@ module.exports = function (token) {
 
 	const parse = (source) => {
 		const message = new Message(
+			this,
 			source.author.username,
 			source.content
 		);
 
 		mapper.set(message, source);
-
-		message.internals = {
-			service: this,
-			author: source.author.id
-		};
-
 		return message;
 	};
 
@@ -49,84 +43,6 @@ module.exports = function (token) {
 		asItalics: (text) => '*' + text + '*',
 		asBold: (text) => '**' + text + '**',
 		asMultiline: (text) => '```' + text + '```'
-	};
-
-	/* Audio specific */
-
-	const getAudioChannel = (name) => client.channels.find((channel) => channel.type === 'voice' && channel.name === name);
-
-	const getFirstAudioChannel = (message) => message.guild.channels.find((channel) => channel.type === 'voice');
-
-	const audioInterface = {
-		source: path.resolve(__dirname, '../../resources/sounds'),
-		play: function (message, filename, channel) {
-			const msg = mapper.get(message);
-			let filePath = path.join(this.source, filename + '.mp3');
-
-			const search = filename.substr(0, 1) === '*';
-
-			if (search || !fs.existsSync(filePath)) {
-				// File does not exist, maybe the filename is partial
-				const mp3s = fs // Buffer this maybe?
-					.readdirSync(this.source)
-					.filter((file) => file.indexOf('.mp3') !== -1);
-
-				const partialCorrected = _.find(mp3s, (mp3) => {
-					if (search) {
-						return mp3.indexOf(filename.substr(1)) !== -1;
-					}
-
-					return mp3.substr(0, filename.length) === filename;
-				});
-
-				if (!partialCorrected) {
-					return null; // File does not exist
-				}
-
-				filename = partialCorrected.replace('.mp3', '');
-				filePath = path.join(this.source, partialCorrected);
-			}
-
-			if (client.voiceConnections.first() !== undefined) {
-				return null; // Already playing something on this channel
-			}
-
-			// If there is not specified channel, choose one that user is connected to
-			if (channel === undefined) {
-				channel = msg.member.voiceChannel;
-
-				// If user is not connected to any channel, use default
-				if (channel === undefined) {
-					channel = getFirstAudioChannel(msg);
-				}
-
-				// else get VoiceChannel object from it's name
-			} else {
-				channel = getAudioChannel(channel);
-
-				if (channel === null) {
-					return null; // There is no channel like that
-				}
-			}
-
-			channel
-				.join()
-				.then((connection) => {
-					try {
-						connection
-							.playFile(filePath)
-							.on('end', () => connection.disconnect())
-							.on('error', () => connection.disconnect());
-					} catch (err) {
-						channel.leave();
-					}
-				});
-
-			return {
-				filename: filename,
-				channel: channel
-			};
-		}
 	};
 
 	// Public interface
@@ -181,5 +97,5 @@ module.exports = function (token) {
 	};
 
 	/* Audio specific */
-	this.getAudioInterface = () => audioInterface;
+	this.getAudioInterface = () => audio;
 };

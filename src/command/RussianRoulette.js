@@ -40,8 +40,6 @@ const Revolver = function (capacity) {
 			if (!crane[position]) {
 				crane[position] = true;
 				rounds++;
-				console.log('loading pos ' + position);
-				console.log('loaded: ' + rounds);
 			}
 		}
 	};

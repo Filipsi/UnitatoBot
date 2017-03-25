@@ -34,7 +34,7 @@ module.exports = function (roots) {
 					machResult,
 					message
 				),
-				message.format()
+				message.formatting
 			);
 
 			// Abort search after first match
