@@ -1,46 +1,46 @@
 module.exports = function (arg) {
-  // Public Interface
-  this.getName = () => name;
+	// Public Interface
+	this.getName = () => name;
 
-  this.isOptional = () => optional;
+	this.isOptional = () => optional;
 
-  this.isDataholder = () => dataholder;
+	this.isDataholder = () => dataholder;
 
-  this.datatype = () => datatype;
+	this.datatype = () => datatype;
 
-  this.mach = (value) => {
-    if (value === undefined) {
-      return this.isOptional() ? [this.getName(), undefined] : false;
-    }
+	this.mach = (value) => {
+		if (value === undefined) {
+			return this.isOptional() ? [this.getName(), undefined] : false;
+		}
 
-    if (this.isDataholder()) {
-      const parsed = parse(value);
-      return parsed === null ? false : [this.getName(), parsed];
-    }
+		if (this.isDataholder()) {
+			const parsed = parse(value);
+			return parsed === null ? false : [this.getName(), parsed];
+		}
 
-    return value === this.getName() ? value : false;
-  };
+		return value === this.getName() ? value : false;
+	};
 
-  // Internals
-  const parse = (value) => {
-    switch (datatype) {
-      case 'number':
-        const num = parseInt(value);
-        return isNaN(num) ? null : num;
-    }
+	// Internals
+	const parse = (value) => {
+		switch (datatype) {
+			case 'number':
+				const num = parseInt(value);
+				return isNaN(num) ? null : num;
+		}
 
-    return value;
-  };
+		return value;
+	};
 
-  const isEncapsulatedWith = (encapsulator, source) => source.charAt(0) === encapsulator.charAt(0) && source.charAt(source.length - 1) === encapsulator.charAt(1);
+	const isEncapsulatedWith = (encapsulator, source) => source.charAt(0) === encapsulator.charAt(0) && source.charAt(source.length - 1) === encapsulator.charAt(1);
 
-  const optional = isEncapsulatedWith('()', arg);
+	const optional = isEncapsulatedWith('()', arg);
 
-  const dataholder = optional || isEncapsulatedWith('[]', arg);
+	const dataholder = optional || isEncapsulatedWith('[]', arg);
 
-  const unwraped = dataholder ? arg.substring(1, arg.length - 1) : arg;
+	const unwraped = dataholder ? arg.substring(1, arg.length - 1) : arg;
 
-  const datatype = unwraped.indexOf(':') > -1 ? unwraped.substr(unwraped.indexOf(':') + 1) : undefined;
+	const datatype = unwraped.indexOf(':') > -1 ? unwraped.substr(unwraped.indexOf(':') + 1) : undefined;
 
-  const name = datatype === undefined ? unwraped : unwraped.substring(0, unwraped.indexOf(':'));
+	const name = datatype === undefined ? unwraped : unwraped.substring(0, unwraped.indexOf(':'));
 };

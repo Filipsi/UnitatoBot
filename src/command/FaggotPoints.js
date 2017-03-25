@@ -7,77 +7,85 @@ const _ = require('lodash');
 
 const apiKey = process.env.apiKey === undefined ? Config.get('apiKey') : process.env.apiKey;
 
-module.exports = new MappingTree(['faggot'])
-  .branch('get [user]', (context, format) => {
-    get(context.args.user)
-      .then((response) => {
-        context.message.reply(
-          format.asBlock(context.message.author) + ' looked through our records and found out that ' +
-          format.asBlock(context.args.user) + ' is ' +
-          (response === -1 ? 'not a faggot.' : 'faggot with ' + format.asBold(response) + ' points.')
-        );
-      });
-  })
-  .branch('list', (context, format) => {
-    list()
-      .then((response) => {
-        let blob = '';
+// Command
+module.exports =
+	new MappingTree(['faggot'])
+		.branch('get [user]', get)
+		.branch('list', list)
+		.branch('mark [user]', update);
 
-        _.forEach(response, (points, user) => {
-          blob += points + Util.spacer(points, 4) + user + '\n';
-        });
-
-        context.message.reply(
-          format.asBlock(context.message.author) +
-          ' looked through our storage and found these records:' +
-          format.asMultiline(blob)
-        );
-      });
-  })
-  .branch('mark [user]', (context, format) => {
-    update(context.args.user, 1)
-      .then((response) => {
-        context.message.reply(
-          format.asBlock(context.message.author) + ' marked ' +
-          format.asBlock(context.args.user) + ' as faggot. ' +
-          'Our records where updated with score of ' + format.asBold(response) + ' points.'
-        );
-      });
-  });
-
-// API Requests
-
-function get (user) {
-  const request = {
-    uri: 'http://api.filipsi.net/faggotpoints/' + user,
-    headers: { 'User-Agent': 'Request-Promise' },
-    json: true
-  };
-
-  return rp(request);
+// Internals
+function get (context, format) {
+	apiGet(context.args.user)
+		.then((response) => {
+			context.message.reply(
+				format.asBlock(context.message.author) + ' looked through our records and found out that ' +
+				format.asBlock(context.args.user) + ' is ' +
+				(response === -1 ? 'not a faggot.' : 'faggot with ' + format.asBold(response) + ' points.')
+			);
+		});
 }
 
-function list () {
-  const request = {
-    uri: 'http://api.filipsi.net/faggotpoints',
-    headers: { 'User-Agent': 'Request-Promise' },
-    json: true
-  };
+function list (context, format) {
+	apiList()
+		.then((response) => {
+			let blob = '';
 
-  return rp(request);
+			_.forEach(response, (points, user) => {
+				blob += points + Util.spacer(points, 4) + user + '\n';
+			});
+
+			context.message.reply(
+				format.asBlock(context.message.author) +
+				' looked through our storage and found these records:' +
+				format.asMultiline(blob)
+			);
+		});
 }
 
-function update (user, amount) {
-  const request = {
-    method: 'POST',
-    uri: 'http://api.filipsi.net/faggotpoints/' + user,
-    headers: { 'User-Agent': 'Request-Promise' },
-    form: {
-      key: apiKey,
-      amount: amount
-    },
-    json: true
-  };
+function update (context, format) {
+	apiUpdate(context.args.user, 1)
+		.then((response) => {
+			context.message.reply(
+				format.asBlock(context.message.author) + ' marked ' +
+				format.asBlock(context.args.user) + ' as faggot. ' +
+				'Our records where updated with score of ' + format.asBold(response) + ' points.'
+			);
+		});
+}
 
-  return rp(request);
+// API
+function apiGet (user) {
+	const request = {
+		uri: 'http://api.filipsi.net/faggotpoints/' + user,
+		headers: { 'User-Agent': 'Request-Promise' },
+		json: true
+	};
+
+	return rp(request);
+}
+
+function apiList () {
+	const request = {
+		uri: 'http://api.filipsi.net/faggotpoints',
+		headers: { 'User-Agent': 'Request-Promise' },
+		json: true
+	};
+
+	return rp(request);
+}
+
+function apiUpdate (user, amount) {
+	const request = {
+		method: 'POST',
+		uri: 'http://api.filipsi.net/faggotpoints/' + user,
+		headers: { 'User-Agent': 'Request-Promise' },
+		form: {
+			key: apiKey,
+			amount: amount
+		},
+		json: true
+	};
+
+	return rp(request);
 }
