@@ -1,5 +1,4 @@
-const Path = require('path');
-const MappingTree = require(Path.resolve(__dirname, '../mapping/MappingTree.js'));
+const MappingTree = require('mapping/MappingTree');
 
 // Command
 module.exports =

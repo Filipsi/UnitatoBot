@@ -1,11 +1,7 @@
-const Path = require('path');
-const Config = require('config');
-const MappingTree = require(Path.resolve(__dirname, '../mapping/MappingTree.js'));
-const Util = require(Path.resolve(__dirname, '../utilities/Util.js'));
+const MappingTree = require('mapping/MappingTree.js');
+const Util = require('utilities/Util.js');
 const rp = require('request-promise');
 const _ = require('lodash');
-
-const apiKey = process.env.apiKey === undefined ? Config.get('apiKey') : process.env.apiKey;
 
 // Command
 module.exports =
@@ -81,7 +77,7 @@ function apiUpdate (user, amount) {
 		uri: 'http://api.filipsi.net/faggotpoints/' + user,
 		headers: { 'User-Agent': 'Request-Promise' },
 		form: {
-			key: apiKey,
+			key: process.env.apiKey,
 			amount: amount
 		},
 		json: true

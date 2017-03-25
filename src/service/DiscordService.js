@@ -3,8 +3,8 @@ const _ = require('lodash');
 const path = require('path');
 const chalk = require('chalk');
 const Discord = require('discord.js');
-const EventDispacher = require(path.resolve(__dirname, '../utilities/EventDispacher.js'));
-const Message = require(path.resolve(__dirname, './Message.js'));
+const EventDispacher = require('utilities/EventDispacher');
+const Message = require('service/Message');
 
 module.exports = function (token) {
 	const mapper = new WeakMap();

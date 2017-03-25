@@ -1,7 +1,6 @@
 const fs = require('fs');
-const Path = require('path');
-const MappingTree = require(Path.resolve(__dirname, '../mapping/MappingTree.js'));
-const Util = require(Path.resolve(__dirname, '../utilities/Util.js'));
+const MappingTree = require('mapping/MappingTree');
+const Util = require('utilities/Util');
 
 // Command
 module.exports =

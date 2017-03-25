@@ -1,16 +1,24 @@
-const path = require('path');
-const DiscordService = require(path.resolve(__dirname, './service/DiscordService.js'));
-const MappingManager = require(path.resolve(__dirname, './mapping/MappingManager.js'));
-const Util = require(path.resolve(__dirname, './utilities/Util.js'));
+/* Modules */
+const isHeroku = require('is-heroku');
+const DiscordService = require('service/DiscordService');
+const MappingManager = require('mapping/MappingManager');
 
-// Core
-const discord = new DiscordService(Util.getDiscordToken());
+// If we are not at Heroku, load environment
+// varibales from .env file
+if (!isHeroku) {
+	require('dotenv').config({
+		path: './../.env'
+	});
+}
+
+/* Core */
+const discord = new DiscordService(process.env.token);
 const mappingManager = new MappingManager('!', [discord]);
 
-// Commands
+/* Commands */
 mappingManager
-  .register(Util.requireCommand('FlipCoin'))
-  .register(Util.requireCommand('RollDice'))
-  .register(Util.requireCommand('FaggotPoints'))
-  .register(Util.requireCommand('RussianRoulette'))
-  .register(Util.requireCommand('Sound'));
+  .registerModule('command/FlipCoin')
+  .registerModule('command/RollDice')
+  .registerModule('command/FaggotPoints')
+  .registerModule('command/RussianRoulette')
+  .registerModule('command/Sound');

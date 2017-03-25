@@ -1,7 +1,6 @@
 const _ = require('lodash');
-const path = require('path');
-const Argument = require(path.resolve(__dirname, './Argument.js'));
-const ExecutionContext = require(path.resolve(__dirname, './ExecutionContext.js'));
+const Argument = require('mapping/Argument');
+const ExecutionContext = require('mapping/ExecutionContext');
 
 module.exports = function (roots) {
 	// Public Interface

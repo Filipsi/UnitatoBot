@@ -12,6 +12,11 @@ module.exports = function (triggerCharacter, services) {
 		return this;
 	};
 
+	this.registerModule = (module) => {
+		this.register(require(module));
+		return this;
+	};
+
 	// Internals
 	const mappingTrees = [];
 
