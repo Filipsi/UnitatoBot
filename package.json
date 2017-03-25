@@ -2,9 +2,9 @@
   "name": "unitatobot",
   "version": "2.33.0",
   "description": "Private chat bot with abstraction layer",
-  "main": "run.js",
+  "main": "src/UnitatoBot.js",
   "scripts": {
-    "start": "node run.js"
+    "start": "node src/UnitatoBot.js"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/Filipsi/UnitatoBot#readme",
   "dependencies": {
+    "app-module-path": "^2.2.0",
     "chalk": "^1.1.3",
     "discord.js": "^11.0.0",
     "is-heroku": "^1.0.1",

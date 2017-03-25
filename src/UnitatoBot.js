@@ -1,3 +1,5 @@
+require('app-module-path').addPath(__dirname);
+
 /* Modules */
 const isHeroku = require('is-heroku');
 const DiscordService = require('service/DiscordService');
