@@ -1,4 +1,5 @@
 /* Modules */
+const Discord = require('discord.js');
 const path = require('path');
 const fs = require('fs');
 const soundsDirectory = path.resolve(__dirname, '../../resources/sounds');
