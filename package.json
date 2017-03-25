@@ -26,7 +26,6 @@
     "is-heroku": "^1.0.1",
     "lodash": "^4.17.4",
     "node-opus": "^0.2.4",
-    "opusscript": "0.0.3",
     "request": "^2.79.0",
     "request-promise": "^4.1.1"
   },
