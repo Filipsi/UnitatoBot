@@ -27,7 +27,7 @@ class Message {
 	}
 
 	get formatting () {
-		return this.service.getFormatting();
+		return this.service.formatting;
 	}
 
 	/* Logic */

@@ -1,7 +1,6 @@
 /* Modules */
 const path = require('path');
 const fs = require('fs');
-const soundsDirectory = 'resources/sounds';
 const _props = new WeakMap();
 
 /* Class */
@@ -23,7 +22,7 @@ class DiscordAudio {
 	/* Getters */
 
 	get source () {
-		return soundsDirectory;
+		return 'resources/sounds';
 	}
 
 	/* Logic */
@@ -53,7 +52,7 @@ class DiscordAudio {
 			name = sounds.find((sound) => sound.includes(name));
 		}
 
-		return path.join(this.source, name + '.mp3');
+		return name === undefined ? null : path.join(this.source, name + '.mp3');
 	}
 
 	playOnChannel (channel, filePath) {
@@ -78,21 +77,17 @@ class DiscordAudio {
 		const client = _props.get(this).client;
 
 		if (client.voiceConnections.first()) {
-			return null; // Already playing something
+			return; // Already playing something
 		}
 
 		message = _props.get(this).mapper.get(message);
+		if (!message) return;
 
 		sound = this.getSoundFileFromName(sound);
-		if (!sound) {
-			return;
-		}
+		if (!sound) return;
 
 		channel = this.getWorkingChannel(message, channel);
-
-		if (!channel) {
-			return;
-		}
+		if (!channel) return;
 
 		this.playOnChannel(channel, sound);
 

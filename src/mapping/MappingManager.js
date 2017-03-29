@@ -41,7 +41,7 @@ module.exports = function (prefix, services) {
 		}
 
 		service.onMessageReceived.bind(onMessageReceived);
-		console.log(`Mapping manager was bound to ${chalk.cyan(service.getName())} service. ${chalk.gray('(ﾉ◕ヮ◕)ﾉ*:・ﾟ✧`')}`);
+		console.log(`Mapping manager was bound to ${chalk.cyan(service.name)} service. ${chalk.gray('(ﾉ◕ヮ◕)ﾉ*:・ﾟ✧`')}`);
 		isBound = true;
 	};
 

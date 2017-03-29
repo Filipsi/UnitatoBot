@@ -1,68 +1,90 @@
+/* Modules */
 const chalk = require('chalk');
 const Discord = require('discord.js');
 const EventDispacher = require('utilities/EventDispacher');
 const DiscordAudio = require('service/DiscordAudio');
 const Message = require('service/Message');
+const _props = new WeakMap();
 
-module.exports = function (token) {
-	const mapper = new WeakMap();
-	const client = new Discord.Client();
-	const audio = new DiscordAudio(client, mapper);
+/* Class */
+class DiscordService {
 
-	// Init
-	client.on('ready', () => {
-		console.log(`Service ${chalk.cyan(this.getName())} is ready.`);
-		this.onServiceReady.dispach(this);
-	});
+	constructor (token) {
+		const mapper = new WeakMap();
+		const client = new Discord.Client();
+		const audio = new DiscordAudio(client, mapper);
 
-	client.on('message', (message) => {
-		if (message.author.id !== client.user.id) {
-			this.onMessageReceived.dispach(parse(message));
-		}
-	});
+		_props.set(this, {
+			mapper: mapper,
+			client: client,
+			audio: audio,
+			format: {
+				asBlock: (text) => '`' + text + '`',
+				asItalics: (text) => `*${text}*`,
+				asBold: (text) => `**${text}**`,
+				asMultiline: (text) => '```' + text + '```'
+			},
+			onServiceReady: new EventDispacher(),
+			onMessageReceived: new EventDispacher()
+		});
 
-	client.login(token);
+		client.on('ready', () => {
+			console.log(`Service ${chalk.cyan(this.name)} is ready.`);
+			_props.get(this).onServiceReady.dispach(this);
+		});
 
-	// Internals
+		client.on('message', (message) => {
+			if (message.author.id !== client.user.id) {
+				_props.get(this).onMessageReceived.dispach(this.parse(message));
+			}
+		});
 
-	/* Message specific */
+		client.login(token);
+	}
 
-	const parse = (source) => {
+	parse (source) {
 		const message = new Message(
 			this,
 			source.author.username,
 			source.content
 		);
 
-		mapper.set(message, source);
+		_props.get(this).mapper.set(message, source);
 		return message;
-	};
-
-	const format = {
-		asBlock: (text) => '`' + text + '`',
-		asItalics: (text) => '*' + text + '*',
-		asBold: (text) => '**' + text + '**',
-		asMultiline: (text) => '```' + text + '```'
-	};
-
-	// Public interface
+	}
 
 	/* Service specific */
 
-	this.getName = () => 'Discord#' + client.user.username;
+	get name () {
+		return 'Discord#' + _props.get(this).client.user.username;
+	}
 
-	this.getFormatting = () => format;
+	get formatting () {
+		return _props.get(this).format;
+	}
 
-	this.onServiceReady = new EventDispacher();
+	get onServiceReady () {
+		return _props.get(this).onServiceReady;
+	}
+
+	/* Audio */
+
+	get audioInterface () {
+		return _props.get(this).audio;
+	}
 
 	/* Message specific */
 
-	this.onMessageReceived = new EventDispacher();
+	get onMessageReceived () {
+		return _props.get(this).onMessageReceived;
+	}
 
-	this.dispose = (message) => mapper.delete(message);
+	dispose (message) {
+		_props.get(this).mapper.delete(message);
+	}
 
-	this.reply = (originalMessage, replyContent, deleteOriginal) => {
-		const discordMsg = mapper.get(originalMessage);
+	reply (originalMessage, replyContent, deleteOriginal) {
+		const discordMsg = _props.get(this).mapper.get(originalMessage);
 
 		if (deleteOriginal === undefined || deleteOriginal === true) {
 			discordMsg.delete();
@@ -71,31 +93,32 @@ module.exports = function (token) {
 		return new Promise((resolve, reject) => {
 			discordMsg.channel
 				.send(replyContent)
-				.then((msg) => resolve(parse(msg)))
+				.then((msg) => resolve(this.parse(msg)))
 				.catch((err) => reject(err));
 		});
-	};
+	}
 
-	this.edit = (message) => {
+	edit (message) {
 		return new Promise((resolve, reject) => {
-			mapper
+			_props.get(this).mapper
 				.get(message)
 				.edit(message.content)
 				.then((msg) => resolve(message))
 				.catch((err) => reject(err));
 		});
-	};
+	}
 
-	this.delete = (message) => {
+	delete (message) {
 		return new Promise((resolve, reject) => {
-			mapper
+			_props.get(this).mapper
 				.get(message)
 				.delete()
 				.then((msg) => resolve())
 				.catch((err) => reject(err));
 		});
-	};
+	}
 
-	/* Audio specific */
-	this.getAudioInterface = () => audio;
-};
+}
+
+/* Exports */
+module.exports = DiscordService;

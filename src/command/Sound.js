@@ -45,7 +45,7 @@ function list (context, format) {
 }
 
 function play (context, format) {
-	const audio = context.message.service.getAudioInterface();
+	const audio = context.message.service.audioInterface;
 
 	if (audio === undefined) {
 		console.log('Can not perform command on service that has no Audio Interface :(');

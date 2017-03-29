@@ -16,8 +16,6 @@ module.exports = function (name, mapping, result, message) {
 	this.message = message;
 
 	this.log = () => console.log(
-		'Executed command ' + chalk.yellow(name) +
-		' with arguments ' + chalk.gray(JSON.stringify(this.args)) +
-		' and mapping ' + chalk.gray(mapping.map)
+		`Executed command ${chalk.yellow(name)} with arguments ${chalk.gray(JSON.stringify(this.args))} ${mapping.map ? `and mapping ${chalk.gray(mapping.map)}` : ''}`
 	);
 };
