@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const chalk = require('chalk');
 
-module.exports = function (triggerCharacter, services) {
+module.exports = function (prefix, services) {
 	// Public Interface
 	this.register = (mappingTree) => {
 		if (!mappingTrees.includes(mappingTree)) {
@@ -20,25 +20,32 @@ module.exports = function (triggerCharacter, services) {
 	// Internals
 	const mappingTrees = [];
 
+	let isBound = false;
+
 	const onMessageReceived = (message) => {
-		if (isTrigger(message.content)) {
+		if (isPrefix(message.content)) {
 			// Iterate over every mapping tree with current message
 			_.forEach(mappingTrees, (tree) => tree.tryExecute(message));
 			// At this point message should no longer be needed
-			setTimeout(() => message.dispose(), 2000);
+			setTimeout(() => message.dispose(), 10000);
 		}
 	};
 
 	const onServiceReady = (service) => {
-		if (service.onMessageReceived === undefined) {
+		if (isBound) {
+			return;
+		}
+
+		if (!service.onMessageReceived) {
 			throw new Error('Invalid service, onMessageReceived is not defined!');
 		}
 
 		service.onMessageReceived.bind(onMessageReceived);
 		console.log(`Mapping manager was bound to ${chalk.cyan(service.getName())} service. ${chalk.gray('(ﾉ◕ヮ◕)ﾉ*:・ﾟ✧`')}`);
+		isBound = true;
 	};
 
-	const isTrigger = (text) => text.charAt(0) === triggerCharacter;
+	const isPrefix = (text) => text.charAt(0) === prefix;
 
 	// Init
 	if (!_.isArray(services) || _.isEmpty(services)) {

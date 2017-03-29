@@ -1,8 +1,7 @@
 /* Modules */
-const Discord = require('discord.js');
 const path = require('path');
 const fs = require('fs');
-const soundsDirectory = path.resolve(__dirname, '../../resources/sounds');
+const soundsDirectory = 'resources/sounds';
 const _props = new WeakMap();
 
 /* Class */
@@ -90,6 +89,11 @@ class DiscordAudio {
 		}
 
 		channel = this.getWorkingChannel(message, channel);
+
+		if (!channel) {
+			return;
+		}
+
 		this.playOnChannel(channel, sound);
 
 		return {

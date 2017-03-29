@@ -1,4 +1,6 @@
-require('app-module-path').addPath(__dirname);
+const amp = require('app-module-path');
+amp.addPath(__dirname);
+amp.addPath('./../resources');
 
 /* Modules */
 const isHeroku = require('is-heroku');
@@ -9,7 +11,7 @@ const MappingManager = require('mapping/MappingManager');
 // varibales from .env file
 if (!isHeroku) {
 	require('dotenv').config({
-		path: './../.env'
+		path: './.env'
 	});
 }
 
